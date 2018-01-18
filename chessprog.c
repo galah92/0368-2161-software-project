@@ -12,7 +12,7 @@ typedef enum {
 } AppState;
 
 
-void HandleSettingsState(ChessGame *game, AppState state) {
+void HandleSettingsState(ChessGame *game) {
     printf("Specify game settings or type 'start' to begin a game with the current settings:\n");
     UserCommand command;
     while (command.type != USER_COMMAND_START) {
@@ -46,20 +46,25 @@ void HandleSettingsState(ChessGame *game, AppState state) {
             case USER_COMMAND_START:
                 printf("Starting game…\n");
                 return;
+            case USER_COMMAND_MOVE: break;
+            case USER_COMMAND_GET_MOVES: break;
+            case USER_COMMAND_SAVE: break;
+            case USER_COMMAND_UNDO: break;
+            case USER_COMMAND_RESET: break;
         }
     }
 }
 
 int main(int argc, char *argv[]) {
     AppState state = SETTINGS_STATE;
-    ChessGame *game;
+    // ChessGame *game;
     if (argc > 1 && strcmp(argv[1], "-g") == 0) {
         printf("GUI mode - WIP\n");
     } else {
         printf(" Chess\n-------\n");
         while (state != QUIT) {
             if (state == RESTARTED) {
-                game = ChessGame_Create();
+                // game = ChessGame_Create();
                 state = GAME_STATE;
             } else {
 

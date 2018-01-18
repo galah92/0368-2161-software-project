@@ -29,7 +29,7 @@ typedef struct {
 } UserCommand;
 
 
-UserCommand UserCommand_Parse(const char* str);
+UserCommand UserCommand_Parse(char* str);
 
 
 #endif
