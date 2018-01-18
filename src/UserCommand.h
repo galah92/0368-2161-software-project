@@ -6,30 +6,36 @@
 
 
 typedef enum {
-    USER_COMMAND_INVALID,
+    // settings-only commands
 	USER_COMMAND_GAME_MODE,
 	USER_COMMAND_DIFFICULTY,
 	USER_COMMAND_USER_COLOR,
     USER_COMMAND_LOAD_GAME,
     USER_COMMAND_DEFAULT_SETTINGS,
     USER_COMMAND_PRINT_SETTINGS,
-    USER_COMMAND_QUIT,
     USER_COMMAND_START,
+    // game-only commands
     USER_COMMAND_MOVE,
     USER_COMMAND_GET_MOVES,
     USER_COMMAND_SAVE,
     USER_COMMAND_UNDO,
     USER_COMMAND_RESET,
+    // shared commands
+    USER_COMMAND_QUIT,
+    USER_COMMAND_INVALID,
 } USER_COMMAND_TYPE;
 
 
 typedef struct {
 	USER_COMMAND_TYPE type;
 	int params[USER_COMMAND_MAX_PARAMS_NUM];
+    char path[USER_COMMAND_MAX_LINE_LENGTH];
 } UserCommand;
 
 
-UserCommand UserCommand_Parse(char* str);
+UserCommand UserCommand_ParseSettingsCommand(char* str);
+
+UserCommand UserCommand_ParseGameCommand(char* str);
 
 
 #endif
