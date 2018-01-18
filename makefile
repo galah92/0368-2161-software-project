@@ -1,17 +1,18 @@
-TARGET = chessprog
-CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -Werror -pedantic-errors
-SOURCES   = $(wildcard *.c)
-OBJECTS = $(SOURCES:.c=.o)
+TARGET 	= chessprog
+CC 		= gcc
+CFLAGS 	= -std=c99 -Wall -Wextra -Werror -pedantic-errors
+SOURCES	= $(wildcard *.c)
+OBJECTS	= $(SOURCES:%.c=$(OBJDIR)/%.o)
+OBJDIR	= obj
 
-.PHONY: default all clean
+.PHONY: all clean
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $@
 
-.c.o:
+$(OBJECTS): $(OBJDIR)/%.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
