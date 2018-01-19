@@ -3,7 +3,7 @@ SRCDIR	= src
 OBJDIR	= obj
 BINDIR	= bin
 CC 		= gcc
-CFLAGS 	= -std=c99 -Wall -Wextra -Werror -pedantic-errors
+CFLAGS 	= -std=c99 -Wall -Wextra -Werror -pedantic-errors -ggdb
 SDLINC	= -I/usr/local/lib/sdl_2.0.5/include/SDL2 -D_REENTRANT
 SDLLIB	= -L/usr/local/lib/sdl_2.0.5/lib -Wl,-rpath,/usr/local/lib/sdl_2.0.5/lib -Wl,--enable-new-dtags -lSDL2 -lSDL2main
 
