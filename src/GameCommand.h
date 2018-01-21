@@ -2,7 +2,7 @@
 #define GAME_COMMAND_H_
 
 #define GAME_COMMAND_MAX_LINE_LENGTH    1024
-#define GAME_COMMAND_MAX_PARAMS_NUM     4
+#define GAME_COMMAND_ARGS_CAPACITY    8
 
 
 typedef enum GameCommandType_t {
@@ -28,7 +28,7 @@ typedef enum GameCommandType_t {
 
 typedef struct GameCommand_t {
 	GameCommandType type;
-	int params[GAME_COMMAND_MAX_PARAMS_NUM];
+	int args[GAME_COMMAND_ARGS_CAPACITY];
     char path[GAME_COMMAND_MAX_LINE_LENGTH];
 } GameCommand;
 

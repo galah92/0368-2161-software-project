@@ -6,7 +6,7 @@
 
 
 typedef struct CLIEngine_t {
-    int _x;  // TODO: consider removing, as there's no need for a struct here (no state)
+    char input[GAME_COMMAND_MAX_LINE_LENGTH];
 } CLIEngine;
 
 CLIEngine* CLIEngine_Create();

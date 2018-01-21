@@ -1,6 +1,7 @@
+#include <stdio.h>
 #include "UIManager.h"
+#include "GameCommand.h"
 // #include "GameManager.h"
-// #include "GameCommand.h"
 
 
 int main(int argc, const char *argv[]) {
