@@ -27,10 +27,10 @@ void CLIEngine_Destroy(CLIEngine *engine) {
     free(engine);
 }
 
-UserCommand* CLIEngine_ProcessInput(CLIEngine *engine) {
-    if (!engine) return NULL;
-    // TODO: Parse CLI strings to UserCommand;
-    UserCommand *command = malloc(sizeof(UserCommand));
+GameCommand CLIEngine_ProcessInput(CLIEngine *engine) {
+    GameCommand command = { .type = GAME_COMMAND_INVALID };
+    if (!engine) return command;
+    // TODO: Parse CLI strings to GameCommand;
     return command;
 }
 

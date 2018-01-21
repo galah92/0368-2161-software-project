@@ -4,6 +4,7 @@
     "editor.detectIndentation": true,
     "files.defaultLanguage": "c",
     "files.associations": {
-        "uiengine.h": "c"
+        "uiengine.h": "c",
+        "uimanager.h": "c"
     }
 }

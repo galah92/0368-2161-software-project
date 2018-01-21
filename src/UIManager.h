@@ -3,7 +3,7 @@
 
 #include "CLIEngine.h"
 #include "GameState.h"
-#include "UserCommand.h"
+#include "GameCommand.h"
 
 
 typedef struct UIManager_t UIManager;
@@ -12,7 +12,7 @@ UIManager* UIManager_Create(int argc, const char *argv[]);
 
 void UIManager_Destroy(UIManager *manager);
 
-UserCommand* UIManager_ProcessInput(UIManager *manager);
+GameCommand UIManager_ProcessInput(UIManager *manager);
 
 void UIManager_Render(UIManager *manager, const GameState *gameState);
 

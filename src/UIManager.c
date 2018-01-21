@@ -27,8 +27,9 @@ void UIManager_Destroy(UIManager *manager) {
     free(manager);
 }
 
-UserCommand* UIManager_ProcessInput(UIManager *manager) {
-    if (!manager) return NULL;
+GameCommand UIManager_ProcessInput(UIManager *manager) {
+    GameCommand command = { .type = GAME_COMMAND_INVALID };
+    if (!manager) return command;
     if (manager->type == GUI_ENGINE) {
         // return GUIEngine_ProcessInput(manager->guiEngine);
         return CLIEngine_ProcessInput(manager->cliEngine);

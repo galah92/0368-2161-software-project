@@ -1,12 +1,12 @@
 #include "UIManager.h"
 // #include "GameManager.h"
-// #include "GameCommand"
+// #include "GameCommand.h"
 
 
 int main(int argc, const char *argv[]) {
     UIManager *uiManager = UIManager_Create(argc, argv);
     // GameManager *gameManager = GameManager_Create();
-    // UserCommand *command;
+    // GameCommand command;
     // while (command->type != USER_COMMAND_QUIT) {
     //     switch (gameManager->currentPlayer->type) {
     //         case PLAYER_TYPE_HUMAN:
