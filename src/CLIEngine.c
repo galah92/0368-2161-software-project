@@ -30,6 +30,10 @@
 #define STRING_QUIT             "quit"
 
 
+struct CLIEngine_t {
+    char input[GAME_COMMAND_MAX_LINE_LENGTH];
+};
+
 CLIEngine* CLIEngine_Create() {
     CLIEngine *engine = malloc(sizeof(CLIEngine));
     if (!engine) return NULL;
