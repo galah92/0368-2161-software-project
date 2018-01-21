@@ -2,6 +2,27 @@
 #include <string.h>
 #include "CLIEngine.h"
 
+#define MSG_APP_INIT                    " Chess\n-------\n"
+#define MSG_SETTINGS_STATE              "Specify game settings or type 'start' to begin a game with the current settings:\n"
+#define MSG_GAME_MODE                   "Game mode is set to %s\n"
+#define MSG_DIFFICULTY                  "Difficulty level is set to %s\n"
+#define MSG_USER_COLOR                  "User color is set to %s\n"
+#define MSG_DEFAULT_SETTINGS            "All settings reset to default\n"
+#define MSG_QUIT                        "Exiting...\n"
+#define MSG_START                       "Starting game…\n"
+#define MSG_MAKE_MOVE                   "Enter your move (%s player):\n"
+#define MSG_CHECKMATE                   "Checkmate! %s player wins the game\n"
+#define MSG_CHECK                       "Check: %s king is threatened\n"
+#define MSG_DRAW                        "The game ends in a draw\n"
+#define MSG_MOVE_DEFAULT                "<%c,%c>\n"
+#define MSG_MOVE_THREATENED             "<%c,%c>*\n"
+#define MSG_MOVE_CAPTURES               "<%c,%c>^\n"
+#define MSG_MOVE_BOTH                   "<%c,%c>*^\n"
+#define MSG_GAME_SAVED                  "Game saved to: %s\n"
+#define MSG_UNDO_MOVE                   "Undo move for %s player: <%c,%c> -> <%c,%c>\n"
+#define MSG_RESTART                     "Restarting...\n"
+#define MSG_AI_MOVE                     "Computer: move %s at <%c,%c> to <%c,%c>\n"
+
 #define ERROR_INVALID_COMMAND           "ERROR: invalid command\n"
 #define ERROR_WRONG_GAME_MODE           "Wrong game mode\n"
 #define ERROR_WRONG_DIFF_LEVEL          "Wrong difficulty level. The value should be between 1 to 5\n"
@@ -15,19 +36,21 @@
 #define ERROR_FILE_CANNOT_BE_CREATED    "File cannot be created or modified\n"
 #define ERROR_EMPTY_HISTORY             "Empty history, no move to undo\n"
 
-#define STRING_GAME_MODE        "game_mode"
-#define STRING_DIFFICULTY       "difficulty"
-#define STRING_USER_COLOR       "user_color"
-#define STRING_LOAD_GAME        "load"
-#define STRING_DEFAULT_SETTINGS "default"
-#define STRING_PRINT_SETTINGS   "print_settings"
-#define STRING_START            "start"
-#define STRING_MOVE             "move"
-#define STRING_GET_MOVES        "get_moves"
-#define STRING_SAVE             "save"
-#define STRING_UNDO             "undo"
-#define STRING_RESET            "reset"
-#define STRING_QUIT             "quit"
+#define IN_STRING_GAME_MODE             "game_mode"
+#define IN_STRING_DIFFICULTY            "difficulty"
+#define IN_STRING_USER_COLOR            "user_color"
+#define IN_STRING_LOAD_GAME             "load"
+#define IN_STRING_DEFAULT               "default"
+#define IN_STRING_PRINT                 "print_settings"
+#define IN_STRING_START                 "start"
+#define IN_STRING_MOVE                  "move"
+#define IN_STRING_GET_MOVES             "get_moves"
+#define IN_STRING_SAVE                  "save"
+#define IN_STRING_UNDO                  "undo"
+#define IN_STRING_RESET                 "reset"
+#define IN_STRING_QUIT                  "quit"
+
+#define INPUT_DELIMITERS                " \t\r\n"
 
 
 struct CLIEngine_t {
@@ -37,6 +60,7 @@ struct CLIEngine_t {
 CLIEngine* CLIEngine_Create() {
     CLIEngine *engine = malloc(sizeof(CLIEngine));
     if (!engine) return NULL;
+    printf(MSG_APP_INIT);
     return engine;
 }
 
@@ -45,20 +69,20 @@ void CLIEngine_Destroy(CLIEngine *engine) {
     free(engine);
 }
 
-GameCommandType strToCommandType(char *str) {
-    if (!strcmp(str, STRING_GAME_MODE)) return GAME_COMMAND_GAME_MODE;
-    if (!strcmp(str, STRING_DIFFICULTY)) return GAME_COMMAND_DIFFICULTY;
-    if (!strcmp(str, STRING_USER_COLOR)) return GAME_COMMAND_USER_COLOR;
-    if (!strcmp(str, STRING_LOAD_GAME)) return GAME_COMMAND_LOAD_GAME;
-    if (!strcmp(str, STRING_DEFAULT_SETTINGS)) return GAME_COMMAND_DEFAULT_SETTINGS;
-    if (!strcmp(str, STRING_PRINT_SETTINGS)) return GAME_COMMAND_PRINT_SETTINGS;
-    if (!strcmp(str, STRING_START)) return GAME_COMMAND_START;
-    if (!strcmp(str, STRING_MOVE)) return GAME_COMMAND_MOVE;
-    if (!strcmp(str, STRING_GET_MOVES)) return GAME_COMMAND_GET_MOVES;
-    if (!strcmp(str, STRING_SAVE)) return GAME_COMMAND_SAVE;
-    if (!strcmp(str, STRING_UNDO)) return GAME_COMMAND_UNDO;
-    if (!strcmp(str, STRING_RESET)) return GAME_COMMAND_RESET;
-    if (!strcmp(str, STRING_QUIT)) return GAME_COMMAND_QUIT;
+GameCommandType strToCommandType(const char *str) {
+    if (!strcmp(str, IN_STRING_GAME_MODE)) return GAME_COMMAND_GAME_MODE;
+    if (!strcmp(str, IN_STRING_DIFFICULTY)) return GAME_COMMAND_DIFFICULTY;
+    if (!strcmp(str, IN_STRING_USER_COLOR)) return GAME_COMMAND_USER_COLOR;
+    if (!strcmp(str, IN_STRING_LOAD_GAME)) return GAME_COMMAND_LOAD_GAME;
+    if (!strcmp(str, IN_STRING_DEFAULT)) return GAME_COMMAND_DEFAULT_SETTINGS;
+    if (!strcmp(str, IN_STRING_PRINT)) return GAME_COMMAND_PRINT_SETTINGS;
+    if (!strcmp(str, IN_STRING_START)) return GAME_COMMAND_START;
+    if (!strcmp(str, IN_STRING_MOVE)) return GAME_COMMAND_MOVE;
+    if (!strcmp(str, IN_STRING_GET_MOVES)) return GAME_COMMAND_GET_MOVES;
+    if (!strcmp(str, IN_STRING_SAVE)) return GAME_COMMAND_SAVE;
+    if (!strcmp(str, IN_STRING_UNDO)) return GAME_COMMAND_UNDO;
+    if (!strcmp(str, IN_STRING_RESET)) return GAME_COMMAND_RESET;
+    if (!strcmp(str, IN_STRING_QUIT)) return GAME_COMMAND_QUIT;
     return GAME_COMMAND_INVALID;
 }
 
@@ -103,19 +127,19 @@ int isInt(const char* str) {
 GameCommand CLIEngine_ProcessInput(CLIEngine *engine) {
     GameCommand command = { .type = GAME_COMMAND_INVALID };
     if (!engine) return command;
-    // TODO: Parse CLI strings to GameCommand;
+    printf(MSG_SETTINGS_STATE);
     char* input = fgets(engine->input, GAME_COMMAND_MAX_LINE_LENGTH, stdin);
     if (!input) return command;
     unsigned int lastCharIndex = strlen(engine->input) - 1;
     if (engine->input[lastCharIndex] == '\n') {
         engine->input[lastCharIndex] = '\0';  // trim possible EOL char
     }
-    char *token = strtok(engine->input, " \t\r\n");  // get first token
+    char *token = strtok(engine->input, INPUT_DELIMITERS);  // get first token
     command.type = strToCommandType(token);
     switch (getCommandArgsType(command.type)) {
         case COMMAND_ARGS_INTS:
             for (int i = 0, argIndex = 0; i < GAME_COMMAND_ARGS_CAPACITY; i++) {
-                token = strtok(NULL, " \t\r\n");
+                token = strtok(NULL, INPUT_DELIMITERS);
                 if (!token) break;  // end of args
                 if (isInt(token)) {  // should be 1-8
                     command.args[argIndex++] = atoi(token) - 1;
@@ -125,10 +149,9 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *engine) {
             }
             break;
         case COMMAND_ARGS_STRING:
-            token = strtok(NULL, " \t\r\n");  // should be path string
+            token = strtok(NULL, INPUT_DELIMITERS);  // should be path string
             strcpy(command.path, token);
-            // TODO: consider check for more args and alert somehow
-            break;
+            break;  // TODO: consider check for more args and alert somehow
         case COMMAND_ARGS_NONE:
             break;
     }
