@@ -10,11 +10,11 @@ typedef struct FSAStack_t FSAStack;
 /**
  * Create new FSAStack instance.
  * @param   capacity    -   max capacity for current instance
- * @param   elementSize -   element size of each data to be added
+ * @param   dataSize    -   data size of each data to be added
  * @return  NULL if malloc failed
  *          FSAStack* instance otherwise
  */
-FSAStack* FSAStack_Create(unsigned int capacity, size_t elementSize);
+FSAStack* FSAStack_Create(unsigned int capacity, size_t dataSize);
 
 /**
  * Free all resources for a given FSAStack instance.
@@ -40,6 +40,7 @@ int FSAStack_IsEmpty(const FSAStack* stack);
 
 /**
  * Push a given element to a given FSAStack instance.
+ * Make a copy of the given element - no transfer of ownership.
  * Override bottom-most element if the stack is full.
  * Does nothing if stack == NULL.
  * @param   stack       -   FSAStack instance
@@ -49,6 +50,7 @@ void FSAStack_Push(FSAStack* stack, void *data);
 
 /**
  * Pop the top-most element of the fiven FSAStack instance.
+ * No transfer of ownership - returned pointer should be memcpy().
  * @param   stack       -   FSAStack instance
  * @return  NULL if stack == NULL or stack is empty
  *          top-most element otherwise

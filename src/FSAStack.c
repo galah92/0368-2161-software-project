@@ -5,22 +5,22 @@
 
 
 struct FSAStack_t {
-    BYTE *elements;
-    size_t elementSize;
+    BYTE *array;
+    size_t dataSize;
 	unsigned int capacity;
-    unsigned int startIndex;
+    unsigned int start;
     unsigned int size;
 };
 
 
-FSAStack* FSAStack_Create(unsigned int capacity, size_t elementSize) {
+FSAStack* FSAStack_Create(unsigned int capacity, size_t dataSize) {
     FSAStack *stack = malloc(sizeof(FSAStack));
     if (!stack) return NULL;
-    stack->elementSize = elementSize;
+    stack->dataSize = dataSize;
     stack->capacity = capacity;
-    stack->startIndex = stack->size = 0;
-    stack->elements = malloc(elementSize * capacity);
-    if (!stack->elements) {
+    stack->start = stack->size = 0;
+    stack->array = malloc(dataSize * capacity);
+    if (!stack->array) {
         FSAStack_Destroy(stack);
         return NULL;
     }
@@ -29,7 +29,7 @@ FSAStack* FSAStack_Create(unsigned int capacity, size_t elementSize) {
 
 void FSAStack_Destroy(FSAStack* stack) {
     if (!stack) return;
-    if (stack->elements) free(stack->elements);
+    if (stack->array) free(stack->array);
     free(stack);
 }
 
@@ -45,10 +45,10 @@ int FSAStack_IsEmpty(const FSAStack* stack) {
 
 void FSAStack_Push(FSAStack* stack, void *data) {
     if (!stack) return;
-    unsigned int offset = (stack->startIndex + stack->size) % stack->capacity;
-    memcpy(stack->elements + offset, data, stack->elementSize);
+    unsigned int offset = (stack->start + stack->size) % stack->capacity;
+    memcpy(stack->array + offset * stack->dataSize, data, stack->dataSize);
     if (FSAStack_IsFull(stack)) {
-        stack->startIndex = (stack->startIndex + 1) % stack->capacity;
+        stack->start = (stack->start + 1) % stack->capacity;
     } else {
         stack->size++;
     }
@@ -57,7 +57,6 @@ void FSAStack_Push(FSAStack* stack, void *data) {
 void* FSAStack_Pop(FSAStack* stack) {
     if (!stack || FSAStack_IsEmpty(stack)) return NULL;
     stack->size--;
-    unsigned int offset = (stack->startIndex + stack->size) % stack->capacity;
-    return stack->elements + offset;
-    // return stack->elements[(stack->startIndex + stack->size) % stack->capacity];
+    unsigned int offset = (stack->start + stack->size) % stack->capacity;
+    return stack->array + offset * stack->dataSize;
 }
