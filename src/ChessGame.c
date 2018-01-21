@@ -17,7 +17,7 @@ void ChessGame_Destroy(ChessGame *game) {
     free(game);
 }
 
-CHESS_GAME_RESULT ChessGame_SetDefaultSettings(ChessGame *game) {
+ChessGameResult ChessGame_SetDefaultSettings(ChessGame *game) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     game->settings.mode = CHESS_GAME_MODE_1_PLAYER;
     game->settings.difficulty = 2;
@@ -25,25 +25,25 @@ CHESS_GAME_RESULT ChessGame_SetDefaultSettings(ChessGame *game) {
     return CHESS_GAME_SUCCESS;
 }
 
-CHESS_GAME_RESULT ChessGame_SetGameMode(ChessGame *game, int mode) {
+ChessGameResult ChessGame_SetGameMode(ChessGame *game, int mode) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     game->settings.mode = mode;
     return CHESS_GAME_SUCCESS;
 }
 
-CHESS_GAME_RESULT ChessGame_SetDifficulty(ChessGame *game, int difficulty) {
+ChessGameResult ChessGame_SetDifficulty(ChessGame *game, int difficulty) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     game->settings.difficulty = difficulty;
     return CHESS_GAME_SUCCESS;
 }
 
-CHESS_GAME_RESULT ChessGame_SetUserColor(ChessGame *game, int userColor) {
+ChessGameResult ChessGame_SetUserColor(ChessGame *game, int userColor) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     game->settings.userColor = userColor;
     return CHESS_GAME_SUCCESS;
 }
 
-CHESS_GAME_RESULT ChessGame_PrintSettings(ChessGame *game) {
+ChessGameResult ChessGame_PrintSettings(ChessGame *game) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     if (game->settings.mode == CHESS_GAME_MODE_2_PLAYER) {
         printf(SETTINGS_STRING_2_PLAYER);
@@ -55,7 +55,7 @@ CHESS_GAME_RESULT ChessGame_PrintSettings(ChessGame *game) {
     return CHESS_GAME_SUCCESS;
 }
 
-CHESS_GAME_RESULT ChessGame_GetSettingsString(ChessGame *game, char *outString) {
+ChessGameResult ChessGame_GetSettingsString(ChessGame *game, char *outString) {
         if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     if (game->settings.mode == CHESS_GAME_MODE_2_PLAYER) {
         sprintf(outString, SETTINGS_STRING_2_PLAYER);

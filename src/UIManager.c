@@ -8,7 +8,7 @@ struct UIManager_t {
     // GUIEngine *guiEngine;
 };
 
-UIManager* UIManager_Create(int argc, char *argv[]) {
+UIManager* UIManager_Create(int argc, const char *argv[]) {
     UIManager *manager = malloc(sizeof(UIManager));
     if (!manager) return NULL;
     if (argc > 1 && strcmp(argv[1], "-g") == 0) {
@@ -37,7 +37,7 @@ UserCommand* UIManager_ProcessInput(UIManager *manager) {
     }
 }
 
-void UIManager_Render(UIManager *manager, GameState *gameState) {
+void UIManager_Render(UIManager *manager, const GameState *gameState) {
     if (!manager) return;
     CLIEngine_Render(manager->cliEngine, gameState);
     if (manager->type == GUI_ENGINE) {

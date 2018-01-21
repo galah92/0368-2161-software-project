@@ -5,7 +5,7 @@
 #define USER_COMMAND_MAX_PARAMS_NUM 4
 
 
-typedef enum {
+typedef enum UserCommandType_t {
     // settings-only commands
 	USER_COMMAND_GAME_MODE,
 	USER_COMMAND_DIFFICULTY,
@@ -23,11 +23,11 @@ typedef enum {
     // shared commands
     USER_COMMAND_QUIT,
     USER_COMMAND_INVALID,
-} USER_COMMAND_TYPE;
+} UserCommandType;
 
 
-typedef struct {
-	USER_COMMAND_TYPE type;
+typedef struct UserCommand_t {
+	UserCommandType type;
 	int params[USER_COMMAND_MAX_PARAMS_NUM];
     char path[USER_COMMAND_MAX_LINE_LENGTH];
 } UserCommand;

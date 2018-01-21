@@ -5,7 +5,7 @@
 #include "UserCommand.h"
 
 
-typedef struct {
+typedef struct CLIEngine_t {
     int _x;  // TODO: consider removing, as there's no need for a struct here (no state)
 } CLIEngine;
 
@@ -15,7 +15,7 @@ void CLIEngine_Destroy(CLIEngine *engine);
 
 UserCommand* CLIEngine_ProcessInput(CLIEngine *engine);
 
-void CLIEngine_Render(CLIEngine *engine, GameState *gameState);
+void CLIEngine_Render(CLIEngine *engine, const GameState *gameState);
 
 
 #endif

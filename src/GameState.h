@@ -4,7 +4,7 @@
 #include "ChessGame.h"
 
 
-typedef enum {
+typedef enum GameErrorType_t {
     ERROR_INVALID_COMMAND,
     ERROR_WRONG_GAME_MODE,
     ERROR_WRONG_DIFF_LEVEL,
@@ -20,14 +20,23 @@ typedef enum {
     ERROR_CUSTOME,
 } GameErrorType;
 
-typedef struct {
+typedef struct GameError_t {
     GameErrorType errorType;
     char *description;
 } GameError;
 
-typedef struct {
+typedef enum GameStatestate_t {
+    SETTINGS,
+    RUNNING,
+    PLAYER1_WON,
+    PLAYER2_WON,
+    TIE,
+    ERROR,
+} GameStateState;
+
+typedef struct GameState_t {
     ChessGame *game;
-    enum { SETTINGS, RUNNING, PLAYER1_WON, PLAYER2_WON, TIE, ERROR } state;
+    GameStateState state;
     GameError error;
 } GameState;
 

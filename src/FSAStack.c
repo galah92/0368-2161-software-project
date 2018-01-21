@@ -1,8 +1,11 @@
+#include <string.h>
 #include "FSAStack.h"
+
+#define BYTE unsigned char
 
 
 struct FSAStack_t {
-    void **elements;
+    BYTE *elements;
     size_t elementSize;
 	unsigned int capacity;
     unsigned int startIndex;
@@ -42,7 +45,8 @@ int FSAStack_IsEmpty(const FSAStack* stack) {
 
 void FSAStack_Push(FSAStack* stack, void *data) {
     if (!stack) return;
-    stack->elements[(stack->startIndex + stack->size) % stack->capacity] = data;
+    unsigned int offset = (stack->startIndex + stack->size) % stack->capacity;
+    memcpy(stack->elements + offset, data, stack->elementSize);
     if (FSAStack_IsFull(stack)) {
         stack->startIndex = (stack->startIndex + 1) % stack->capacity;
     } else {
@@ -53,5 +57,7 @@ void FSAStack_Push(FSAStack* stack, void *data) {
 void* FSAStack_Pop(FSAStack* stack) {
     if (!stack || FSAStack_IsEmpty(stack)) return NULL;
     stack->size--;
-    return stack->elements[(stack->startIndex + stack->size) % stack->capacity];
+    unsigned int offset = (stack->startIndex + stack->size) % stack->capacity;
+    return stack->elements + offset;
+    // return stack->elements[(stack->startIndex + stack->size) % stack->capacity];
 }

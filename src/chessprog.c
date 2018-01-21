@@ -1,16 +1,25 @@
 #include "UIManager.h"
+// #include "GameManager.h"
+// #include "GameCommand"
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, const char *argv[]) {
     UIManager *uiManager = UIManager_Create(argc, argv);
     // GameManager *gameManager = GameManager_Create();
     // UserCommand *command;
-    // while (1) {
-    //     command = UIManager_ProcessInput(uiManager);
+    // while (command->type != USER_COMMAND_QUIT) {
+    //     switch (gameManager->currentPlayer->type) {
+    //         case PLAYER_TYPE_HUMAN:
+    //             command = UIManager_ProcessInput(uiManager);
+    //             break;
+    //         case PLAYER_TYPE_AI:
+    //             command = AIEngine_GetMoveCommand(gameManager->game);
+    //             break;
+    //     }
     //     GameManager_ProcessCommand(gameManager, command);
     //     UIManager_Render(uiManager, gameManager->gameState);
     // }
-    UIManager_Destroy(uiManager);
     // GameManager_Destroy(gameManager);
+    UIManager_Destroy(uiManager);
     return 0;
 }

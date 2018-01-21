@@ -34,10 +34,10 @@ UserCommand* CLIEngine_ProcessInput(CLIEngine *engine) {
     return command;
 }
 
-void CLIEngine_Render(CLIEngine *engine, GameState *state) {
+void CLIEngine_Render(CLIEngine *engine, const GameState *state) {
     // TODO: All CLI printing should go here basically
     if (!state) return;
-    printf("CLIEngine_Render:\t%d\n", engine->x);
+    printf("CLIEngine_Render:\t%d\n", engine->_x);
     if (state->state == ERROR) {
         if (state->error.errorType == ERROR_CUSTOME) {
             printf("%s", state->error.description);
