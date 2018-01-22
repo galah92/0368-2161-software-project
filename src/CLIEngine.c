@@ -23,18 +23,18 @@
 #define MSG_RESTART                     "Restarting...\n"
 #define MSG_AI_MOVE                     "Computer: move %s at <%c,%c> to <%c,%c>\n"
 
-#define ERROR_INVALID_COMMAND           "ERROR: invalid command\n"
-#define ERROR_WRONG_GAME_MODE           "Wrong game mode\n"
-#define ERROR_WRONG_DIFF_LEVEL          "Wrong difficulty level. The value should be between 1 to 5\n"
-#define ERROR_WRONG_USER_COLOR          "Wrong user color. The value should be 0 or 1\n"
-#define ERROR_FILE_NOT_EXIST            "ERROR: File doesn’t exist or cannot be opened\n"
-#define ERROR_INVALID_POSITION          "Invalid position on the board\n"
-#define ERROR_POSITION_EMPTY            "The specified position does not contain your piece\n"
-#define ERROR_ILLEGAL_MOVE              "Illegal move\n"
-#define ERROR_ILLEGAL_MOVE_KING_IS_T    "Illegal move: king is still threatened\n"
-#define ERROR_ILLEGAL_MOVE_KING_WILL_T  "Ilegal move: king will be threatened\n"
-#define ERROR_FILE_CANNOT_BE_CREATED    "File cannot be created or modified\n"
-#define ERROR_EMPTY_HISTORY             "Empty history, no move to undo\n"
+#define MSG_ERR_INVALID_COMMAND             "ERROR: invalid command\n"
+#define MSG_ERR_WRONG_GAME_MODE             "Wrong game mode\n"
+#define MSG_ERR_WRONG_DIFF_LEVEL            "Wrong difficulty level. The value should be between 1 to 5\n"
+#define MSG_ERR_WRONG_USER_COLOR            "Wrong user color. The value should be 0 or 1\n"
+#define MSG_ERR_FILE_NOT_EXIST              "ERROR: File doesn’t exist or cannot be opened\n"
+#define MSG_ERR_INVALID_POSITION            "Invalid position on the board\n"
+#define MSG_ERR_POSITION_EMPTY              "The specified position does not contain your piece\n"
+#define MSG_ERR_ILLEGAL_MOVE                "Illegal move\n"
+#define MSG_ERR_ILLEGAL_MOVE_KING_IS_T      "Illegal move: king is still threatened\n"
+#define MSG_ERR_ILLEGAL_MOVE_KING_WILL_T    "Ilegal move: king will be threatened\n"
+#define MSG_ERR_FILE_CANNOT_BE_CREATED      "File cannot be created or modified\n"
+#define MSG_ERR_EMPTY_HISTORY               "Empty history, no move to undo\n"
 
 #define IN_STRING_GAME_MODE             "game_mode"
 #define IN_STRING_DIFFICULTY            "difficulty"
@@ -71,19 +71,19 @@ void CLIEngine_Destroy(CLIEngine *this) {
 }
 
 GameCommandType strToCommandType(const char *str) {
-    if (!strcmp(str, IN_STRING_GAME_MODE)) return GAME_COMMAND_GAME_MODE;
+    if (!strcmp(str, IN_STRING_GAME_MODE))  return GAME_COMMAND_GAME_MODE;
     if (!strcmp(str, IN_STRING_DIFFICULTY)) return GAME_COMMAND_DIFFICULTY;
     if (!strcmp(str, IN_STRING_USER_COLOR)) return GAME_COMMAND_USER_COLOR;
-    if (!strcmp(str, IN_STRING_LOAD_GAME)) return GAME_COMMAND_LOAD_GAME;
-    if (!strcmp(str, IN_STRING_DEFAULT)) return GAME_COMMAND_DEFAULT_SETTINGS;
-    if (!strcmp(str, IN_STRING_PRINT)) return GAME_COMMAND_PRINT_SETTINGS;
-    if (!strcmp(str, IN_STRING_START)) return GAME_COMMAND_START;
-    if (!strcmp(str, IN_STRING_MOVE)) return GAME_COMMAND_MOVE;
-    if (!strcmp(str, IN_STRING_GET_MOVES)) return GAME_COMMAND_GET_MOVES;
-    if (!strcmp(str, IN_STRING_SAVE)) return GAME_COMMAND_SAVE;
-    if (!strcmp(str, IN_STRING_UNDO)) return GAME_COMMAND_UNDO;
-    if (!strcmp(str, IN_STRING_RESET)) return GAME_COMMAND_RESET;
-    if (!strcmp(str, IN_STRING_QUIT)) return GAME_COMMAND_QUIT;
+    if (!strcmp(str, IN_STRING_LOAD_GAME))  return GAME_COMMAND_LOAD_GAME;
+    if (!strcmp(str, IN_STRING_DEFAULT))    return GAME_COMMAND_DEFAULT_SETTINGS;
+    if (!strcmp(str, IN_STRING_PRINT))      return GAME_COMMAND_PRINT_SETTINGS;
+    if (!strcmp(str, IN_STRING_START))      return GAME_COMMAND_START;
+    if (!strcmp(str, IN_STRING_MOVE))       return GAME_COMMAND_MOVE;
+    if (!strcmp(str, IN_STRING_GET_MOVES))  return GAME_COMMAND_GET_MOVES;
+    if (!strcmp(str, IN_STRING_SAVE))       return GAME_COMMAND_SAVE;
+    if (!strcmp(str, IN_STRING_UNDO))       return GAME_COMMAND_UNDO;
+    if (!strcmp(str, IN_STRING_RESET))      return GAME_COMMAND_RESET;
+    if (!strcmp(str, IN_STRING_QUIT))       return GAME_COMMAND_QUIT;
     return GAME_COMMAND_INVALID;
 }
 
@@ -96,23 +96,26 @@ typedef enum GameCommandArgsType_t {
 int getCommandArgsType(const GameCommandType commandType) {
     switch (commandType) {
         // COMMAND_ARGS_INTS
-        case GAME_COMMAND_GAME_MODE: return COMMAND_ARGS_INTS;
-        case GAME_COMMAND_DIFFICULTY: return COMMAND_ARGS_INTS;
-        case GAME_COMMAND_USER_COLOR: return COMMAND_ARGS_INTS;
-        case GAME_COMMAND_MOVE: return COMMAND_ARGS_INTS;
-        case GAME_COMMAND_GET_MOVES: return COMMAND_ARGS_INTS;
+        case GAME_COMMAND_GAME_MODE:
+        case GAME_COMMAND_DIFFICULTY:
+        case GAME_COMMAND_USER_COLOR:
+        case GAME_COMMAND_MOVE:
+        case GAME_COMMAND_GET_MOVES:
+            return COMMAND_ARGS_INTS;
         // COMMAND_ARGS_STRING
-        case GAME_COMMAND_SAVE: return COMMAND_ARGS_STRING;
-        case GAME_COMMAND_LOAD_GAME: return COMMAND_ARGS_STRING;
+        case GAME_COMMAND_SAVE:
+        case GAME_COMMAND_LOAD_GAME:
+            return COMMAND_ARGS_STRING;
         // COMMAND_ARGS_NONE
-        case GAME_COMMAND_DEFAULT_SETTINGS: return COMMAND_ARGS_NONE;
-        case GAME_COMMAND_PRINT_SETTINGS: return COMMAND_ARGS_NONE;
-        case GAME_COMMAND_START: return COMMAND_ARGS_NONE;
-        case GAME_COMMAND_UNDO: return COMMAND_ARGS_NONE;
-        case GAME_COMMAND_RESET: return COMMAND_ARGS_NONE;
-        case GAME_COMMAND_QUIT: return COMMAND_ARGS_NONE;
-        case GAME_COMMAND_INVALID: return COMMAND_ARGS_NONE;
-        default: return COMMAND_ARGS_NONE;
+        case GAME_COMMAND_DEFAULT_SETTINGS:
+        case GAME_COMMAND_PRINT_SETTINGS:
+        case GAME_COMMAND_START:
+        case GAME_COMMAND_UNDO:
+        case GAME_COMMAND_RESET:
+        case GAME_COMMAND_QUIT:
+        case GAME_COMMAND_INVALID:
+        default:
+            return COMMAND_ARGS_NONE;
     }
 }
 
@@ -162,12 +165,39 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
 void CLIEngine_Render(CLIEngine *this, const GameState *state) {
     // TODO: All CLI printing should go here basically
     if (!state) return;
-    printf("CLIEngine_Render:\t%s\n", this->input);
-    if (state->state == ERROR) {
-        if (state->error.errorType == ERROR_CUSTOME) {
-            printf("%s", state->error.description);
-        } else {
-            
-        }
-    }
+    printf("%s", this->input);
+    // switch (something) {
+    //     // on success
+    //     case GAME_MODE_SUCCESS:     printf(MSG_GAME_MODE, "1-player");                      break;
+    //     case DIFFICULTY_SUCCESS:    printf(MSG_DIFFICULTY, "easy");                         break;
+    //     case USER_COLOR_SUCCESS:    printf(MSG_USER_COLOR, "white");                        break;
+    //     case DEFAULTS_SUCCESS:      printf(MSG_DEFAULT_SETTINGS);                           break;
+    //     case QUIT:                  printf(MSG_QUIT);                                       break;
+    //     case STARTED:               printf(MSG_START);                                      break;
+    //     case RESTARTED:             printf(MSG_RESTART);                                    break;
+    //     case CHECKMATE_DETECTED:    printf(MSG_CHECKMATE, "white");                         break;
+    //     case CHECK_DETECT:          printf(MSG_CHECK, "white");                             break;
+    //     case DRAW_DETECT:           printf(MSG_DRAW);                                       break;
+    //     case MOVE_DEFAULT:          printf(MSG_MOVE_DEFAULT, 0, 0 + 'A');                   break;
+    //     case MOVE_THREATENED:       printf(MSG_MOVE_THREATENED, 0, 0 + 'A');                break;
+    //     case MOVE_CAPTURES:         printf(MSG_MOVE_CAPTURES, 0, 0 + 'A');                  break;
+    //     case MOVE_BOTH:             printf(MSG_MOVE_BOTH, 0, 0 + 'A');                      break;
+    //     case GAME_SAVED:            printf(MSG_GAME_SAVED, "c:/temp/...");                  break;
+    //     case MOVE_UNDONE:           printf(MSG_UNDO_MOVE, "white", 0, 0 + 'A', 0, 0 + 'A'); break;
+    //     case AI_MOVE:               printf(MSG_AI_MOVE, "white", 0, 0 + 'A', 0, 0 + 'A');   break;
+    //     // on errors
+    //     case ERROR_INVALID_COMMAND:             printf(MSG_ERR_INVALID_COMMAND);            break;
+    //     case ERROR_INVALID_GAME_MODE:           printf(MSG_ERR_WRONG_GAME_MODE);            break;
+    //     case ERROR_INVALID_DIFF_LEVEL:          printf(MSG_ERR_WRONG_DIFF_LEVEL);           break;
+    //     case ERROR_INVALID_USER_COLOR:          printf(MSG_ERR_WRONG_USER_COLOR);           break;
+    //     case ERROR_INVALID_FILE:                printf(MSG_ERR_FILE_NOT_EXIST);             break;
+    //     case ERROR_INVALID_POSITION:            printf(MSG_ERR_INVALID_POSITION);           break;
+    //     case ERROR_EMPTY_POSITION:              printf(MSG_ERR_POSITION_EMPTY);             break;
+    //     case ERROR_INVALID_MOVE:                printf(MSG_ERR_ILLEGAL_MOVE);               break;
+    //     case ERROR_INVALID_MOVE_KING_IS_T:      printf(MSG_ERR_ILLEGAL_MOVE_KING_IS_T);     break;
+    //     case ERROR_INVALID_MOVE_KING_WILL_T:    printf(MSG_ERR_ILLEGAL_MOVE_KING_WILL_T);   break;
+    //     case ERROR_FILE_ALLOC:                  printf(MSG_ERR_FILE_CANNOT_BE_CREATED);     break;
+    //     case ERROR_EMPTY_HISTORY:               printf(MSG_ERR_EMPTY_HISTORY);              break;
+    // }
+
 }
