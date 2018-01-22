@@ -53,20 +53,21 @@
 #define INPUT_DELIMITERS                " \t\r\n"
 
 
-struct CLIEngine_t {
+struct CLIEngine {
     char input[GAME_COMMAND_MAX_LINE_LENGTH];
 };
 
+
 CLIEngine* CLIEngine_Create() {
-    CLIEngine *engine = malloc(sizeof(CLIEngine));
-    if (!engine) return NULL;
+    CLIEngine *this = malloc(sizeof(CLIEngine));
+    if (!this) return NULL;
     printf(MSG_APP_INIT);
-    return engine;
+    return this;
 }
 
-void CLIEngine_Destroy(CLIEngine *engine) {
-    if (!engine) return;
-    free(engine);
+void CLIEngine_Destroy(CLIEngine *this) {
+    if (!this) return;
+    free(this);
 }
 
 GameCommandType strToCommandType(const char *str) {
@@ -124,17 +125,17 @@ int isInt(const char* str) {
 	return 1;
 }
 
-GameCommand CLIEngine_ProcessInput(CLIEngine *engine) {
+GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
     GameCommand command = { .type = GAME_COMMAND_INVALID };
-    if (!engine) return command;
+    if (!this) return command;
     printf(MSG_SETTINGS_STATE);
-    char* input = fgets(engine->input, GAME_COMMAND_MAX_LINE_LENGTH, stdin);
+    char* input = fgets(this->input, GAME_COMMAND_MAX_LINE_LENGTH, stdin);
     if (!input) return command;
-    unsigned int lastCharIndex = strlen(engine->input) - 1;
-    if (engine->input[lastCharIndex] == '\n') {
-        engine->input[lastCharIndex] = '\0';  // trim possible EOL char
+    unsigned int lastCharIndex = strlen(this->input) - 1;
+    if (this->input[lastCharIndex] == '\n') {
+        this->input[lastCharIndex] = '\0';  // trim possible EOL char
     }
-    char *token = strtok(engine->input, INPUT_DELIMITERS);  // get first token
+    char *token = strtok(this->input, INPUT_DELIMITERS);  // get first token
     command.type = strToCommandType(token);
     switch (getCommandArgsType(command.type)) {
         case COMMAND_ARGS_INTS:
@@ -158,10 +159,10 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *engine) {
     return command;
 }
 
-void CLIEngine_Render(CLIEngine *engine, const GameState *state) {
+void CLIEngine_Render(CLIEngine *this, const GameState *state) {
     // TODO: All CLI printing should go here basically
     if (!state) return;
-    printf("CLIEngine_Render:\t%s\n", engine->input);
+    printf("CLIEngine_Render:\t%s\n", this->input);
     if (state->state == ERROR) {
         if (state->error.errorType == ERROR_CUSTOME) {
             printf("%s", state->error.description);

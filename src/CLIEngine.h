@@ -5,7 +5,7 @@
 #include "GameCommand.h"
 
 
-typedef struct CLIEngine_t CLIEngine;
+typedef struct CLIEngine CLIEngine;
 
 /**
  * Create new CLIEngine instance.

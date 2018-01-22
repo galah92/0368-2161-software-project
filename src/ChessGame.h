@@ -10,7 +10,7 @@
 #define CHESS_GAME_BOARD_SIZE           8
 
 
-typedef enum ChessGameResult_t {
+typedef enum ChessGameResult {
     CHESS_GAME_SUCCESS,
     CHESS_GAME_INVALID_ARGUMENT,
     CHESS_GAME_INVALID_POSITION,
@@ -20,20 +20,20 @@ typedef enum ChessGameResult_t {
     CHESS_GAME_KING_WILL_BE_THREATENED,
 } ChessGameResult;
 
-typedef struct ChessGameSettings_t {
+typedef struct ChessGameSettings {
     int mode;
     int difficulty;
     int userColor;
 } ChessGameSettings;
 
-typedef enum ChessGameStatus_t {
+typedef enum ChessGameStatus {
     CHS_RUNNING,
     CHS_PLAYER1_WINNER,
     CHS_PLAYER2_WINNER,
     CHS_TIE,
 } ChessGameStatus;
 
-typedef struct ChessGame_t {
+typedef struct ChessGame {
     ChessGameStatus status;
     ChessGameSettings settings;
     char board[CHESS_GAME_BOARD_SIZE][CHESS_GAME_BOARD_SIZE];
@@ -41,12 +41,12 @@ typedef struct ChessGame_t {
     FSAStack *history;
 } ChessGame;
 
-typedef struct ChessBoardPos_t {
+typedef struct ChessBoardPos {
     unsigned char x;
     unsigned char y;
 } ChessBoardPos;
 
-typedef struct ChessMove_t {
+typedef struct ChessMove {
     ChessBoardPos from;
     ChessBoardPos to;
 } ChessMove;

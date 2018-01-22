@@ -2,46 +2,55 @@
 #include "UIManager.h"
 
 
-struct UIManager_t {
-    enum { CLI_ENGINE, GUI_ENGINE } type;
+typedef enum UIType {
+    UI_TYPE_CLI,
+    UI_TYPE_GUI,
+} UIType;
+
+struct UIManager {
+    UIType type;
     CLIEngine *cliEngine;
     // GUIEngine *guiEngine;
 };
 
 UIManager* UIManager_Create(int argc, const char *argv[]) {
-    UIManager *manager = malloc(sizeof(UIManager));
-    if (!manager) return NULL;
+    UIManager *this = malloc(sizeof(UIManager));
+    if (!this) return NULL;
     if (argc > 1 && strcmp(argv[1], "-g") == 0) {
-        manager->type = GUI_ENGINE;
-        // manager->guiEngine = GUIEngine_Create();
-    }
-    manager->cliEngine = CLIEngine_Create();
-    if (!manager->cliEngine) UIManager_Destroy(manager);
-    return manager;
-}
-
-void UIManager_Destroy(UIManager *manager) {
-    if (!manager) return;
-    CLIEngine_Destroy(manager->cliEngine);
-    // GUIEngine_Destroy(manager->guiEngine);
-    free(manager);
-}
-
-GameCommand UIManager_ProcessInput(UIManager *manager) {
-    GameCommand command = { .type = GAME_COMMAND_INVALID };
-    if (!manager) return command;
-    if (manager->type == GUI_ENGINE) {
-        // return GUIEngine_ProcessInput(manager->guiEngine);
-        return CLIEngine_ProcessInput(manager->cliEngine);
+        this->type = UI_TYPE_GUI;
+        // this->guiEngine = GUIEngine_Create();
     } else {
-        return CLIEngine_ProcessInput(manager->cliEngine);
+        this->type = UI_TYPE_CLI;
+    }
+    this->cliEngine = CLIEngine_Create();  // we need CLI anyway
+    if (!this->cliEngine) UIManager_Destroy(this);
+    return this;
+}
+
+void UIManager_Destroy(UIManager *this) {
+    if (!this) return;
+    CLIEngine_Destroy(this->cliEngine);
+    // GUIEngine_Destroy(this->guiEngine);
+    free(this);
+}
+
+GameCommand UIManager_ProcessInput(UIManager *this) {
+    GameCommand command = { .type = GAME_COMMAND_INVALID };
+    if (!this) return command;
+    switch (this->type) {
+        case UI_TYPE_GUI:    
+            // return GUIEngine_ProcessInput(this->guiEngine);
+            return CLIEngine_ProcessInput(this->cliEngine);
+        case UI_TYPE_CLI:
+        default:
+            return CLIEngine_ProcessInput(this->cliEngine);
     }
 }
 
-void UIManager_Render(UIManager *manager, const GameState *gameState) {
-    if (!manager) return;
-    CLIEngine_Render(manager->cliEngine, gameState);
-    if (manager->type == GUI_ENGINE) {
-        // GUIEngine_Render(manager->guiEngine, gameState);
+void UIManager_Render(UIManager *this, const GameState *gameState) {
+    if (!this) return;
+    if (this->type == UI_TYPE_GUI) {
+        // GUIEngine_Render(this->guiEngine, gameState);
     }
+    CLIEngine_Render(this->cliEngine, gameState);
 }

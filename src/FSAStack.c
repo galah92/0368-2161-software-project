@@ -4,7 +4,7 @@
 #define BYTE unsigned char
 
 
-struct FSAStack_t {
+struct FSAStack {
     BYTE *array;
     size_t dataSize;
 	unsigned int capacity;
@@ -14,49 +14,49 @@ struct FSAStack_t {
 
 
 FSAStack* FSAStack_Create(unsigned int capacity, size_t dataSize) {
-    FSAStack *stack = malloc(sizeof(FSAStack));
-    if (!stack) return NULL;
-    stack->dataSize = dataSize;
-    stack->capacity = capacity;
-    stack->start = stack->size = 0;
-    stack->array = malloc(dataSize * capacity);
-    if (!stack->array) {
-        FSAStack_Destroy(stack);
+    FSAStack *this = malloc(sizeof(FSAStack));
+    if (!this) return NULL;
+    this->dataSize = dataSize;
+    this->capacity = capacity;
+    this->start = this->size = 0;
+    this->array = malloc(dataSize * capacity);
+    if (!this->array) {
+        FSAStack_Destroy(this);
         return NULL;
     }
-    return stack;
+    return this;
 }
 
-void FSAStack_Destroy(FSAStack* stack) {
-    if (!stack) return;
-    if (stack->array) free(stack->array);
-    free(stack);
+void FSAStack_Destroy(FSAStack* this) {
+    if (!this) return;
+    if (this->array) free(this->array);
+    free(this);
 }
 
-int FSAStack_IsFull(const FSAStack* stack) {
-    if (!stack) return 0;
-    return stack->size == stack->capacity;
+int FSAStack_IsFull(const FSAStack* this) {
+    if (!this) return 0;
+    return this->size == this->capacity;
 }
 
-int FSAStack_IsEmpty(const FSAStack* stack) {
-    if (!stack) return 0;
-    return stack->size == 0;
+int FSAStack_IsEmpty(const FSAStack* this) {
+    if (!this) return 0;
+    return this->size == 0;
 }
 
-void FSAStack_Push(FSAStack* stack, void *data) {
-    if (!stack) return;
-    unsigned int offset = (stack->start + stack->size) % stack->capacity;
-    memcpy(stack->array + offset * stack->dataSize, data, stack->dataSize);
-    if (FSAStack_IsFull(stack)) {
-        stack->start = (stack->start + 1) % stack->capacity;
+void FSAStack_Push(FSAStack* this, void *data) {
+    if (!this) return;
+    unsigned int offset = (this->start + this->size) % this->capacity;
+    memcpy(this->array + offset * this->dataSize, data, this->dataSize);
+    if (FSAStack_IsFull(this)) {
+        this->start = (this->start + 1) % this->capacity;
     } else {
-        stack->size++;
+        this->size++;
     }
 }
 
-void* FSAStack_Pop(FSAStack* stack) {
-    if (!stack || FSAStack_IsEmpty(stack)) return NULL;
-    stack->size--;
-    unsigned int offset = (stack->start + stack->size) % stack->capacity;
-    return stack->array + offset * stack->dataSize;
+void* FSAStack_Pop(FSAStack* this) {
+    if (!this || FSAStack_IsEmpty(this)) return NULL;
+    this->size--;
+    unsigned int offset = (this->start + this->size) % this->capacity;
+    return this->array + offset * this->dataSize;
 }

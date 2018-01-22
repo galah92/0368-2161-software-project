@@ -5,7 +5,7 @@
 #define GAME_COMMAND_ARGS_CAPACITY    8
 
 
-typedef enum GameCommandType_t {
+typedef enum GameCommandType {
     // settings-only commands
 	GAME_COMMAND_GAME_MODE,
 	GAME_COMMAND_DIFFICULTY,

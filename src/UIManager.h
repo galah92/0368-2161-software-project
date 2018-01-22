@@ -6,7 +6,7 @@
 #include "GameCommand.h"
 
 
-typedef struct UIManager_t UIManager;
+typedef struct UIManager UIManager;
 
 UIManager* UIManager_Create(int argc, const char *argv[]);
 

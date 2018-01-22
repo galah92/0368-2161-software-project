@@ -5,7 +5,7 @@
 #include <stddef.h>
 
 
-typedef struct FSAStack_t FSAStack;
+typedef struct FSAStack FSAStack;
 
 /**
  * Create new FSAStack instance.
