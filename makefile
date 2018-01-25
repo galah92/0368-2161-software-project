@@ -16,7 +16,7 @@ TARGET	= $(BINDIR)/$(EXEC)
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) $(SDLLIB) $(OBJECTS) -o $@
+	$(CC) $(OBJECTS) $(SDLLIB) -o $@
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) $(SDLINC) -c $< -o $@

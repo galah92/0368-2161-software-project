@@ -2,6 +2,7 @@
 #define UI_MANAGER_H_
 
 #include "CLIEngine.h"
+#include "GUIEngine.h"
 #include "GameState.h"
 #include "GameCommand.h"
 

@@ -2,9 +2,15 @@
 #include "UIManager.h"
 #include "GameCommand.h"
 // #include "GameManager.h"
+#include <SDL.h>
 
 
 int main(int argc, const char *argv[]) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("SDL_Init() error: %s\n", SDL_GetError());
+        return 1;
+    }
+    return 0;
     UIManager *uiManager = UIManager_Create(argc, argv);
     // GameManager *gameManager = GameManager_Create();
     // GameCommand command;
