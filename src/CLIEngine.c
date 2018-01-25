@@ -93,7 +93,7 @@ typedef enum GameCommandArgsType_t {
     COMMAND_ARGS_NONE,
 } GameCommandArgsType;
 
-int getCommandArgsType(const GameCommandType commandType) {
+GameCommandArgsType getCommandArgsType(const GameCommandType commandType) {
     switch (commandType) {
         // COMMAND_ARGS_INTS
         case GAME_COMMAND_GAME_MODE:

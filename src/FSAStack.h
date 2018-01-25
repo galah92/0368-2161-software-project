@@ -34,7 +34,7 @@ int FSAStack_IsFull(const FSAStack* stack);
  * Signal if a given FSAStack instance has no elements.
  * @param   stack       FSAStack instance
  * @return  0 if stack == NULL or stack is not empty
- *          1 if stack is full
+ *          1 if stack is empty
  */
 int FSAStack_IsEmpty(const FSAStack* stack);
 
