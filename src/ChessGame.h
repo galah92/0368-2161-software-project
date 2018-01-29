@@ -33,10 +33,22 @@ typedef enum ChessGameStatus {
     CHS_TIE,
 } ChessGameStatus;
 
+typedef enum ChessGameBoardPieceStatus {
+    CHESS_GAME_BOARD_PIECE_STANDARD,
+    CHESS_GAME_BOARD_PIECE_THREATENED,
+    CHESS_GAME_BOARD_PIECE_CAPTURED,
+    CHESS_GAME_BOARD_PIECE_THREATENED_AND_CAPTURED
+}
+
+typedef struct ChessGameBoardPiece {
+    ChessGameBoardPieceStatus status;
+    unsigned char piece;
+} ChessGameBoardPiece;
+
 typedef struct ChessGame {
     ChessGameStatus status;
     ChessGameSettings settings;
-    char board[CHESS_GAME_BOARD_SIZE][CHESS_GAME_BOARD_SIZE];
+    ChessGameBoardPiece board[CHESS_GAME_BOARD_SIZE][CHESS_GAME_BOARD_SIZE];
     int currentPlayer;
     FSAStack *history;
 } ChessGame;
