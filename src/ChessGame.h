@@ -38,7 +38,7 @@ typedef enum ChessGameBoardPieceStatus {
     CHESS_GAME_BOARD_PIECE_THREATENED,
     CHESS_GAME_BOARD_PIECE_CAPTURED,
     CHESS_GAME_BOARD_PIECE_THREATENED_AND_CAPTURED
-}
+} ChessGameBoardPieceStatus;
 
 typedef struct ChessGameBoardPiece {
     ChessGameBoardPieceStatus status;
