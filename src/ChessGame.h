@@ -3,12 +3,8 @@
 
 #include "FSAStack.h"
 
-#define CHESS_GAME_MODE_1_PLAYER        1
-#define CHESS_GAME_MODE_2_PLAYER        2
-#define CHESS_GAME_USER_COLOR_BLACK     1
-#define CHESS_GAME_USER_COLOR_WHITE     2
-#define CHESS_GAME_BOARD_SIZE           8
 
+#define CHESS_GAME_BOARD_SIZE 8
 
 typedef enum ChessGameResult {
     CHESS_GAME_SUCCESS,
@@ -20,10 +16,28 @@ typedef enum ChessGameResult {
     CHESS_GAME_KING_WILL_BE_THREATENED,
 } ChessGameResult;
 
+typedef enum ChessGameMode {
+    CHESS_GAME_MODE_1_PLAYER = 1,
+    CHESS_GAME_MODE_2_PLAYER,
+} ChessGameMode;
+
+typedef enum ChessGameDifficulty {
+    CHESS_GAME_DIFFICULTY_AMATEUR = 1,
+    CHESS_GAME_DIFFICULTY_EASY,
+    CHESS_GAME_DIFFICULTY_MODERATE,
+    CHESS_GAME_DIFFICULTY_HARD,
+    CHESS_GAME_DIFFICULTY_EXPERT,
+} ChessGameDifficulty;
+
+typedef enum ChessPlayerColor {
+    CHESS_PLAYER_COLOR_BLACK = 1,
+    CHESS_PLAYER_COLOR_WHITE,
+} ChessPlayerColor;
+
 typedef struct ChessGameSettings {
-    int mode;
-    int difficulty;
-    int userColor;
+    ChessGameMode mode;
+    ChessGameDifficulty difficulty;
+    ChessPlayerColor userColor;
 } ChessGameSettings;
 
 typedef enum ChessGameStatus {
@@ -33,29 +47,40 @@ typedef enum ChessGameStatus {
     CHS_TIE,
 } ChessGameStatus;
 
-typedef enum ChessGameBoardPieceStatus {
-    CHESS_GAME_BOARD_PIECE_STANDARD,
-    CHESS_GAME_BOARD_PIECE_THREATENED,
-    CHESS_GAME_BOARD_PIECE_CAPTURED,
-    CHESS_GAME_BOARD_PIECE_THREATENED_AND_CAPTURED
-} ChessGameBoardPieceStatus;
+typedef enum ChessPieceStatus {
+    CHESS_PIECE_STANDARD,
+    CHESS_PIECE_THREATENED,
+    CHESS_PIECE_CAPTURED,
+    CHESS_PIECE_THREATENED_AND_CAPTURED
+} ChessPieceStatus;
 
-typedef struct ChessGameBoardPiece {
-    ChessGameBoardPieceStatus status;
-    unsigned char piece;
-} ChessGameBoardPiece;
+typedef enum ChessPieceType {
+    CHESS_PIECE_TYPE_NONE,
+    CHESS_PIECE_TYPE_PAWN,
+    CHESS_PIECE_TYPE_ROOK,
+    CHESS_PIECE_TYPE_KNIGHT,
+    CHESS_PIECE_TYPE_BISHOP,
+    CHESS_PIECE_TYPE_QUEEN,
+    CHESS_PIECE_TYPE_KING,
+} ChessPieceType;
+
+typedef struct ChessPiece {
+    ChessPieceType type;
+    ChessPieceStatus status;
+    ChessPlayerColor color;
+} ChessPiece;
 
 typedef struct ChessGame {
     ChessGameStatus status;
     ChessGameSettings settings;
-    ChessGameBoardPiece board[CHESS_GAME_BOARD_SIZE][CHESS_GAME_BOARD_SIZE];
-    int currentPlayer;
+    ChessPiece board[CHESS_GAME_BOARD_SIZE][CHESS_GAME_BOARD_SIZE];
+    ChessPlayerColor currentPlayer;
     FSAStack *history;
 } ChessGame;
 
 typedef struct ChessBoardPos {
-    unsigned char x;
-    unsigned char y;
+    int x;
+    int y;
 } ChessBoardPos;
 
 typedef struct ChessMove {
@@ -78,11 +103,11 @@ ChessGameResult ChessGame_SetUserColor(ChessGame *game, int userColor);
 
 ChessGameResult ChessGame_PrintSettings(ChessGame *game);
 
-ChessGameResult ChessGame_GetSettingsString(ChessGame *game, char *outString);
-
-ChessGameResult ChessGame_IsLegalMove(ChessGame *game, ChessMove move);
+ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move);
 
 ChessGameResult ChessGame_DoMove(ChessGame *game, ChessMove move);
+
+ChessGameResult ChessGame_UndoMove(ChessGame *game);
 
 ChessGameResult ChessGame_GetMoves(ChessGame *game, ChessBoardPos pos, ChessMove *moves[]);
 
