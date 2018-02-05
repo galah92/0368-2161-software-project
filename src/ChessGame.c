@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include "ChessGame.h"
 
+
 #define SETTINGS_STRING_1_PLAYER "SETTINGS:\nGAME_MODE: 1-player\nDIFFICULTY: %d\nUSER_COLOR: %s\n"
 #define SETTINGS_STRING_2_PLAYER "SETTINGS:\nGAME_MODE: 2-player\n"
-
+#define HISTORY_SIZE 3
 
 void initChessBoard(ChessGame *game) {
     game->board[0][0].type = game->board[0][7].type = CHESS_PIECE_TYPE_ROOK;
@@ -30,7 +31,7 @@ ChessGame* ChessGame_Create() {
     if (!game) return NULL;
     ChessGame_SetDefaultSettings(game);
     initChessBoard(game);
-    game->history = FSAStack_Create(3, sizeof(ChessMove));
+    game->history = FSAStack_Create(HISTORY_SIZE, sizeof(ChessMove));
     if (!game->history) {
         ChessGame_Destroy(game);
         return NULL;
@@ -112,4 +113,5 @@ ChessGameResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     game->board[move.from.x][move.from.y].type = CHESS_PIECE_TYPE_NONE;
     game->currentPlayer = 3 - game->currentPlayer;  // elegant way to switch player
     FSAStack_Push(game->history, &move);
-};
+    return CHESS_GAME_SUCCESS;
+}
