@@ -74,7 +74,7 @@ typedef struct ChessGame {
     ChessGameStatus status;
     ChessGameSettings settings;
     ChessPiece board[CHESS_GAME_BOARD_SIZE][CHESS_GAME_BOARD_SIZE];
-    ChessPlayerColor currentPlayer;
+    ChessPlayerColor currentTurn;
     FSAStack *history;
 } ChessGame;
 
@@ -86,6 +86,7 @@ typedef struct ChessBoardPos {
 typedef struct ChessMove {
     ChessBoardPos from;
     ChessBoardPos to;
+    ChessPiece capturedPiece;
 } ChessMove;
 
 

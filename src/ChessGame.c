@@ -29,8 +29,10 @@ void initChessBoard(ChessGame *game) {
 ChessGame* ChessGame_Create() {
     ChessGame *game = malloc(sizeof(ChessGame));
     if (!game) return NULL;
+    game->status = CHS_RUNNING;
     ChessGame_SetDefaultSettings(game);
     initChessBoard(game);
+    game->currentTurn = CHESS_PLAYER_COLOR_WHITE;
     game->history = FSAStack_Create(HISTORY_SIZE, sizeof(ChessMove));
     if (!game->history) {
         ChessGame_Destroy(game);
@@ -98,7 +100,7 @@ ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     if (!isValidBoardPosition(move.from)) return CHESS_GAME_INVALID_POSITION;
     if (!isValidBoardPosition(move.to)) return CHESS_GAME_INVALID_POSITION;
-    ChessPlayerColor playerColor = game->currentPlayer;
+    ChessPlayerColor playerColor = game->currentTurn;
     if (game->board[move.from.x][move.from.y].type == CHESS_PIECE_TYPE_NONE) return CHESS_GAME_EMPTY_POSITION;
     if (game->board[move.from.x][move.from.y].color != playerColor) return CHESS_GAME_INVALID_POSITION;
     // TODO: check that king is not threatened if move is made
@@ -108,10 +110,17 @@ ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
 ChessGameResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     ChessGameResult isValidResult = ChessGame_IsValidMove(game, move);
     if (isValidResult != CHESS_GAME_SUCCESS) return isValidResult;
-    game->board[move.to.x][move.to.y].type = game->board[move.from.x][move.from.y].type;
-    game->board[move.to.x][move.to.y].color = game->board[move.from.x][move.from.y].color;
+    move.capturedPiece = game->board[move.to.x][move.to.y];
+    game->board[move.to.x][move.to.y] = game->board[move.from.x][move.from.y];
     game->board[move.from.x][move.from.y].type = CHESS_PIECE_TYPE_NONE;
-    game->currentPlayer = 3 - game->currentPlayer;  // elegant way to switch player
+    game->currentTurn = 3 - game->currentTurn;  // elegant way to switch player
     FSAStack_Push(game->history, &move);
+    return CHESS_GAME_SUCCESS;
+}
+
+ChessGameResult ChessGame_UndoMove(ChessGame *game) {
+    ChessMove *move = FSAStack_Pop(game->history);
+    game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
+    game->board[move->to.x][move->to.y] = move->capturedPiece; 
     return CHESS_GAME_SUCCESS;
 }
