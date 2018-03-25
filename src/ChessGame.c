@@ -77,9 +77,17 @@ ChessGameResult ChessGame_SetUserColor(ChessGame *game, ChessPlayerColor userCol
     return CHESS_GAME_SUCCESS;
 }
 
-int isValidBoardPosition(ChessBoardPos pos) {
-    return pos.x >= 0 && pos.x < CHESS_GAME_BOARD_SIZE && 
-           pos.y >= 0 && pos.y < CHESS_GAME_BOARD_SIZE;
+int isValidPositionsOnBoard(ChessMove move) {
+    return move.from.x >= 0 && move.from.x < CHESS_GAME_BOARD_SIZE &&
+           move.from.y >= 0 && move.from.y < CHESS_GAME_BOARD_SIZE &&
+           move.to.y >= 0 && move.to.y < CHESS_GAME_BOARD_SIZE &&
+           move.to.y >= 0 && move.to.y < CHESS_GAME_BOARD_SIZE;
+}
+
+int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
+    if (!game) return 0; // sanity check
+    return game->board[move.from.x][move.from.y].type != CHESS_PIECE_TYPE_NONE &&
+           game->board[move.from.x][move.from.y].color == game->currentTurn;
 }
 
 int isValidPieceMove(ChessTileType pieceType, ChessMove move) {
@@ -99,22 +107,11 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
 }
 
 ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
-    if (!game) {
-        return CHESS_GAME_INVALID_ARGUMENT;
-    }
-    if (!isValidBoardPosition(move.from) || !isValidBoardPosition(move.to)) {
-        return CHESS_GAME_INVALID_POSITION;
-    }
-    if (game->board[move.from.x][move.from.y].type != CHESS_PIECE_TYPE_NONE) {
-        return CHESS_GAME_EMPTY_POSITION;
-    }
-    if (game->board[move.from.x][move.from.y].color != game->currentTurn) {
-        return CHESS_GAME_EMPTY_POSITION;
-    }
-    if (!isValidPieceMove(game->board[move.from.x][move.from.y].type, move)) {
-        return CHESS_GAME_ILLEGAL_MOVE;
-    }
-
+    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
+    ChessTile piece = game->board[move.from.x][move.from.y]; // moving piece
+    if (!isValidPositionsOnBoard(move)) return CHESS_GAME_INVALID_POSITION;
+    if (!isMoveOfPlayerPiece(game, move)) return CHESS_GAME_EMPTY_POSITION;
+    if (!isValidPieceMove(piece.type, move)) return CHESS_GAME_ILLEGAL_MOVE;
     // move specific piece
     // int isKingWillBeThreatened = isKingThretened(game->currentTurn);
     // get specific piece back in place
