@@ -78,10 +78,10 @@ ChessGameResult ChessGame_SetUserColor(ChessGame *game, ChessPlayerColor userCol
 }
 
 int isValidPositionsOnBoard(ChessMove move) {
-    return move.from.x >= 0 && move.from.x < CHESS_GAME_BOARD_SIZE &&
-           move.from.y >= 0 && move.from.y < CHESS_GAME_BOARD_SIZE &&
-           move.to.y >= 0 && move.to.y < CHESS_GAME_BOARD_SIZE &&
-           move.to.y >= 0 && move.to.y < CHESS_GAME_BOARD_SIZE;
+    return move.from.x >= 0 && move.from.x < CHESS_GAME_GRID &&
+           move.from.y >= 0 && move.from.y < CHESS_GAME_GRID &&
+           move.to.y >= 0 && move.to.y < CHESS_GAME_GRID &&
+           move.to.y >= 0 && move.to.y < CHESS_GAME_GRID;
 }
 
 int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
@@ -90,10 +90,62 @@ int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
            game->board[move.from.x][move.from.y].color == game->currentTurn;
 }
 
-int isValidPieceMove(ChessTileType pieceType, ChessMove move) {
-    (void)pieceType; // to suppress compiler warning
-    (void)move; // to suppress compiler warning
+int isValidPawnMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
+    (void)board;
+    (void)move;
     return 0;
+}
+
+int isValidRookMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
+    (void)board;
+    (void)move;
+    return 0;
+}
+
+int isValidKnightMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
+    (void)board;
+    (void)move;
+    return 0;
+}
+
+int isValidBishopMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
+    (void)board;
+    (void)move;
+    return 0;
+}
+
+int isValidQueenMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
+    (void)board;
+    (void)move;
+    return 0;
+}
+
+int isValidKingMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
+    (void)board;
+    (void)move;
+    return 0;
+}
+
+int isValidPieceMove(ChessGame *game, ChessMove move) {
+    if (!game) return 0;
+    switch (game->board[move.from.x][move.from.y].type)
+    {
+        case CHESS_PIECE_TYPE_PAWN:
+            return isValidPawnMove(game->board, move);
+        case CHESS_PIECE_TYPE_ROOK:
+            return isValidRookMove(game->board, move);    
+        case CHESS_PIECE_TYPE_KNIGHT:
+            return isValidKnightMove(game->board, move);
+        case CHESS_PIECE_TYPE_BISHOP:
+            return isValidBishopMove(game->board, move);
+        case CHESS_PIECE_TYPE_QUEEN:
+            return isValidQueenMove(game->board, move);
+        case CHESS_PIECE_TYPE_KING:
+            return isValidKingMove(game->board, move);
+        case CHESS_PIECE_TYPE_NONE:
+        default:
+            return 0; // shouldn't happen
+    }
 }
 
 void pseudoDoMove(ChessGame *game, ChessMove move) {
@@ -108,17 +160,16 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
 
 ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
-    ChessTile piece = game->board[move.from.x][move.from.y]; // moving piece
     if (!isValidPositionsOnBoard(move)) return CHESS_GAME_INVALID_POSITION;
     if (!isMoveOfPlayerPiece(game, move)) return CHESS_GAME_EMPTY_POSITION;
-    if (!isValidPieceMove(piece.type, move)) return CHESS_GAME_ILLEGAL_MOVE;
+    if (!isValidPieceMove(game, move)) return CHESS_GAME_ILLEGAL_MOVE;
     // move specific piece
     // int isKingWillBeThreatened = isKingThretened(game->currentTurn);
     // get specific piece back in place
     // if (isKingWillBeThreatened) {
     //     return isKingThreatened(game) ?
     //         CHESS_GAME_KING_IS_STILL_THREATENED :
-    //         CHESS_GAME_KING_WILL_BE_THREATENED;
+    //         CHESS_GAME_KING_WILL_BE_THREATENED;  
     // }
     return CHESS_GAME_SUCCESS;
 }

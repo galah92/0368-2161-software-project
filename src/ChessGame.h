@@ -4,7 +4,7 @@
 #include "FSAStack.h"
 
 
-#define CHESS_GAME_BOARD_SIZE 8
+#define CHESS_GAME_GRID 8
 #define CHESS_GAME_HISTORY_SIZE 3
 
 typedef enum ChessGameResult {
@@ -66,7 +66,7 @@ typedef struct ChessTile {
 typedef struct ChessGame {
     ChessGameStatus status;
     ChessGameSettings settings;
-    ChessTile board[CHESS_GAME_BOARD_SIZE][CHESS_GAME_BOARD_SIZE];
+    ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID];
     ChessPlayerColor currentTurn;
     int isWhiteKingThreatened;
     int isBlackKingThreatened;
