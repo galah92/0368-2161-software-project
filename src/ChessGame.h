@@ -5,6 +5,7 @@
 
 
 #define CHESS_GAME_BOARD_SIZE 8
+#define CHESS_GAME_HISTORY_SIZE 3
 
 typedef enum ChessGameResult {
     CHESS_GAME_SUCCESS,
@@ -30,8 +31,8 @@ typedef enum ChessGameDifficulty {
 } ChessGameDifficulty;
 
 typedef enum ChessPlayerColor {
-    CHESS_PLAYER_COLOR_BLACK = 1,
     CHESS_PLAYER_COLOR_WHITE,
+    CHESS_PLAYER_COLOR_BLACK,
 } ChessPlayerColor;
 
 typedef struct ChessGameSettings {
@@ -89,20 +90,46 @@ typedef struct ChessMove {
     ChessPiece capturedPiece;
 } ChessMove;
 
-
+/**
+ * Create new ChessGame instance.
+ * @return  NULL if malloc failed
+ *          ChessGame* instance otherwise
+ */
 ChessGame* ChessGame_Create();
 
+/**
+ * Free all resources for a given ChessGame instance.
+ * @param   game        the instance to destroy
+ */
 void ChessGame_Destroy(ChessGame *game);
 
+/**
+ * Apply the default settings to a given game.
+ * Defaults are: 1-player game mode, "easy" difficulty, and white player color.
+ * @param   game        the instance set defaults to
+ */
 ChessGameResult ChessGame_SetDefaultSettings(ChessGame *game);
 
-ChessGameResult ChessGame_SetGameMode(ChessGame *game, int mode);
+/**
+ * Set a given mode to a given game instance.
+ * @param   game        the instance to set mode to
+ * @param   mode        the mode to set
+ */
+ChessGameResult ChessGame_SetGameMode(ChessGame *game, ChessGameMode mode);
 
-ChessGameResult ChessGame_SetDifficulty(ChessGame *game, int difficulty);
+/**
+ * Set a given difficulty to a given game instance.
+ * @param   game        the instance to set mode to
+ * @param   difficulty  the difficulty to set
+ */
+ChessGameResult ChessGame_SetDifficulty(ChessGame *game, ChessGameDifficulty difficulty);
 
-ChessGameResult ChessGame_SetUserColor(ChessGame *game, int userColor);
-
-ChessGameResult ChessGame_PrintSettings(ChessGame *game);
+/**
+ * Set a given user color to a given game instance.
+ * @param   game        the instance to set mode to
+ * @param   userColor   the difficulty to set
+ */
+ChessGameResult ChessGame_SetUserColor(ChessGame *game, ChessPlayerColor userColor);
 
 ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move);
 

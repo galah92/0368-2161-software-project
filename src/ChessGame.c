@@ -3,10 +3,6 @@
 #include "ChessGame.h"
 
 
-#define SETTINGS_STRING_1_PLAYER "SETTINGS:\nGAME_MODE: 1-player\nDIFFICULTY: %d\nUSER_COLOR: %s\n"
-#define SETTINGS_STRING_2_PLAYER "SETTINGS:\nGAME_MODE: 2-player\n"
-#define HISTORY_SIZE 3
-
 void initChessBoard(ChessGame *game) {
     game->board[0][0].type = game->board[0][7].type = CHESS_PIECE_TYPE_ROOK;
     game->board[0][1].type = game->board[0][6].type = CHESS_PIECE_TYPE_KNIGHT;
@@ -33,7 +29,7 @@ ChessGame* ChessGame_Create() {
     ChessGame_SetDefaultSettings(game);
     initChessBoard(game);
     game->currentTurn = CHESS_PLAYER_COLOR_WHITE;
-    game->history = FSAStack_Create(HISTORY_SIZE, sizeof(ChessMove));
+    game->history = FSAStack_Create(CHESS_GAME_HISTORY_SIZE, sizeof(ChessMove));
     if (!game->history) {
         ChessGame_Destroy(game);
         return NULL;
@@ -55,7 +51,7 @@ ChessGameResult ChessGame_SetDefaultSettings(ChessGame *game) {
     return CHESS_GAME_SUCCESS;
 }
 
-ChessGameResult ChessGame_SetGameMode(ChessGame *game, int mode) {
+ChessGameResult ChessGame_SetGameMode(ChessGame *game, ChessGameMode mode) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     if (mode < CHESS_GAME_MODE_1_PLAYER) return CHESS_GAME_INVALID_ARGUMENT;
     if (mode > CHESS_GAME_MODE_2_PLAYER) return CHESS_GAME_INVALID_ARGUMENT;
@@ -63,7 +59,7 @@ ChessGameResult ChessGame_SetGameMode(ChessGame *game, int mode) {
     return CHESS_GAME_SUCCESS;
 }
 
-ChessGameResult ChessGame_SetDifficulty(ChessGame *game, int difficulty) {
+ChessGameResult ChessGame_SetDifficulty(ChessGame *game, ChessGameDifficulty difficulty) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     if (difficulty < CHESS_GAME_DIFFICULTY_AMATEUR) return CHESS_GAME_INVALID_ARGUMENT;
     if (difficulty > CHESS_GAME_DIFFICULTY_EXPERT) return CHESS_GAME_INVALID_ARGUMENT;
@@ -71,23 +67,11 @@ ChessGameResult ChessGame_SetDifficulty(ChessGame *game, int difficulty) {
     return CHESS_GAME_SUCCESS;
 }
 
-ChessGameResult ChessGame_SetUserColor(ChessGame *game, int userColor) {
+ChessGameResult ChessGame_SetUserColor(ChessGame *game, ChessPlayerColor userColor) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     if (userColor < CHESS_PLAYER_COLOR_BLACK) return CHESS_GAME_INVALID_ARGUMENT;
     if (userColor > CHESS_PLAYER_COLOR_WHITE) return CHESS_GAME_INVALID_ARGUMENT;
     game->settings.userColor = userColor;
-    return CHESS_GAME_SUCCESS;
-}
-
-ChessGameResult ChessGame_PrintSettings(ChessGame *game) {
-    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
-    if (game->settings.mode == CHESS_GAME_MODE_2_PLAYER) {
-        printf(SETTINGS_STRING_2_PLAYER);
-    } else if (game->settings.mode == CHESS_GAME_MODE_1_PLAYER) {
-        int difficulty = game->settings.difficulty + 1;
-        char *userColor = game->settings.userColor == CHESS_PLAYER_COLOR_BLACK ? "black"  : "white";
-        printf(SETTINGS_STRING_1_PLAYER, difficulty, userColor);
-    }
     return CHESS_GAME_SUCCESS;
 }
 
@@ -122,5 +106,23 @@ ChessGameResult ChessGame_UndoMove(ChessGame *game) {
     ChessMove *move = FSAStack_Pop(game->history);
     game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = move->capturedPiece; 
+    return CHESS_GAME_SUCCESS;
+}
+
+// ============================================================================
+// TODO: move to the right module
+
+#define SETTINGS_STRING_1_PLAYER "SETTINGS:\nGAME_MODE: 1-player\nDIFFICULTY: %d\nUSER_COLOR: %s\n"
+#define SETTINGS_STRING_2_PLAYER "SETTINGS:\nGAME_MODE: 2-player\n"
+
+ChessGameResult ChessGame_PrintSettings(ChessGame *game) {
+    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
+    if (game->settings.mode == CHESS_GAME_MODE_2_PLAYER) {
+        printf(SETTINGS_STRING_2_PLAYER);
+    } else if (game->settings.mode == CHESS_GAME_MODE_1_PLAYER) {
+        int difficulty = game->settings.difficulty + 1;
+        char *userColor = game->settings.userColor == CHESS_PLAYER_COLOR_BLACK ? "black"  : "white";
+        printf(SETTINGS_STRING_1_PLAYER, difficulty, userColor);
+    }
     return CHESS_GAME_SUCCESS;
 }
