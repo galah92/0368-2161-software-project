@@ -29,6 +29,8 @@ ChessGame* ChessGame_Create() {
     ChessGame_SetDefaultSettings(game);
     initChessBoard(game);
     game->currentTurn = CHESS_PLAYER_COLOR_WHITE;
+    game->isWhiteKingThreatened = 0;
+    game->isBlackKingThreatened = 0;
     game->history = FSAStack_Create(CHESS_GAME_HISTORY_SIZE, sizeof(ChessMove));
     if (!game->history) {
         ChessGame_Destroy(game);
@@ -80,25 +82,54 @@ int isValidBoardPosition(ChessBoardPos pos) {
            pos.y >= 0 && pos.y < CHESS_GAME_BOARD_SIZE;
 }
 
+int isValidPieceMove(ChessTileType pieceType, ChessMove move) {
+    (void)pieceType; // to suppress compiler warning
+    (void)move; // to suppress compiler warning
+    return 0;
+}
+
+void pseudoDoMove(ChessGame *game, ChessMove move) {
+    if (!game) return; // sanity check
+    move.capturedPiece = game->board[move.to.x][move.to.y];
+    game->board[move.to.x][move.to.y] = game->board[move.from.x][move.from.y];
+    game->board[move.from.x][move.from.y].type = CHESS_PIECE_TYPE_NONE;
+    game->currentTurn = 3 - game->currentTurn; // elegant way to switch player
+    FSAStack_Push(game->history, &move); // update history
+    // TODO: update status, isWhiteKingThreatened & isBlackKingThreatened
+}
+
 ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
-    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
-    if (!isValidBoardPosition(move.from)) return CHESS_GAME_INVALID_POSITION;
-    if (!isValidBoardPosition(move.to)) return CHESS_GAME_INVALID_POSITION;
-    ChessPlayerColor playerColor = game->currentTurn;
-    if (game->board[move.from.x][move.from.y].type == CHESS_PIECE_TYPE_NONE) return CHESS_GAME_EMPTY_POSITION;
-    if (game->board[move.from.x][move.from.y].color != playerColor) return CHESS_GAME_INVALID_POSITION;
-    // TODO: check that king is not threatened if move is made
+    if (!game) {
+        return CHESS_GAME_INVALID_ARGUMENT;
+    }
+    if (!isValidBoardPosition(move.from) || !isValidBoardPosition(move.to)) {
+        return CHESS_GAME_INVALID_POSITION;
+    }
+    if (game->board[move.from.x][move.from.y].type != CHESS_PIECE_TYPE_NONE) {
+        return CHESS_GAME_EMPTY_POSITION;
+    }
+    if (game->board[move.from.x][move.from.y].color != game->currentTurn) {
+        return CHESS_GAME_EMPTY_POSITION;
+    }
+    if (!isValidPieceMove(game->board[move.from.x][move.from.y].type, move)) {
+        return CHESS_GAME_ILLEGAL_MOVE;
+    }
+
+    // move specific piece
+    // int isKingWillBeThreatened = isKingThretened(game->currentTurn);
+    // get specific piece back in place
+    // if (isKingWillBeThreatened) {
+    //     return isKingThreatened(game) ?
+    //         CHESS_GAME_KING_IS_STILL_THREATENED :
+    //         CHESS_GAME_KING_WILL_BE_THREATENED;
+    // }
     return CHESS_GAME_SUCCESS;
 }
 
 ChessGameResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     ChessGameResult isValidResult = ChessGame_IsValidMove(game, move);
     if (isValidResult != CHESS_GAME_SUCCESS) return isValidResult;
-    move.capturedPiece = game->board[move.to.x][move.to.y];
-    game->board[move.to.x][move.to.y] = game->board[move.from.x][move.from.y];
-    game->board[move.from.x][move.from.y].type = CHESS_PIECE_TYPE_NONE;
-    game->currentTurn = 3 - game->currentTurn;  // elegant way to switch player
-    FSAStack_Push(game->history, &move);
+    pseudoDoMove(game, move);
     return CHESS_GAME_SUCCESS;
 }
 

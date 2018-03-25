@@ -48,14 +48,7 @@ typedef enum ChessGameStatus {
     CHS_TIE,
 } ChessGameStatus;
 
-typedef enum ChessPieceStatus {
-    CHESS_PIECE_STANDARD,
-    CHESS_PIECE_THREATENED,
-    CHESS_PIECE_CAPTURED,
-    CHESS_PIECE_THREATENED_AND_CAPTURED
-} ChessPieceStatus;
-
-typedef enum ChessPieceType {
+typedef enum ChessTileType {
     CHESS_PIECE_TYPE_NONE,
     CHESS_PIECE_TYPE_PAWN,
     CHESS_PIECE_TYPE_ROOK,
@@ -63,19 +56,20 @@ typedef enum ChessPieceType {
     CHESS_PIECE_TYPE_BISHOP,
     CHESS_PIECE_TYPE_QUEEN,
     CHESS_PIECE_TYPE_KING,
-} ChessPieceType;
+} ChessTileType;
 
-typedef struct ChessPiece {
-    ChessPieceType type;
-    ChessPieceStatus status;
+typedef struct ChessTile {
+    ChessTileType type;
     ChessPlayerColor color;
-} ChessPiece;
+} ChessTile;
 
 typedef struct ChessGame {
     ChessGameStatus status;
     ChessGameSettings settings;
-    ChessPiece board[CHESS_GAME_BOARD_SIZE][CHESS_GAME_BOARD_SIZE];
+    ChessTile board[CHESS_GAME_BOARD_SIZE][CHESS_GAME_BOARD_SIZE];
     ChessPlayerColor currentTurn;
+    int isWhiteKingThreatened;
+    int isBlackKingThreatened;
     FSAStack *history;
 } ChessGame;
 
@@ -87,7 +81,7 @@ typedef struct ChessBoardPos {
 typedef struct ChessMove {
     ChessBoardPos from;
     ChessBoardPos to;
-    ChessPiece capturedPiece;
+    ChessTile capturedPiece;
 } ChessMove;
 
 /**
