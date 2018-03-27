@@ -48,18 +48,18 @@ typedef enum ChessStatus {
     CHESS_STATUS_DRAW,
 } ChessStatus;
 
-typedef enum ChessTileType {
-    CHESS_PIECE_TYPE_NONE,
-    CHESS_PIECE_TYPE_PAWN,
-    CHESS_PIECE_TYPE_ROOK,
-    CHESS_PIECE_TYPE_KNIGHT,
-    CHESS_PIECE_TYPE_BISHOP,
-    CHESS_PIECE_TYPE_QUEEN,
-    CHESS_PIECE_TYPE_KING,
-} ChessTileType;
+typedef enum ChessPiece {
+    CHESS_PIECE_NONE,
+    CHESS_PIECE_PAWN,
+    CHESS_PIECE_ROOK,
+    CHESS_PIECE_KNIGHT,
+    CHESS_PIECE_BISHOP,
+    CHESS_PIECE_QUEEN,
+    CHESS_PIECE_KING,
+} ChessPiece;
 
 typedef struct ChessTile {
-    ChessTileType type;
+    ChessPiece piece;
     ChessColor color;
 } ChessTile;
 

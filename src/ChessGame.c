@@ -4,26 +4,26 @@
 
 
 void initChessBoard(ChessGame *game) {
-    game->board[2][0].type = game->board[2][1].type = game->board[2][2].type = game->board[2][3].type =
-    game->board[2][4].type = game->board[2][5].type = game->board[2][6].type = game->board[2][7].type =
-    game->board[3][0].type = game->board[3][1].type = game->board[3][2].type = game->board[3][3].type =
-    game->board[3][4].type = game->board[3][5].type = game->board[3][6].type = game->board[3][7].type =
-    game->board[4][0].type = game->board[4][1].type = game->board[4][2].type = game->board[4][3].type =
-    game->board[4][4].type = game->board[4][5].type = game->board[4][6].type = game->board[4][7].type =
-    game->board[5][0].type = game->board[5][1].type = game->board[5][2].type = game->board[5][3].type =
-    game->board[5][4].type = game->board[5][5].type = game->board[5][6].type = game->board[5][7].type = CHESS_PIECE_TYPE_NONE;
-    game->board[1][0].type = game->board[1][1].type = game->board[1][2].type = game->board[1][3].type =
-    game->board[1][4].type = game->board[1][5].type = game->board[1][6].type = game->board[1][7].type = CHESS_PIECE_TYPE_PAWN;
-    game->board[6][0].type = game->board[6][1].type = game->board[6][2].type = game->board[6][3].type =
-    game->board[6][4].type = game->board[6][5].type = game->board[6][6].type = game->board[6][7].type = CHESS_PIECE_TYPE_PAWN;
-    game->board[0][0].type = game->board[0][7].type = CHESS_PIECE_TYPE_ROOK;
-    game->board[0][1].type = game->board[0][6].type = CHESS_PIECE_TYPE_KNIGHT;
-    game->board[0][2].type = game->board[0][5].type = CHESS_PIECE_TYPE_BISHOP;
-    game->board[7][0].type = game->board[7][7].type = CHESS_PIECE_TYPE_ROOK;
-    game->board[7][1].type = game->board[7][6].type = CHESS_PIECE_TYPE_KNIGHT;
-    game->board[7][2].type = game->board[7][5].type = CHESS_PIECE_TYPE_BISHOP;
-    game->board[0][3].type = game->board[7][3].type = CHESS_PIECE_TYPE_QUEEN;
-    game->board[0][4].type = game->board[7][4].type = CHESS_PIECE_TYPE_KING;
+    game->board[2][0].piece = game->board[2][1].piece = game->board[2][2].piece = game->board[2][3].piece =
+    game->board[2][4].piece = game->board[2][5].piece = game->board[2][6].piece = game->board[2][7].piece =
+    game->board[3][0].piece = game->board[3][1].piece = game->board[3][2].piece = game->board[3][3].piece =
+    game->board[3][4].piece = game->board[3][5].piece = game->board[3][6].piece = game->board[3][7].piece =
+    game->board[4][0].piece = game->board[4][1].piece = game->board[4][2].piece = game->board[4][3].piece =
+    game->board[4][4].piece = game->board[4][5].piece = game->board[4][6].piece = game->board[4][7].piece =
+    game->board[5][0].piece = game->board[5][1].piece = game->board[5][2].piece = game->board[5][3].piece =
+    game->board[5][4].piece = game->board[5][5].piece = game->board[5][6].piece = game->board[5][7].piece = CHESS_PIECE_NONE;
+    game->board[1][0].piece = game->board[1][1].piece = game->board[1][2].piece = game->board[1][3].piece =
+    game->board[1][4].piece = game->board[1][5].piece = game->board[1][6].piece = game->board[1][7].piece = CHESS_PIECE_PAWN;
+    game->board[6][0].piece = game->board[6][1].piece = game->board[6][2].piece = game->board[6][3].piece =
+    game->board[6][4].piece = game->board[6][5].piece = game->board[6][6].piece = game->board[6][7].piece = CHESS_PIECE_PAWN;
+    game->board[0][0].piece = game->board[0][7].piece = CHESS_PIECE_ROOK;
+    game->board[0][1].piece = game->board[0][6].piece = CHESS_PIECE_KNIGHT;
+    game->board[0][2].piece = game->board[0][5].piece = CHESS_PIECE_BISHOP;
+    game->board[7][0].piece = game->board[7][7].piece = CHESS_PIECE_ROOK;
+    game->board[7][1].piece = game->board[7][6].piece = CHESS_PIECE_KNIGHT;
+    game->board[7][2].piece = game->board[7][5].piece = CHESS_PIECE_BISHOP;
+    game->board[0][3].piece = game->board[7][3].piece = CHESS_PIECE_QUEEN;
+    game->board[0][4].piece = game->board[7][4].piece = CHESS_PIECE_KING;
     game->board[0][0].color = game->board[0][1].color = game->board[0][2].color = game->board[0][3].color =
     game->board[0][4].color = game->board[0][5].color = game->board[0][6].color = game->board[0][7].color = 
     game->board[1][0].color = game->board[1][1].color = game->board[1][2].color = game->board[1][3].color =
@@ -96,7 +96,7 @@ int isValidPositionsOnBoard(ChessMove move) {
 
 int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
     if (!game) return 0; // sanity check
-    return game->board[move.from.x][move.from.y].type != CHESS_PIECE_TYPE_NONE &&
+    return game->board[move.from.x][move.from.y].piece != CHESS_PIECE_NONE &&
            game->board[move.from.x][move.from.y].color == game->turn;
 }
 
@@ -120,7 +120,7 @@ int isValidPawnMove(ChessGame *game, ChessMove move) {
     int isInStartPos = move.from.y == (color == CHESS_PLAYER_COLOR_WHITE ? 1 : 6);
     int horDiff = abs(move.from.x - move.to.x);
     int verDiff = (move.from.y - move.to.y) * (color == CHESS_PLAYER_COLOR_WHITE ? 1 : -1);
-    int isCapture = game->board[move.to.x][move.to.y].type != CHESS_PIECE_TYPE_NONE &&
+    int isCapture = game->board[move.to.x][move.to.y].piece != CHESS_PIECE_NONE &&
         color != game->board[move.to.x][move.to.y].color;
     int regularMove = !isCapture && verDiff == 1 && horDiff == 0;
     int startingMove = !isCapture && isInStartPos && verDiff == 2 && horDiff == 0;
@@ -136,13 +136,13 @@ int isValidRookMove(ChessGame *game, ChessMove move) {
         int start = move.from.x < move.to.x ? move.from.x + 1 : move.to.x + 1;
         int end = move.from.x < move.to.x ? move.to.x : move.from.x;
         for (int i = start; i < end; i++) {
-            if (game->board[i][move.from.y].type != CHESS_PIECE_TYPE_NONE) return 0;
+            if (game->board[i][move.from.y].piece != CHESS_PIECE_NONE) return 0;
         }
     } else { // verDiff != 0
         int start = move.from.y < move.to.y ? move.from.y + 1 : move.to.y + 1;
         int end = move.from.y < move.to.y ? move.to.y : move.from.y;
         for (int i = start + 1; i < end; i++) {
-            if (game->board[move.from.x][i].type != CHESS_PIECE_TYPE_NONE) return 0;
+            if (game->board[move.from.x][i].piece != CHESS_PIECE_NONE) return 0;
         }
     }
     return 1;
@@ -165,7 +165,7 @@ int isValidBishopMove(ChessGame *game, ChessMove move) {
     int endY = startY == move.from.y + 1 ? move.to.y : move.from.y;
     for (int i = startX; i < endX; i++){
         for (int j = startY; j < endY; j++){
-            if (game->board[i][j].type != CHESS_PIECE_TYPE_NONE) return 0;
+            if (game->board[i][j].piece != CHESS_PIECE_NONE) return 0;
         }
     }
     return 1;
@@ -184,21 +184,21 @@ int isValidKingMove(ChessGame *game, ChessMove move) {
 
 int isValidPieceMove(ChessGame *game, ChessMove move) {
     if (!game) return 0;
-    switch (game->board[move.from.x][move.from.y].type)
+    switch (game->board[move.from.x][move.from.y].piece)
     {
-        case CHESS_PIECE_TYPE_PAWN:
+        case CHESS_PIECE_PAWN:
             return isValidPawnMove(game, move);
-        case CHESS_PIECE_TYPE_ROOK:
+        case CHESS_PIECE_ROOK:
             return isValidRookMove(game, move);    
-        case CHESS_PIECE_TYPE_KNIGHT:
+        case CHESS_PIECE_KNIGHT:
             return isValidKnightMove(game, move);
-        case CHESS_PIECE_TYPE_BISHOP:
+        case CHESS_PIECE_BISHOP:
             return isValidBishopMove(game, move);
-        case CHESS_PIECE_TYPE_QUEEN:
+        case CHESS_PIECE_QUEEN:
             return isValidQueenMove(game, move);
-        case CHESS_PIECE_TYPE_KING:
+        case CHESS_PIECE_KING:
             return isValidKingMove(game, move);
-        case CHESS_PIECE_TYPE_NONE:
+        case CHESS_PIECE_NONE:
         default:
             return 0; // shouldn't happen
     }
@@ -207,7 +207,7 @@ int isValidPieceMove(ChessGame *game, ChessMove move) {
 ChessBoardPos getKingPosition(ChessGame *game, ChessColor color){
     for (int i = 0 ; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
-            if (game->board[i][j].type == CHESS_PIECE_TYPE_KING &&
+            if (game->board[i][j].piece == CHESS_PIECE_KING &&
                 game->board[i][j].color == color) {
                 return (ChessBoardPos){ .x = i, .y = j };
             }
@@ -235,7 +235,7 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
     if (!game) return; // sanity check
     move.capturedPiece = game->board[move.to.x][move.to.y];
     game->board[move.to.x][move.to.y] = game->board[move.from.x][move.from.y];
-    game->board[move.from.x][move.from.y].type = CHESS_PIECE_TYPE_NONE;
+    game->board[move.from.x][move.from.y].piece = CHESS_PIECE_NONE;
     game->turn = 3 - game->turn; // elegant way to switch player
     FSAStack_Push(game->history, &move); // update history
     if (isKingThreatened(game, game->turn)) {
