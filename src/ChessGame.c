@@ -238,7 +238,11 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
     game->board[move.from.x][move.from.y].type = CHESS_PIECE_TYPE_NONE;
     game->currentTurn = 3 - game->currentTurn; // elegant way to switch player
     FSAStack_Push(game->history, &move); // update history
-    // TODO: update status
+    if (isKingThreatened(game, game->currentTurn)) {
+        game->status = CG_STATUS_CHECK;
+        // TODO: check if opponent has a way to escape, else change
+        // status to CG_STATUS_CHECKMATE
+    }
 }
 
 ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
@@ -247,7 +251,14 @@ ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     if (!isMoveOfPlayerPiece(game, move)) return CHESS_GAME_EMPTY_POSITION;
     if (!isValidToPosition(game, move)) return CHESS_GAME_ILLEGAL_MOVE;
     if (!isValidPieceMove(game, move)) return CHESS_GAME_ILLEGAL_MOVE;
-    // TODO: implement last two error checks
+    pseudoDoMove(game, move);
+    int isKingWillBeThreatened = isKingThreatened(game, !game->currentTurn);
+    ChessGame_UndoMove(game);
+    if (game->status == CG_STATUS_CHECK && isKingWillBeThreatened) {
+        return CHESS_GAME_KING_IS_STILL_THREATENED; 
+    } else if (isKingWillBeThreatened) {
+        return CHESS_GAME_KING_WILL_BE_THREATENED;
+    }
     return CHESS_GAME_SUCCESS;
 }
 

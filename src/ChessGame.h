@@ -66,8 +66,8 @@ typedef struct ChessTile {
 typedef struct ChessGame {
     ChessGameStatus status;
     ChessGameSettings settings;
-    ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID];
     ChessPlayerColor currentTurn;
+    ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID];
     FSAStack *history;
 } ChessGame;
 
