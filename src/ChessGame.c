@@ -164,15 +164,14 @@ int isValidBishopMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMo
 }
 
 int isValidQueenMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
-    (void)board;
-    (void)move;
-    return 0;
+    return isValidRookMove(board, move) || isValidBishopMove(board, move);
 }
 
 int isValidKingMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
-    (void)board;
-    (void)move;
-    return 0;
+    (void)board; // TODO: consider remove that argument as it's unused.
+    int horDiff = abs(move.from.x - move.to.x);
+    int verDiff = abs(move.from.y - move.to.y);
+    return horDiff <= 1 && verDiff <= 1 && ((horDiff > 0) ^ (verDiff > 0));
 }
 
 int isValidPieceMove(ChessGame *game, ChessMove move) {
