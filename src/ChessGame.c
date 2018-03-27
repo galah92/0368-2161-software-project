@@ -158,9 +158,19 @@ int isValidKnightMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMo
 }
 
 int isValidBishopMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
-    (void)board;
-    (void)move;
-    return 0;
+    int horAbs = abs(move.from.x - move.to.x);
+    int verAbs = abs(move.from.y - move.to.y);
+    if (horAbs != verAbs) return 0;
+    int startX = move.from.x < move.to.x ? move.from.x + 1 : move.to.x + 1;
+    int startY = move.from.y < move.to.y ? move.from.y + 1 : move.to.y + 1;
+    int endX = startX == move.from.x + 1 ? move.to.x : move.from.x;
+    int endY = startY == move.from.y + 1 ? move.to.y : move.from.y;
+    for (int i = startX; i < endX; i++){
+        for (int j = startY; j < endY; j++){
+            if (board[i][j].type != CHESS_PIECE_TYPE_NONE) return 0;
+        }
+    }
+    return 1;
 }
 
 int isValidQueenMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
