@@ -206,6 +206,23 @@ int isValidPieceMove(ChessGame *game, ChessMove move) {
     }
 }
 
+int isKingThreatened(ChessGame *game) {
+    ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID] = game->board;
+    ChessPlayerColor playerColor = game->currentTurn;
+    ChessPlayerColor opponentColor = 3 - playerColor;
+    ChessMove move = { .to = getKingPosition(board, opponentColor) };
+    for (int i = 0; i < CHESS_GAME_GRID; i++) {
+        for (int j = 0; i < CHESS_GAME_GRID; i++) {
+            if (board[i][j].color == playerColor) {
+                move.from.x = i;
+                move.from.y = j;
+                if (isValidPieceMove(game, move)) return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 void pseudoDoMove(ChessGame *game, ChessMove move) {
     if (!game) return; // sanity check
     move.capturedPiece = game->board[move.to.x][move.to.y];
