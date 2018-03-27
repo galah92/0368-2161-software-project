@@ -72,14 +72,14 @@ typedef struct ChessGame {
     ArrayStack *history;
 } ChessGame;
 
-typedef struct ChessBoardPos {
+typedef struct ChessPos {
     int x;
     int y;
-} ChessBoardPos;
+} ChessPos;
 
 typedef struct ChessMove {
-    ChessBoardPos from;
-    ChessBoardPos to;
+    ChessPos from;
+    ChessPos to;
     ChessTile capturedPiece;
 } ChessMove;
 
@@ -170,13 +170,14 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move);
 ChessResult ChessGame_UndoMove(ChessGame *game);
 
 /**
- * Calculate a list of all possible moves for a given ChessBoardPos.
+ * Calculate a list of all possible moves for a given ChessPos.
  * The third argument must be an initialized ArrayStack of ChessMove's.
  * It will be populated with the calculated moves.
  * @param   game        the instance to calculate moves on
- * return   CHESS_SUCCESS always
+ * return   CHESS_INVALID_ARGUMENT if game == NULL
+ *          CHESS_SUCCESS otherwise
  */
-ChessResult ChessGame_GetMoves(ChessGame *game, ChessBoardPos pos, ArrayStack *stack);
+ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack *stack);
 
 
 #endif

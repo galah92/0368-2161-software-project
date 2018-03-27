@@ -35,59 +35,6 @@ void initChessBoard(ChessGame *game) {
     game->board[7][4].color = game->board[7][5].color = game->board[7][6].color = game->board[7][7].color = CHESS_PLAYER_COLOR_BLACK;
 }
 
-ChessGame* ChessGame_Create() {
-    ChessGame *game = malloc(sizeof(ChessGame));
-    if (!game) return NULL;
-    game->status = CHESS_STATUS_RUNNING;
-    ChessGame_SetDefaultSettings(game);
-    initChessBoard(game);
-    game->turn = CHESS_PLAYER_COLOR_WHITE;
-    game->history = ArrayStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
-    if (!game->history) {
-        ChessGame_Destroy(game);
-        return NULL;
-    }
-    return game;
-}
-
-void ChessGame_Destroy(ChessGame *game) {
-    if (!game) return;
-    ArrayStack_Destroy(game->history);
-    free(game);
-}
-
-ChessResult ChessGame_SetDefaultSettings(ChessGame *game) {
-    if (!game) return CHESS_INVALID_ARGUMENT;
-    game->settings.mode = CHESS_MODE_1_PLAYER;
-    game->settings.difficulty = CHESS_DIFFICULTY_EASY;
-    game->settings.userColor = CHESS_PLAYER_COLOR_WHITE;
-    return CHESS_SUCCESS;
-}
-
-ChessResult ChessGame_SetGameMode(ChessGame *game, ChessMode mode) {
-    if (!game) return CHESS_INVALID_ARGUMENT;
-    if (mode < CHESS_MODE_1_PLAYER) return CHESS_INVALID_ARGUMENT;
-    if (mode > CHESS_MODE_2_PLAYER) return CHESS_INVALID_ARGUMENT;
-    game->settings.mode = mode;
-    return CHESS_SUCCESS;
-}
-
-ChessResult ChessGame_SetDifficulty(ChessGame *game, ChessDifficulty difficulty) {
-    if (!game) return CHESS_INVALID_ARGUMENT;
-    if (difficulty < CHESS_DIFFICULTY_AMATEUR) return CHESS_INVALID_ARGUMENT;
-    if (difficulty > CHESS_DIFFICULTY_EXPERT) return CHESS_INVALID_ARGUMENT;
-    game->settings.difficulty = difficulty;
-    return CHESS_SUCCESS;
-}
-
-ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor) {
-    if (!game) return CHESS_INVALID_ARGUMENT;
-    if (userColor < CHESS_PLAYER_COLOR_BLACK) return CHESS_INVALID_ARGUMENT;
-    if (userColor > CHESS_PLAYER_COLOR_WHITE) return CHESS_INVALID_ARGUMENT;
-    game->settings.userColor = userColor;
-    return CHESS_SUCCESS;
-}
-
 bool isValidPositionsOnBoard(ChessMove move) {
     return move.from.x >= 0 && move.from.x < CHESS_GRID &&
            move.from.y >= 0 && move.from.y < CHESS_GRID &&
@@ -205,17 +152,17 @@ bool isValidPieceMove(ChessGame *game, ChessMove move) {
     }
 }
 
-ChessBoardPos getKingPosition(ChessGame *game, ChessColor color){
-    if (!game) return (ChessBoardPos){ .x = -1, .y = -1 };
+ChessPos getKingPosition(ChessGame *game, ChessColor color){
+    if (!game) return (ChessPos){ .x = -1, .y = -1 };
     for (int i = 0 ; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             if (game->board[i][j].piece == CHESS_PIECE_KING &&
                 game->board[i][j].color == color) {
-                return (ChessBoardPos){ .x = i, .y = j };
+                return (ChessPos){ .x = i, .y = j };
             }
         }
     }
-    return (ChessBoardPos){ .x = -1, .y = -1 }; // can't happen
+    return (ChessPos){ .x = -1, .y = -1 }; // can't happen
 }
 
 bool isKingThreatened(ChessGame *game, ChessColor playerColor) {
@@ -242,9 +189,60 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
     ArrayStack_Push(game->history, &move); // update history
     if (isKingThreatened(game, game->turn)) {
         game->status = CHESS_STATUS_CHECK;
-        // TODO: check if opponent has a way to escape, else change
-        // status to CHESS_STATUS_CHECKMATE
     }
+}
+
+ChessGame* ChessGame_Create() {
+    ChessGame *game = malloc(sizeof(ChessGame));
+    if (!game) return NULL;
+    game->status = CHESS_STATUS_RUNNING;
+    ChessGame_SetDefaultSettings(game);
+    initChessBoard(game);
+    game->turn = CHESS_PLAYER_COLOR_WHITE;
+    game->history = ArrayStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
+    if (!game->history) {
+        ChessGame_Destroy(game);
+        return NULL;
+    }
+    return game;
+}
+
+void ChessGame_Destroy(ChessGame *game) {
+    if (!game) return;
+    ArrayStack_Destroy(game->history);
+    free(game);
+}
+
+ChessResult ChessGame_SetDefaultSettings(ChessGame *game) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    game->settings.mode = CHESS_MODE_1_PLAYER;
+    game->settings.difficulty = CHESS_DIFFICULTY_EASY;
+    game->settings.userColor = CHESS_PLAYER_COLOR_WHITE;
+    return CHESS_SUCCESS;
+}
+
+ChessResult ChessGame_SetGameMode(ChessGame *game, ChessMode mode) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (mode < CHESS_MODE_1_PLAYER) return CHESS_INVALID_ARGUMENT;
+    if (mode > CHESS_MODE_2_PLAYER) return CHESS_INVALID_ARGUMENT;
+    game->settings.mode = mode;
+    return CHESS_SUCCESS;
+}
+
+ChessResult ChessGame_SetDifficulty(ChessGame *game, ChessDifficulty difficulty) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (difficulty < CHESS_DIFFICULTY_AMATEUR) return CHESS_INVALID_ARGUMENT;
+    if (difficulty > CHESS_DIFFICULTY_EXPERT) return CHESS_INVALID_ARGUMENT;
+    game->settings.difficulty = difficulty;
+    return CHESS_SUCCESS;
+}
+
+ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (userColor < CHESS_PLAYER_COLOR_BLACK) return CHESS_INVALID_ARGUMENT;
+    if (userColor > CHESS_PLAYER_COLOR_WHITE) return CHESS_INVALID_ARGUMENT;
+    game->settings.userColor = userColor;
+    return CHESS_SUCCESS;
 }
 
 ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
@@ -268,6 +266,7 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     ChessResult isValidResult = ChessGame_IsValidMove(game, move);
     if (isValidResult != CHESS_SUCCESS) return isValidResult;
     pseudoDoMove(game, move);
+    // TODO: check for CHECKMATE
     return CHESS_SUCCESS;
 }
 
@@ -276,6 +275,14 @@ ChessResult ChessGame_UndoMove(ChessGame *game) {
     ChessMove *move = ArrayStack_Pop(game->history);
     game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = move->capturedPiece; 
+    return CHESS_SUCCESS;
+}
+
+ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack *stack) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    // TODO: implement
+    (void)pos;
+    (void)stack;
     return CHESS_SUCCESS;
 }
 
