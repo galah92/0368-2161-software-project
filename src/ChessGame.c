@@ -118,10 +118,21 @@ int isValidPawnMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove
 int isValidRookMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
     int horDiff = move.from.x - move.to.x;
     int verDiff = move.from.y - move.to.y;
-    
-    (void)board;
-    (void)move;
-    return 0;
+    if ((horDiff != 0) ^ (verDiff != 0)) return 0; // exclusive ver / hor move
+    if (horDiff != 0) { // check there isn't overleap
+        int start = move.from.x < move.to.x ? move.from.x + 1 : move.to.x + 1;
+        int end = move.from.x < move.to.x ? move.to.x : move.from.x;
+        for (int i = start; i < end; i++) {
+            if (board[i][move.from.y].type != CHESS_PIECE_TYPE_NONE) return 0;
+        }
+    } else { // verDiff != 0
+        int start = move.from.y < move.to.y ? move.from.y + 1 : move.to.y + 1;
+        int end = move.from.y < move.to.y ? move.to.y : move.from.y;
+        for (int i = start + 1; i < end; i++) {
+            if (board[move.from.x][i].type != CHESS_PIECE_TYPE_NONE) return 0;
+        }
+    }
+    return 1;
 }
 
 int isValidKnightMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
