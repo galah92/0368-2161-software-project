@@ -107,7 +107,8 @@ int isValidPawnMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove
     int isInStartPos = move.from.y == (color == CHESS_PLAYER_COLOR_WHITE ? 1 : 6);
     int horDiff = (move.from.x - move.to.x) * (color == CHESS_PLAYER_COLOR_WHITE ? 1 : -1);
     int verDiff = (move.from.y - move.to.y) * (color == CHESS_PLAYER_COLOR_WHITE ? 1 : -1);
-    int isCapture = board[move.to.x][move.to.y].type != CHESS_PIECE_TYPE_NONE;
+    int isCapture = board[move.to.x][move.to.y].type != CHESS_PIECE_TYPE_NONE &&
+        color != board[move.to.x][move.to.y].color;
     int regularMove = !isCapture && verDiff == 1 && horDiff == 0;
     int startingMove = !isCapture && isInStartPos && verDiff == 2 && horDiff == 0;
     int capturingMove = !isCapture && verDiff == 1 && horDiff == 1;
