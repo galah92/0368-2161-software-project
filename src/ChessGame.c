@@ -4,6 +4,18 @@
 
 
 void initChessBoard(ChessGame *game) {
+    game->board[2][0].type = game->board[2][1].type = game->board[2][2].type = game->board[2][3].type =
+    game->board[2][4].type = game->board[2][5].type = game->board[2][6].type = game->board[2][7].type =
+    game->board[3][0].type = game->board[3][1].type = game->board[3][2].type = game->board[3][3].type =
+    game->board[3][4].type = game->board[3][5].type = game->board[3][6].type = game->board[3][7].type =
+    game->board[4][0].type = game->board[4][1].type = game->board[4][2].type = game->board[4][3].type =
+    game->board[4][4].type = game->board[4][5].type = game->board[4][6].type = game->board[4][7].type =
+    game->board[5][0].type = game->board[5][1].type = game->board[5][2].type = game->board[5][3].type =
+    game->board[5][4].type = game->board[5][5].type = game->board[5][6].type = game->board[5][7].type = CHESS_PIECE_TYPE_NONE;
+    game->board[1][0].type = game->board[1][1].type = game->board[1][2].type = game->board[1][3].type =
+    game->board[1][4].type = game->board[1][5].type = game->board[1][6].type = game->board[1][7].type = CHESS_PIECE_TYPE_PAWN;
+    game->board[6][0].type = game->board[6][1].type = game->board[6][2].type = game->board[6][3].type =
+    game->board[6][4].type = game->board[6][5].type = game->board[6][6].type = game->board[6][7].type = CHESS_PIECE_TYPE_PAWN;
     game->board[0][0].type = game->board[0][7].type = CHESS_PIECE_TYPE_ROOK;
     game->board[0][1].type = game->board[0][6].type = CHESS_PIECE_TYPE_KNIGHT;
     game->board[0][2].type = game->board[0][5].type = CHESS_PIECE_TYPE_BISHOP;
@@ -12,14 +24,14 @@ void initChessBoard(ChessGame *game) {
     game->board[7][2].type = game->board[7][5].type = CHESS_PIECE_TYPE_BISHOP;
     game->board[0][3].type = game->board[7][3].type = CHESS_PIECE_TYPE_QUEEN;
     game->board[0][4].type = game->board[7][4].type = CHESS_PIECE_TYPE_KING;
-    game->board[0][0].color = game->board[0][7].color =
-    game->board[0][1].color = game->board[0][6].color =
-    game->board[0][2].color = game->board[0][5].color =
-    game->board[0][3].color = game->board[0][4].color = CHESS_PLAYER_COLOR_WHITE;
-    game->board[1][0].color = game->board[1][7].color =
-    game->board[1][1].color = game->board[1][6].color =
-    game->board[1][2].color = game->board[1][5].color =
-    game->board[1][3].color = game->board[1][4].color = CHESS_PLAYER_COLOR_BLACK;
+    game->board[0][0].color = game->board[0][1].color = game->board[0][2].color = game->board[0][3].color =
+    game->board[0][4].color = game->board[0][5].color = game->board[0][6].color = game->board[0][7].color = 
+    game->board[1][0].color = game->board[1][1].color = game->board[1][2].color = game->board[1][3].color =
+    game->board[1][4].color = game->board[1][5].color = game->board[1][6].color = game->board[1][7].color = CHESS_PLAYER_COLOR_WHITE;
+    game->board[6][0].color = game->board[6][1].color = game->board[6][2].color = game->board[6][3].color =
+    game->board[6][4].color = game->board[6][5].color = game->board[6][6].color = game->board[6][7].color = 
+    game->board[7][0].color = game->board[7][1].color = game->board[7][2].color = game->board[7][3].color =
+    game->board[7][4].color = game->board[7][5].color = game->board[7][6].color = game->board[7][7].color = CHESS_PLAYER_COLOR_BLACK;
 }
 
 ChessGame* ChessGame_Create() {
