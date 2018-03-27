@@ -206,14 +206,25 @@ int isValidPieceMove(ChessGame *game, ChessMove move) {
     }
 }
 
+ChessBoardPos getKingPosition(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessPlayerColor color){
+    for (int i = 0 ; i < CHESS_GAME_GRID; i++) {
+        for (int j = 0; j < CHESS_GAME_GRID; j++) {
+            if (board[i][j].type == CHESS_PIECE_TYPE_KING && board[i][j].color == color) {
+                return (ChessBoardPos){ .x = i, .y = j };
+            }
+        }
+    }
+    return (ChessBoardPos){ .x = -1, .y = -1 }; // can't happen
+}
+
 int isKingThreatened(ChessGame *game) {
-    ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID] = game->board;
+    // ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID] = game->board;
     ChessPlayerColor playerColor = game->currentTurn;
     ChessPlayerColor opponentColor = 3 - playerColor;
-    ChessMove move = { .to = getKingPosition(board, opponentColor) };
+    ChessMove move = { .to = getKingPosition(game->board, opponentColor) };
     for (int i = 0; i < CHESS_GAME_GRID; i++) {
         for (int j = 0; i < CHESS_GAME_GRID; i++) {
-            if (board[i][j].color == playerColor) {
+            if (game->board[i][j].color == playerColor) {
                 move.from.x = i;
                 move.from.y = j;
                 if (isValidPieceMove(game, move)) return 0;
@@ -264,16 +275,6 @@ ChessGameResult ChessGame_UndoMove(ChessGame *game) {
     return CHESS_GAME_SUCCESS;
 }
 
-ChessBoardPos getKingPosition(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessPlayerColor color){
-    for (int i = 0 ; i < CHESS_GAME_GRID; i++){
-        for (int j = 0; j < CHESS_GAME_GRID; j++){
-            if (board[i][j].type == CHESS_PIECE_TYPE_KING && board[i][j].color == color){
-                ChessBoardPos pos = {.x = i, .y = j};
-                return pos;
-            }
-        }
-    }
-}
 // ============================================================================
 // TODO: move to the right module
 
