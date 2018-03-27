@@ -37,11 +37,11 @@ void initChessBoard(ChessGame *game) {
 ChessGame* ChessGame_Create() {
     ChessGame *game = malloc(sizeof(ChessGame));
     if (!game) return NULL;
-    game->status = CG_STATUS_RUNNING;
+    game->status = CHESS_STATUS_RUNNING;
     ChessGame_SetDefaultSettings(game);
     initChessBoard(game);
-    game->currentTurn = CHESS_PLAYER_COLOR_WHITE;
-    game->history = FSAStack_Create(CHESS_GAME_HISTORY_SIZE, sizeof(ChessMove));
+    game->turn = CHESS_PLAYER_COLOR_WHITE;
+    game->history = FSAStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
     if (!game->history) {
         ChessGame_Destroy(game);
         return NULL;
@@ -55,49 +55,49 @@ void ChessGame_Destroy(ChessGame *game) {
     free(game);
 }
 
-ChessGameResult ChessGame_SetDefaultSettings(ChessGame *game) {
-    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
-    game->settings.mode = CHESS_GAME_MODE_1_PLAYER;
-    game->settings.difficulty = CHESS_GAME_DIFFICULTY_EASY;
+ChessResult ChessGame_SetDefaultSettings(ChessGame *game) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    game->settings.mode = CHESS_MODE_1_PLAYER;
+    game->settings.difficulty = CHESS_DIFFICULTY_EASY;
     game->settings.userColor = CHESS_PLAYER_COLOR_WHITE;
-    return CHESS_GAME_SUCCESS;
+    return CHESS_SUCCESS;
 }
 
-ChessGameResult ChessGame_SetGameMode(ChessGame *game, ChessGameMode mode) {
-    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
-    if (mode < CHESS_GAME_MODE_1_PLAYER) return CHESS_GAME_INVALID_ARGUMENT;
-    if (mode > CHESS_GAME_MODE_2_PLAYER) return CHESS_GAME_INVALID_ARGUMENT;
+ChessResult ChessGame_SetGameMode(ChessGame *game, ChessMode mode) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (mode < CHESS_MODE_1_PLAYER) return CHESS_INVALID_ARGUMENT;
+    if (mode > CHESS_MODE_2_PLAYER) return CHESS_INVALID_ARGUMENT;
     game->settings.mode = mode;
-    return CHESS_GAME_SUCCESS;
+    return CHESS_SUCCESS;
 }
 
-ChessGameResult ChessGame_SetDifficulty(ChessGame *game, ChessGameDifficulty difficulty) {
-    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
-    if (difficulty < CHESS_GAME_DIFFICULTY_AMATEUR) return CHESS_GAME_INVALID_ARGUMENT;
-    if (difficulty > CHESS_GAME_DIFFICULTY_EXPERT) return CHESS_GAME_INVALID_ARGUMENT;
+ChessResult ChessGame_SetDifficulty(ChessGame *game, ChessDifficulty difficulty) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (difficulty < CHESS_DIFFICULTY_AMATEUR) return CHESS_INVALID_ARGUMENT;
+    if (difficulty > CHESS_DIFFICULTY_EXPERT) return CHESS_INVALID_ARGUMENT;
     game->settings.difficulty = difficulty;
-    return CHESS_GAME_SUCCESS;
+    return CHESS_SUCCESS;
 }
 
-ChessGameResult ChessGame_SetUserColor(ChessGame *game, ChessPlayerColor userColor) {
-    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
-    if (userColor < CHESS_PLAYER_COLOR_BLACK) return CHESS_GAME_INVALID_ARGUMENT;
-    if (userColor > CHESS_PLAYER_COLOR_WHITE) return CHESS_GAME_INVALID_ARGUMENT;
+ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (userColor < CHESS_PLAYER_COLOR_BLACK) return CHESS_INVALID_ARGUMENT;
+    if (userColor > CHESS_PLAYER_COLOR_WHITE) return CHESS_INVALID_ARGUMENT;
     game->settings.userColor = userColor;
-    return CHESS_GAME_SUCCESS;
+    return CHESS_SUCCESS;
 }
 
 int isValidPositionsOnBoard(ChessMove move) {
-    return move.from.x >= 0 && move.from.x < CHESS_GAME_GRID &&
-           move.from.y >= 0 && move.from.y < CHESS_GAME_GRID &&
-           move.to.y >= 0 && move.to.y < CHESS_GAME_GRID &&
-           move.to.y >= 0 && move.to.y < CHESS_GAME_GRID;
+    return move.from.x >= 0 && move.from.x < CHESS_GRID &&
+           move.from.y >= 0 && move.from.y < CHESS_GRID &&
+           move.to.y >= 0 && move.to.y < CHESS_GRID &&
+           move.to.y >= 0 && move.to.y < CHESS_GRID;
 }
 
 int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
     if (!game) return 0; // sanity check
     return game->board[move.from.x][move.from.y].type != CHESS_PIECE_TYPE_NONE &&
-           game->board[move.from.x][move.from.y].color == game->currentTurn;
+           game->board[move.from.x][move.from.y].color == game->turn;
 }
 
 /**
@@ -110,13 +110,13 @@ int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
  */
 int isValidToPosition(ChessGame *game, ChessMove move) {
     if (!game) return 0; // sanity check
-    ChessPlayerColor fromColor = game->board[move.from.x][move.from.y].color;
-    ChessPlayerColor toColor = game->board[move.to.x][move.to.y].color;
+    ChessColor fromColor = game->board[move.from.x][move.from.y].color;
+    ChessColor toColor = game->board[move.to.x][move.to.y].color;
     return fromColor != toColor;
 }
 
 int isValidPawnMove(ChessGame *game, ChessMove move) {
-    ChessPlayerColor color = game->board[move.from.x][move.from.y].color;
+    ChessColor color = game->board[move.from.x][move.from.y].color;
     int isInStartPos = move.from.y == (color == CHESS_PLAYER_COLOR_WHITE ? 1 : 6);
     int horDiff = abs(move.from.x - move.to.x);
     int verDiff = (move.from.y - move.to.y) * (color == CHESS_PLAYER_COLOR_WHITE ? 1 : -1);
@@ -204,9 +204,9 @@ int isValidPieceMove(ChessGame *game, ChessMove move) {
     }
 }
 
-ChessBoardPos getKingPosition(ChessGame *game, ChessPlayerColor color){
-    for (int i = 0 ; i < CHESS_GAME_GRID; i++) {
-        for (int j = 0; j < CHESS_GAME_GRID; j++) {
+ChessBoardPos getKingPosition(ChessGame *game, ChessColor color){
+    for (int i = 0 ; i < CHESS_GRID; i++) {
+        for (int j = 0; j < CHESS_GRID; j++) {
             if (game->board[i][j].type == CHESS_PIECE_TYPE_KING &&
                 game->board[i][j].color == color) {
                 return (ChessBoardPos){ .x = i, .y = j };
@@ -216,19 +216,19 @@ ChessBoardPos getKingPosition(ChessGame *game, ChessPlayerColor color){
     return (ChessBoardPos){ .x = -1, .y = -1 }; // can't happen
 }
 
-int isKingThreatened(ChessGame *game, ChessPlayerColor playerColor) {
-    ChessPlayerColor opponentColor = 3 - playerColor;
+int isKingThreatened(ChessGame *game, ChessColor playerColor) {
+    ChessColor opponentColor = 3 - playerColor;
     ChessMove move = { .to = getKingPosition(game, opponentColor) };
-    for (int i = 0; i < CHESS_GAME_GRID; i++) {
-        for (int j = 0; i < CHESS_GAME_GRID; i++) {
+    for (int i = 0; i < CHESS_GRID; i++) {
+        for (int j = 0; i < CHESS_GRID; i++) {
             if (game->board[i][j].color == playerColor) {
                 move.from.x = i;
                 move.from.y = j;
-                if (isValidPieceMove(game, move)) return 0;
+                if (isValidPieceMove(game, move)) return 1;
             }
         }
     }
-    return 1;
+    return 0;
 }
 
 void pseudoDoMove(ChessGame *game, ChessMove move) {
@@ -236,44 +236,44 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
     move.capturedPiece = game->board[move.to.x][move.to.y];
     game->board[move.to.x][move.to.y] = game->board[move.from.x][move.from.y];
     game->board[move.from.x][move.from.y].type = CHESS_PIECE_TYPE_NONE;
-    game->currentTurn = 3 - game->currentTurn; // elegant way to switch player
+    game->turn = 3 - game->turn; // elegant way to switch player
     FSAStack_Push(game->history, &move); // update history
-    if (isKingThreatened(game, game->currentTurn)) {
-        game->status = CG_STATUS_CHECK;
+    if (isKingThreatened(game, game->turn)) {
+        game->status = CHESS_STATUS_CHECK;
         // TODO: check if opponent has a way to escape, else change
-        // status to CG_STATUS_CHECKMATE
+        // status to CHESS_STATUS_CHECKMATE
     }
 }
 
-ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
-    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
-    if (!isValidPositionsOnBoard(move)) return CHESS_GAME_INVALID_POSITION;
-    if (!isMoveOfPlayerPiece(game, move)) return CHESS_GAME_EMPTY_POSITION;
-    if (!isValidToPosition(game, move)) return CHESS_GAME_ILLEGAL_MOVE;
-    if (!isValidPieceMove(game, move)) return CHESS_GAME_ILLEGAL_MOVE;
+ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (!isValidPositionsOnBoard(move)) return CHESS_INVALID_POSITION;
+    if (!isMoveOfPlayerPiece(game, move)) return CHESS_EMPTY_POSITION;
+    if (!isValidToPosition(game, move)) return CHESS_ILLEGAL_MOVE;
+    if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
     pseudoDoMove(game, move);
-    int isKingWillBeThreatened = isKingThreatened(game, !game->currentTurn);
+    int isKingWillBeThreatened = isKingThreatened(game, !game->turn);
     ChessGame_UndoMove(game);
-    if (game->status == CG_STATUS_CHECK && isKingWillBeThreatened) {
-        return CHESS_GAME_KING_IS_STILL_THREATENED; 
+    if (game->status == CHESS_STATUS_CHECK && isKingWillBeThreatened) {
+        return CHESS_KING_IS_STILL_THREATENED; 
     } else if (isKingWillBeThreatened) {
-        return CHESS_GAME_KING_WILL_BE_THREATENED;
+        return CHESS_KING_WILL_BE_THREATENED;
     }
-    return CHESS_GAME_SUCCESS;
+    return CHESS_SUCCESS;
 }
 
-ChessGameResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
-    ChessGameResult isValidResult = ChessGame_IsValidMove(game, move);
-    if (isValidResult != CHESS_GAME_SUCCESS) return isValidResult;
+ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
+    ChessResult isValidResult = ChessGame_IsValidMove(game, move);
+    if (isValidResult != CHESS_SUCCESS) return isValidResult;
     pseudoDoMove(game, move);
-    return CHESS_GAME_SUCCESS;
+    return CHESS_SUCCESS;
 }
 
-ChessGameResult ChessGame_UndoMove(ChessGame *game) {
+ChessResult ChessGame_UndoMove(ChessGame *game) {
     ChessMove *move = FSAStack_Pop(game->history);
     game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = move->capturedPiece; 
-    return CHESS_GAME_SUCCESS;
+    return CHESS_SUCCESS;
 }
 
 // ============================================================================
@@ -282,14 +282,14 @@ ChessGameResult ChessGame_UndoMove(ChessGame *game) {
 #define SETTINGS_STRING_1_PLAYER "SETTINGS:\nGAME_MODE: 1-player\nDIFFICULTY: %d\nUSER_COLOR: %s\n"
 #define SETTINGS_STRING_2_PLAYER "SETTINGS:\nGAME_MODE: 2-player\n"
 
-ChessGameResult ChessGame_PrintSettings(ChessGame *game) {
-    if (!game) return CHESS_GAME_INVALID_ARGUMENT;
-    if (game->settings.mode == CHESS_GAME_MODE_2_PLAYER) {
+ChessResult ChessGame_PrintSettings(ChessGame *game) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (game->settings.mode == CHESS_MODE_2_PLAYER) {
         printf(SETTINGS_STRING_2_PLAYER);
-    } else if (game->settings.mode == CHESS_GAME_MODE_1_PLAYER) {
+    } else if (game->settings.mode == CHESS_MODE_1_PLAYER) {
         int difficulty = game->settings.difficulty + 1;
         char *userColor = game->settings.userColor == CHESS_PLAYER_COLOR_BLACK ? "black"  : "white";
         printf(SETTINGS_STRING_1_PLAYER, difficulty, userColor);
     }
-    return CHESS_GAME_SUCCESS;
+    return CHESS_SUCCESS;
 }
