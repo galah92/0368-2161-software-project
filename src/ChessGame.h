@@ -42,10 +42,10 @@ typedef struct ChessGameSettings {
 } ChessGameSettings;
 
 typedef enum ChessGameStatus {
-    CHS_RUNNING,
-    CHS_PLAYER1_WINNER,
-    CHS_PLAYER2_WINNER,
-    CHS_TIE,
+    CG_STATUS_RUNNING,
+    CG_STATUS_CHECK,
+    CG_STATUS_CHECKMATE,
+    CG_STATUS_DRAW,
 } ChessGameStatus;
 
 typedef enum ChessTileType {
@@ -68,8 +68,6 @@ typedef struct ChessGame {
     ChessGameSettings settings;
     ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID];
     ChessPlayerColor currentTurn;
-    int isWhiteKingThreatened;
-    int isBlackKingThreatened;
     FSAStack *history;
 } ChessGame;
 
