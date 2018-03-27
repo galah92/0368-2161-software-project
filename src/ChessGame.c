@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "ChessGame.h"
 
 
@@ -87,15 +88,15 @@ ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor) {
     return CHESS_SUCCESS;
 }
 
-int isValidPositionsOnBoard(ChessMove move) {
+bool isValidPositionsOnBoard(ChessMove move) {
     return move.from.x >= 0 && move.from.x < CHESS_GRID &&
            move.from.y >= 0 && move.from.y < CHESS_GRID &&
            move.to.y >= 0 && move.to.y < CHESS_GRID &&
            move.to.y >= 0 && move.to.y < CHESS_GRID;
 }
 
-int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
-    if (!game) return 0; // sanity check
+bool isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
+    if (!game) return false; // sanity check
     return game->board[move.from.x][move.from.y].piece != CHESS_PIECE_NONE &&
            game->board[move.from.x][move.from.y].color == game->turn;
 }
@@ -108,14 +109,14 @@ int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
  * @return              0 if the 'end' move location contains a friendly piece
  *                      1 otherwise
  */
-int isValidToPosition(ChessGame *game, ChessMove move) {
-    if (!game) return 0; // sanity check
+bool isValidToPosition(ChessGame *game, ChessMove move) {
+    if (!game) return false; // sanity check
     ChessColor fromColor = game->board[move.from.x][move.from.y].color;
     ChessColor toColor = game->board[move.to.x][move.to.y].color;
     return fromColor != toColor;
 }
 
-int isValidPawnMove(ChessGame *game, ChessMove move) {
+bool isValidPawnMove(ChessGame *game, ChessMove move) {
     ChessColor color = game->board[move.from.x][move.from.y].color;
     int isInStartPos = move.from.y == (color == CHESS_PLAYER_COLOR_WHITE ? 1 : 6);
     int horDiff = abs(move.from.x - move.to.x);
@@ -128,7 +129,7 @@ int isValidPawnMove(ChessGame *game, ChessMove move) {
     return regularMove || startingMove || capturingMove;
 }
 
-int isValidRookMove(ChessGame *game, ChessMove move) {
+bool isValidRookMove(ChessGame *game, ChessMove move) {
     int horDiff = move.from.x - move.to.x;
     int verDiff = move.from.y - move.to.y;
     if ((horDiff != 0) ^ (verDiff != 0)) return 0; // exclusive ver / hor move
@@ -136,26 +137,26 @@ int isValidRookMove(ChessGame *game, ChessMove move) {
         int start = move.from.x < move.to.x ? move.from.x + 1 : move.to.x + 1;
         int end = move.from.x < move.to.x ? move.to.x : move.from.x;
         for (int i = start; i < end; i++) {
-            if (game->board[i][move.from.y].piece != CHESS_PIECE_NONE) return 0;
+            if (game->board[i][move.from.y].piece != CHESS_PIECE_NONE) return false;
         }
     } else { // verDiff != 0
         int start = move.from.y < move.to.y ? move.from.y + 1 : move.to.y + 1;
         int end = move.from.y < move.to.y ? move.to.y : move.from.y;
         for (int i = start + 1; i < end; i++) {
-            if (game->board[move.from.x][i].piece != CHESS_PIECE_NONE) return 0;
+            if (game->board[move.from.x][i].piece != CHESS_PIECE_NONE) return false;
         }
     }
-    return 1;
+    return true;
 }
 
-int isValidKnightMove(ChessGame *game, ChessMove move) {
+bool isValidKnightMove(ChessGame *game, ChessMove move) {
     (void)game; // TODO: consider remove that argument as it's unused.
     int horDiff = abs(move.from.x - move.to.x);
     int verDiff = abs(move.from.y - move.to.y);
     return (verDiff == 2 && horDiff == 1) ^ (horDiff == 2 && verDiff == 1);
 }
 
-int isValidBishopMove(ChessGame *game, ChessMove move) {
+bool isValidBishopMove(ChessGame *game, ChessMove move) {
     int horAbs = abs(move.from.x - move.to.x);
     int verAbs = abs(move.from.y - move.to.y);
     if (horAbs != verAbs) return 0;
@@ -168,22 +169,22 @@ int isValidBishopMove(ChessGame *game, ChessMove move) {
             if (game->board[i][j].piece != CHESS_PIECE_NONE) return 0;
         }
     }
-    return 1;
+    return true;
 }
 
-int isValidQueenMove(ChessGame *game, ChessMove move) {
+bool isValidQueenMove(ChessGame *game, ChessMove move) {
     return isValidRookMove(game, move) || isValidBishopMove(game, move);
 }
 
-int isValidKingMove(ChessGame *game, ChessMove move) {
+bool isValidKingMove(ChessGame *game, ChessMove move) {
     (void)game; // TODO: consider remove that argument as it's unused.
     int horDiff = abs(move.from.x - move.to.x);
     int verDiff = abs(move.from.y - move.to.y);
     return horDiff <= 1 && verDiff <= 1 && ((horDiff > 0) ^ (verDiff > 0));
 }
 
-int isValidPieceMove(ChessGame *game, ChessMove move) {
-    if (!game) return 0;
+bool isValidPieceMove(ChessGame *game, ChessMove move) {
+    if (!game) return false;
     switch (game->board[move.from.x][move.from.y].piece)
     {
         case CHESS_PIECE_PAWN:
@@ -200,11 +201,12 @@ int isValidPieceMove(ChessGame *game, ChessMove move) {
             return isValidKingMove(game, move);
         case CHESS_PIECE_NONE:
         default:
-            return 0; // shouldn't happen
+            return false; // shouldn't happen
     }
 }
 
 ChessBoardPos getKingPosition(ChessGame *game, ChessColor color){
+    if (!game) return (ChessBoardPos){ .x = -1, .y = -1 };
     for (int i = 0 ; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             if (game->board[i][j].piece == CHESS_PIECE_KING &&
@@ -216,7 +218,7 @@ ChessBoardPos getKingPosition(ChessGame *game, ChessColor color){
     return (ChessBoardPos){ .x = -1, .y = -1 }; // can't happen
 }
 
-int isKingThreatened(ChessGame *game, ChessColor playerColor) {
+bool isKingThreatened(ChessGame *game, ChessColor playerColor) {
     ChessColor opponentColor = 3 - playerColor;
     ChessMove move = { .to = getKingPosition(game, opponentColor) };
     for (int i = 0; i < CHESS_GRID; i++) {
@@ -224,11 +226,11 @@ int isKingThreatened(ChessGame *game, ChessColor playerColor) {
             if (game->board[i][j].color == playerColor) {
                 move.from.x = i;
                 move.from.y = j;
-                if (isValidPieceMove(game, move)) return 1;
+                if (isValidPieceMove(game, move)) return true;
             }
         }
     }
-    return 0;
+    return false;
 }
 
 void pseudoDoMove(ChessGame *game, ChessMove move) {
@@ -252,7 +254,7 @@ ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     if (!isValidToPosition(game, move)) return CHESS_ILLEGAL_MOVE;
     if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
     pseudoDoMove(game, move);
-    int isKingWillBeThreatened = isKingThreatened(game, !game->turn);
+    bool isKingWillBeThreatened = isKingThreatened(game, !game->turn);
     ChessGame_UndoMove(game);
     if (game->status == CHESS_STATUS_CHECK && isKingWillBeThreatened) {
         return CHESS_KING_IS_STILL_THREATENED; 
@@ -270,6 +272,7 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
 }
 
 ChessResult ChessGame_UndoMove(ChessGame *game) {
+    if (ArrayStack_IsEmpty(game->history)) return CHESS_EMPTY_HISTORY;
     ChessMove *move = ArrayStack_Pop(game->history);
     game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = move->capturedPiece; 
