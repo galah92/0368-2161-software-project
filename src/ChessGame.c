@@ -102,6 +102,21 @@ int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
            game->board[move.from.x][move.from.y].color == game->currentTurn;
 }
 
+/**
+ * Check whether a given moving piece isn't stepping on a friendly piece.
+ * A friendly piece is a piece that shares the same color as the moving piece.
+ * @param   game        the game instance which provides the board
+ * @param   move        the move to check it's legitimacy
+ * @return              0 if the 'end' move location contains a friendly piece
+ *                      1 otherwise
+ */
+int isValidToPosition(ChessGame *game, ChessMove move) {
+    if (!game) return 0; // sanity check
+    ChessPlayerColor fromColor = game->board[move.from.x][move.from.y].color;
+    ChessPlayerColor toColor = game->board[move.to.x][move.to.y].color;
+    return fromColor != toColor;
+}
+
 int isValidPawnMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
     ChessPlayerColor color = board[move.from.x][move.from.y].color;
     int isInStartPos = move.from.y == (color == CHESS_PLAYER_COLOR_WHITE ? 1 : 6);
@@ -136,13 +151,10 @@ int isValidRookMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove
 }
 
 int isValidKnightMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
-    ChessPlayerColor fromColor = board[move.from.x][move.from.y].color;
-    ChessPlayerColor toColor = board[move.to.x][move.to.y].color;
+    (void)board; // TODO: consider remove that argument as it's unused.
     int horDiff = abs(move.from.x - move.to.x);
     int verDiff = abs(move.from.y - move.to.y);
-    int verMove = (verDiff == 2) && (horDiff == 1); //2 vertical& 1 horizontal move
-    int horMove = (horDiff == 2) && (verDiff == 1); //1 vertical& 2 horizontal move
-    return (fromColor != toColor) && (verMove || horMove);
+    return (verDiff == 2 && horDiff == 1) ^ (horDiff == 2 && verDiff == 1);
 }
 
 int isValidBishopMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
@@ -199,6 +211,7 @@ ChessGameResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     if (!game) return CHESS_GAME_INVALID_ARGUMENT;
     if (!isValidPositionsOnBoard(move)) return CHESS_GAME_INVALID_POSITION;
     if (!isMoveOfPlayerPiece(game, move)) return CHESS_GAME_EMPTY_POSITION;
+    if (!isValidToPosition(game, move)) return CHESS_GAME_ILLEGAL_MOVE;
     if (!isValidPieceMove(game, move)) return CHESS_GAME_ILLEGAL_MOVE;
     // move specific piece
     // int isKingWillBeThreatened = isKingThretened(game->currentTurn);
