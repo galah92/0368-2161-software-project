@@ -125,9 +125,13 @@ int isValidRookMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove
 }
 
 int isValidKnightMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
-    (void)board;
-    (void)move;
-    return 0;
+    ChessPlayerColor fromColor = board[move.from.x][move.from.y].color;
+    ChessPlayerColor toColor = board[move.to.x][move.to.y].color;
+    int horDiff = abs(move.from.x - move.to.x);
+    int verDiff = abs(move.from.y - move.to.y);
+    int verMove = (verDiff == 2) && (horDiff == 1); //2 vertical& 1 horizontal move
+    int horMove = (horDiff == 2) && (verDiff == 1); //1 vertical& 2 horizontal move
+    return (fromColor != toColor) && (verMove || horMove);
 }
 
 int isValidBishopMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
