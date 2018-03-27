@@ -105,7 +105,7 @@ int isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
 int isValidPawnMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
     ChessPlayerColor color = board[move.from.x][move.from.y].color;
     int isInStartPos = move.from.y == (color == CHESS_PLAYER_COLOR_WHITE ? 1 : 6);
-    int horDiff = (move.from.x - move.to.x) * (color == CHESS_PLAYER_COLOR_WHITE ? 1 : -1);
+    int horDiff = abs(move.from.x - move.to.x);
     int verDiff = (move.from.y - move.to.y) * (color == CHESS_PLAYER_COLOR_WHITE ? 1 : -1);
     int isCapture = board[move.to.x][move.to.y].type != CHESS_PIECE_TYPE_NONE &&
         color != board[move.to.x][move.to.y].color;
@@ -116,6 +116,9 @@ int isValidPawnMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove
 }
 
 int isValidRookMove(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessMove move) {
+    int horDiff = move.from.x - move.to.x;
+    int verDiff = move.from.y - move.to.y;
+    
     (void)board;
     (void)move;
     return 0;
