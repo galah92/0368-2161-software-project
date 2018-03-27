@@ -247,6 +247,16 @@ ChessGameResult ChessGame_UndoMove(ChessGame *game) {
     return CHESS_GAME_SUCCESS;
 }
 
+ChessBoardPos getKingPosition(ChessTile board[CHESS_GAME_GRID][CHESS_GAME_GRID], ChessPlayerColor color){
+    for (int i = 0 ; i < CHESS_GAME_GRID; i++){
+        for (int j = 0; j < CHESS_GAME_GRID; j++){
+            if (board[i][j].type == CHESS_PIECE_TYPE_KING && board[i][j].color == color){
+                ChessBoardPos pos = {.x = i, .y = j};
+                return pos;
+            }
+        }
+    }
+}
 // ============================================================================
 // TODO: move to the right module
 
