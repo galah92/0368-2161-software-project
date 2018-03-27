@@ -1,10 +1,10 @@
 #include <string.h>
-#include "FSAStack.h"
+#include "ArrayStack.h"
 
 #define BYTE unsigned char
 
 
-struct FSAStack {
+struct ArrayStack {
     BYTE *array;
     size_t dataSize;
 	unsigned int capacity;
@@ -12,50 +12,57 @@ struct FSAStack {
     unsigned int size;
 };
 
-
-FSAStack* FSAStack_Create(unsigned int capacity, size_t dataSize) {
-    FSAStack *this = malloc(sizeof(FSAStack));
+ArrayStack* ArrayStack_Create(unsigned int capacity, size_t dataSize) {
+    ArrayStack *this = malloc(sizeof(ArrayStack));
     if (!this) return NULL;
     this->dataSize = dataSize;
     this->capacity = capacity;
     this->start = this->size = 0;
     this->array = malloc(dataSize * capacity);
     if (!this->array) {
-        FSAStack_Destroy(this);
+        ArrayStack_Destroy(this);
         return NULL;
     }
     return this;
 }
 
-void FSAStack_Destroy(FSAStack* this) {
+void ArrayStack_Destroy(ArrayStack* this) {
     if (!this) return;
     if (this->array) free(this->array);
     free(this);
 }
 
-int FSAStack_IsFull(const FSAStack* this) {
+unsigned int ArrayStack_Capacity(const ArrayStack* stack) {
+    return stack->capacity;
+}
+
+unsigned int ArrayStack_Size(const ArrayStack* stack) {
+    return stack->size;
+}
+
+bool ArrayStack_IsFull(const ArrayStack* this) {
     if (!this) return 0;
     return this->size == this->capacity;
 }
 
-int FSAStack_IsEmpty(const FSAStack* this) {
+bool ArrayStack_IsEmpty(const ArrayStack* this) {
     if (!this) return 0;
     return this->size == 0;
 }
 
-void FSAStack_Push(FSAStack* this, void *data) {
+void ArrayStack_Push(ArrayStack* this, void *data) {
     if (!this) return;
     unsigned int offset = (this->start + this->size) % this->capacity;
     memcpy(this->array + offset * this->dataSize, data, this->dataSize);
-    if (FSAStack_IsFull(this)) {
+    if (ArrayStack_IsFull(this)) {
         this->start = (this->start + 1) % this->capacity;
     } else {
         this->size++;
     }
 }
 
-void* FSAStack_Pop(FSAStack* this) {
-    if (!this || FSAStack_IsEmpty(this)) return NULL;
+void* ArrayStack_Pop(ArrayStack* this) {
+    if (!this || ArrayStack_IsEmpty(this)) return NULL;
     this->size--;
     unsigned int offset = (this->start + this->size) % this->capacity;
     return this->array + offset * this->dataSize;

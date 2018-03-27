@@ -41,7 +41,7 @@ ChessGame* ChessGame_Create() {
     ChessGame_SetDefaultSettings(game);
     initChessBoard(game);
     game->turn = CHESS_PLAYER_COLOR_WHITE;
-    game->history = FSAStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
+    game->history = ArrayStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
     if (!game->history) {
         ChessGame_Destroy(game);
         return NULL;
@@ -51,7 +51,7 @@ ChessGame* ChessGame_Create() {
 
 void ChessGame_Destroy(ChessGame *game) {
     if (!game) return;
-    FSAStack_Destroy(game->history);
+    ArrayStack_Destroy(game->history);
     free(game);
 }
 
@@ -237,7 +237,7 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
     game->board[move.to.x][move.to.y] = game->board[move.from.x][move.from.y];
     game->board[move.from.x][move.from.y].piece = CHESS_PIECE_NONE;
     game->turn = 3 - game->turn; // elegant way to switch player
-    FSAStack_Push(game->history, &move); // update history
+    ArrayStack_Push(game->history, &move); // update history
     if (isKingThreatened(game, game->turn)) {
         game->status = CHESS_STATUS_CHECK;
         // TODO: check if opponent has a way to escape, else change
@@ -270,7 +270,7 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
 }
 
 ChessResult ChessGame_UndoMove(ChessGame *game) {
-    ChessMove *move = FSAStack_Pop(game->history);
+    ChessMove *move = ArrayStack_Pop(game->history);
     game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = move->capturedPiece; 
     return CHESS_SUCCESS;

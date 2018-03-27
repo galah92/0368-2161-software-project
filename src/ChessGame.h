@@ -1,7 +1,7 @@
 #ifndef CHESS_H_
 #define CHESS_H_
 
-#include "FSAStack.h"
+#include "ArrayStack.h"
 
 #define CHESS_GRID 8
 #define CHESS_HISTORY_SIZE 3
@@ -68,7 +68,7 @@ typedef struct ChessGame {
     ChessSettings settings;
     ChessColor turn;
     ChessTile board[CHESS_GRID][CHESS_GRID];
-    FSAStack *history;
+    ArrayStack *history;
 } ChessGame;
 
 typedef struct ChessBoardPos {
