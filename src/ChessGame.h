@@ -33,6 +33,7 @@ typedef enum ChessDifficulty {
 typedef enum ChessColor {
     CHESS_PLAYER_COLOR_WHITE,
     CHESS_PLAYER_COLOR_BLACK,
+    CHESS_PLAYER_COLOR_NONE,
 } ChessColor;
 
 typedef struct ChessSettings {
@@ -49,25 +50,26 @@ typedef enum ChessStatus {
 } ChessStatus;
 
 typedef enum ChessPiece {
-    CHESS_PIECE_NONE,
-    CHESS_PIECE_PAWN,
-    CHESS_PIECE_ROOK,
-    CHESS_PIECE_KNIGHT,
-    CHESS_PIECE_BISHOP,
-    CHESS_PIECE_QUEEN,
-    CHESS_PIECE_KING,
+    CHESS_PIECE_NONE = '_',
+    CHESS_PIECE_WHITE_PAWN = 'm',
+    CHESS_PIECE_WHITE_ROOK = 'r',
+    CHESS_PIECE_WHITE_KNIGHT = 'n',
+    CHESS_PIECE_WHITE_BISHOP = 'b',
+    CHESS_PIECE_WHITE_QUEEN = 'q',
+    CHESS_PIECE_WHITE_KING = 'k',
+    CHESS_PIECE_BLACK_PAWN = 'M',
+    CHESS_PIECE_BLACK_ROOK = 'R',
+    CHESS_PIECE_BLACK_KNIGHT = 'N',
+    CHESS_PIECE_BLACK_BISHOP = 'B',
+    CHESS_PIECE_BLACK_QUEEN = 'Q',
+    CHESS_PIECE_BLACK_KING = 'K',
 } ChessPiece;
-
-typedef struct ChessTile {
-    ChessPiece piece;
-    ChessColor color;
-} ChessTile;
 
 typedef struct ChessGame {
     ChessStatus status;
     ChessSettings settings;
     ChessColor turn;
-    ChessTile board[CHESS_GRID][CHESS_GRID];
+    ChessPiece board[CHESS_GRID][CHESS_GRID];
     ArrayStack *history;
 } ChessGame;
 
@@ -79,7 +81,7 @@ typedef struct ChessPos {
 typedef struct ChessMove {
     ChessPos from;
     ChessPos to;
-    ChessTile capturedPiece;
+    ChessPiece capturedPiece;
 } ChessMove;
 
 /**

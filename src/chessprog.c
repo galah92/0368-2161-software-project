@@ -3,7 +3,6 @@
 #include "GameCommand.h"
 // #include "GameManager.h"
 
-
 int main(int argc, const char *argv[]) {
     UIManager *uiManager = UIManager_Create(argc, argv);
     // GameManager *gameManager = GameManager_Create();
