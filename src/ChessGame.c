@@ -237,9 +237,11 @@ bool isCheckmate(ChessGame *game) {
     for (int i = 0; i < CHESS_GRID; i ++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             pos = (ChessPos){ .x = i, .y = j };
+            if (!isValidPositionOnBoard(pos)) continue;
             ChessResult res = ChessGame_GetMoves(game, pos, &possibleMoves);
-            if (res != CHESS_SUCCESS) return false;
-            if (!ArrayStack_IsEmpty(possibleMoves)) return false;
+            bool areThereMoves = !ArrayStack_IsEmpty(possibleMoves);
+            ArrayStack_Destroy(possibleMoves);
+            if (res != CHESS_SUCCESS || areThereMoves) return false;
         }
     }
     return true;
@@ -348,6 +350,10 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
         }
     }
     return CHESS_SUCCESS;
+}
+
+ChessResult ChessGame_SettingsString(ChessGame *game, char **string) {
+
 }
 
 // ============================================================================
