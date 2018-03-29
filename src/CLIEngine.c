@@ -51,8 +51,6 @@
 #define IN_STRING_QUIT                  "quit"
 
 #define INPUT_DELIMITERS                " \t\r\n"
-#define MOVE_INPUT_DELIMITERS           " \t\r\n<,>"
-
 
 struct CLIEngine {
     char input[GAME_COMMAND_MAX_LINE_LENGTH];
@@ -161,8 +159,13 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
             strcpy(command.path, token);
             break;  // TODO: consider check for more args and alert somehow
         case COMMAND_ARGS_MOVES:
+            if (!token || token[0] != '<'){
+                command.type = GAME_COMMAND_INVALID; // move command is invalid
+                break;
+            }
+
             for (int i = 0, argIndex = 0; i < GAME_COMMAND_ARGS_CAPACITY; i++) {
-                token = strtok(NULL, MOVE_INPUT_DELIMITERS);
+                
                 if (!token) break;  // end of args
                 if (i == 2){
                     if (strcmp("to",token)){
