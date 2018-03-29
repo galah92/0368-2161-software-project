@@ -51,6 +51,7 @@
 #define IN_STRING_QUIT                  "quit"
 
 #define INPUT_DELIMITERS                " \t\r\n"
+#define MOVE_INPUT_DELIMITERS           " \t\r\n<,>"
 
 
 struct CLIEngine {
@@ -90,6 +91,7 @@ GameCommandType strToCommandType(const char *str) {
 typedef enum GameCommandArgsType_t {
     COMMAND_ARGS_INTS,
     COMMAND_ARGS_STRING,
+    COMMAND_ARGS_MOVES,
     COMMAND_ARGS_NONE,
 } GameCommandArgsType;
 
@@ -99,13 +101,15 @@ GameCommandArgsType getCommandArgsType(const GameCommandType commandType) {
         case GAME_COMMAND_GAME_MODE:
         case GAME_COMMAND_DIFFICULTY:
         case GAME_COMMAND_USER_COLOR:
-        case GAME_COMMAND_MOVE:
-        case GAME_COMMAND_GET_MOVES:
             return COMMAND_ARGS_INTS;
         // COMMAND_ARGS_STRING
         case GAME_COMMAND_SAVE:
         case GAME_COMMAND_LOAD_GAME:
             return COMMAND_ARGS_STRING;
+        // COMMAND_ARGS_MOVES
+        case GAME_COMMAND_MOVE:
+        case GAME_COMMAND_GET_MOVES:
+            return COMMAND_ARGS_MOVES;
         // COMMAND_ARGS_NONE
         case GAME_COMMAND_DEFAULT_SETTINGS:
         case GAME_COMMAND_PRINT_SETTINGS:
@@ -156,6 +160,23 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
             token = strtok(NULL, INPUT_DELIMITERS);  // should be path string
             strcpy(command.path, token);
             break;  // TODO: consider check for more args and alert somehow
+        case COMMAND_ARGS_MOVES:
+            for (int i = 0, argIndex = 0; i < GAME_COMMAND_ARGS_CAPACITY; i++) {
+                token = strtok(NULL, MOVE_INPUT_DELIMITERS);
+                if (!token) break;  // end of args
+                if (i == 2){
+                    if (strcmp("to",token)){
+                        command.type = GAME_COMMAND_INVALID; // move command is invalid
+                        break;
+                    }
+                }
+                if (isInt(token)) {  // should be 1-8
+                    command.args[argIndex++] = atoi(token) - 1;
+                } else if (strlen(token) == 1) {  // should be 'A'-'H'
+                    command.args[argIndex++] = token[0] - 'A';
+                }
+            }
+            break;            
         case COMMAND_ARGS_NONE:
             break;
     }
