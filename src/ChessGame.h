@@ -175,12 +175,30 @@ ChessResult ChessGame_UndoMove(ChessGame *game);
  * The third argument will be redirecred to an ArrayStack* of ChessMove's
  * that should be ArrayList_Destory()'d (caller responsibility).
  * @param   game        the instance to calculate moves on
+ * @param   pos         the position to calculate moves from
+ * @param   moves       output parameter of the possible moves
  * return   CHESS_INVALID_ARGUMENT if game == NULL
  *          CHESS_INVALID_POSITION is pos is not on board. In that case,
  *              the stack won't be created
  *          CHESS_SUCCESS otherwise
  */
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack);
+
+/**
+ * Retrive a string representaion of a given ChessGame's ChessSettings.
+ * @param   game        the instance to calculate it's settings string
+ * @param   string      output parameter of the settings string
+ * return   CHESS_SUCCESS
+ */
+ChessResult ChessGame_SettingsString(ChessGame *game, char **string);
+
+/**
+ * Retrive a string representaion of a given ChessGame's board.
+ * @param   game        the instance to calculate it's board string
+ * @param   string      output parameter of the board string
+ * return   CHESS_SUCCESS
+ */
+ChessResult ChessGame_BoardString(ChessGame *game, char **string);
 
 
 #endif
