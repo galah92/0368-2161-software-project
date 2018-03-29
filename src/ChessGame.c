@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 #include "ChessGame.h"
 
@@ -352,7 +350,6 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
     return CHESS_SUCCESS;
 }
 
-#define MAX_STRING_LENGTH 256
 #define SETTINGS_STRING_1_PLAYER "SETTINGS:\n\
                                   GAME_MODE: 1-player\n\
                                   DIFFICULTY: %d\n\
@@ -360,7 +357,7 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
 #define SETTINGS_STRING_2_PLAYER "SETTINGS:\n\
                                   GAME_MODE: 2-player\n"
 
-char* chessColorToString(ChessColor color) {
+char* chessColorToString(const ChessColor color) {
     switch (color) {
         case CHESS_PLAYER_COLOR_WHITE:
             return "white";
@@ -372,16 +369,29 @@ char* chessColorToString(ChessColor color) {
     }
 }
 
-ChessResult ChessGame_SettingsString(ChessGame *game, char **string) {
-    if (!game) return CHESS_INVALID_ARGUMENT;
-    *string = calloc(MAX_STRING_LENGTH, sizeof(char));
-    // TODO: handle *string == null (currently there's no good error type)
+ChessResult ChessGame_SettingsToStream(const ChessGame *game, FILE *stream) {
+    if (!game || !stream) return CHESS_INVALID_ARGUMENT;
     if (game->settings.mode == CHESS_MODE_2_PLAYER) {
-        sprintf(*string, SETTINGS_STRING_2_PLAYER);
+        fprintf(stream, SETTINGS_STRING_2_PLAYER);
     } else if (game->settings.mode == CHESS_MODE_1_PLAYER) {
         int difficulty = game->settings.difficulty;
         char *userColor = chessColorToString(game->settings.userColor);
-        sprintf(*string, SETTINGS_STRING_1_PLAYER, difficulty, userColor);
+        fprintf(stream, SETTINGS_STRING_1_PLAYER, difficulty, userColor);
     }
+    return CHESS_SUCCESS;
+}
+
+ChessResult ChessGame_BoardToStream(const ChessGame *game, FILE *stream) {
+    if (!game || !stream) return CHESS_INVALID_ARGUMENT;
+    fprintf(stream, "\n");
+    for (int i = CHESS_GRID; i >= 0; i--) {
+        fprintf(stream, "%d| ", i + 1);
+        for (int j = 0; j < CHESS_GRID; j++) {
+            fprintf(stream, "%d ", game->board[i][j]);
+        }
+        fprintf(stream, " |\n");
+    }
+    fprintf(stream, "  -----------------\n");
+    fprintf(stream, "   A B C D E F G H\n");
     return CHESS_SUCCESS;
 }

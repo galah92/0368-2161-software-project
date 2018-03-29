@@ -1,6 +1,7 @@
 #ifndef CHESS_H_
 #define CHESS_H_
 
+#include <stdio.h>
 #include "ArrayStack.h"
 
 #define CHESS_GRID 8
@@ -185,24 +186,22 @@ ChessResult ChessGame_UndoMove(ChessGame *game);
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack);
 
 /**
- * Retrive a string representaion of a given ChessGame's ChessSettings.
- * The third argument will be redirecred to string that should be free()d'
- * (caller responsiblity).
- * @param   game        the instance to calculate it's settings string
- * @param   string      output parameter of the settings string
- * return   CHESS_SUCCESS
+ * Send a formatted string of a given ChessGame's settings to a given stream.
+ * @param   game        the instance to fetch the string from
+ * @param   stream      the stream to send the string to
+ * return   CHESS_INVALID_ARGUMENT if game == NULL || stream == NULL
+ *          CHESS_SUCCESS otherwise
  */
-ChessResult ChessGame_SettingsString(ChessGame *game, char **string);
+ChessResult ChessGame_SettingsToStream(const ChessGame *game, FILE *stream);
 
 /**
- * Retrive a string representaion of a given ChessGame's board.
- * The third argument will be redirecred to string that should be free()d'
- * (caller responsiblity).
- * @param   game        the instance to calculate it's board string
- * @param   string      output parameter of the board string
- * return   CHESS_SUCCESS
+ * Send a formatted string of a given ChessGame's board to a given stream.
+ * @param   game        the instance to fetch the string from
+ * @param   stream      the stream to send the string to
+ * return   CHESS_INVALID_ARGUMENT if game == NULL || stream == NULL
+ *          CHESS_SUCCESS otherwise
  */
-ChessResult ChessGame_BoardString(ChessGame *game, char **string);
+ChessResult ChessGame_BoardToStream(const ChessGame *game, FILE *stream);
 
 
 #endif
