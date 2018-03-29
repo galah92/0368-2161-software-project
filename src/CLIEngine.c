@@ -159,11 +159,13 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
             strcpy(command.path, token);
             break;  // TODO: consider check for more args and alert somehow
         case COMMAND_ARGS_MOVES:
-            if (!token || token[0] != '<'){
+            token = strtok(NULL, INPUT_DELIMITERS);
+            // printf("%s\n",token);
+            if (!token || token[0] != '<' || token[strlen(token)-1] != '>'){ //first position of move command
                 command.type = GAME_COMMAND_INVALID; // move command is invalid
                 break;
             }
-
+            // TODO : handle position (without <>)
             for (int i = 0, argIndex = 0; i < GAME_COMMAND_ARGS_CAPACITY; i++) {
                 
                 if (!token) break;  // end of args
