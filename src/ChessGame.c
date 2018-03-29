@@ -3,6 +3,9 @@
 #include <stdbool.h>
 #include "ChessGame.h"
 
+#define CHESS_HISTORY_SIZE 3
+#define CHESS_MAX_POSSIBLE_MOVES 27 // 7 * 3 + 6 for a queen piece
+
 
 void initChessBoard(ChessGame *game) {
     game->board[2][0].piece = game->board[2][1].piece = game->board[2][2].piece = game->board[2][3].piece =
@@ -171,8 +174,7 @@ bool isKingThreatened(ChessGame *game, ChessColor playerColor) {
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; i < CHESS_GRID; i++) {
             if (game->board[i][j].color == playerColor) {
-                move.from.x = i;
-                move.from.y = j;
+                move.from = (ChessPos){ .x = i, .y = j };
                 if (isValidPieceMove(game, move)) return true;
             }
         }
@@ -278,11 +280,19 @@ ChessResult ChessGame_UndoMove(ChessGame *game) {
     return CHESS_SUCCESS;
 }
 
-ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack *stack) {
+ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack) {
     if (!game) return CHESS_INVALID_ARGUMENT;
-    // TODO: implement
-    (void)pos;
-    (void)stack;
+    *stack = ArrayStack_Create(CHESS_MAX_POSSIBLE_MOVES, sizeof(ChessMove));
+    // TODO: handle *stack == null (currently there's no good error type)
+    ChessMove move = { .from = pos };
+    for (int i = 0; i < CHESS_GRID; i++) {
+        for (int j = 0; j < CHESS_GRID; j++) {
+            move.to = (ChessPos){ .x = i, .y = j };
+            if (ChessGame_IsValidMove(game, move) == CHESS_SUCCESS) {
+                ArrayStack_Push(*stack, &move);
+            }
+        }
+    }
     return CHESS_SUCCESS;
 }
 

@@ -4,7 +4,6 @@
 #include "ArrayStack.h"
 
 #define CHESS_GRID 8
-#define CHESS_HISTORY_SIZE 3
 
 
 typedef enum ChessResult {
@@ -171,13 +170,13 @@ ChessResult ChessGame_UndoMove(ChessGame *game);
 
 /**
  * Calculate a list of all possible moves for a given ChessPos.
- * The third argument must be an initialized ArrayStack of ChessMove's.
- * It will be populated with the calculated moves.
+ * The third argument will be redirecred to an ArrayStack* of ChessMove's
+ * that should be ArrayList_Destory()'d (caller responsibility).
  * @param   game        the instance to calculate moves on
  * return   CHESS_INVALID_ARGUMENT if game == NULL
  *          CHESS_SUCCESS otherwise
  */
-ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack *stack);
+ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack);
 
 
 #endif
