@@ -398,7 +398,7 @@ ChessResult ChessGame_BoardToStream(const ChessGame *game, FILE *stream) {
     for (int i = CHESS_GRID; i >= 0; i--) {
         fprintf(stream, "%d| ", i + 1);
         for (int j = 0; j < CHESS_GRID; j++) {
-            fprintf(stream, "%d ", game->board[i][j]);
+            fprintf(stream, "%c ", game->board[i][j]);
         }
         fprintf(stream, " |\n");
     }
