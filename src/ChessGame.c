@@ -350,33 +350,44 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
     return CHESS_SUCCESS;
 }
 
-#define SETTINGS_STRING_1_PLAYER "SETTINGS:\n\
-                                  GAME_MODE: 1-player\n\
-                                  DIFFICULTY: %d\n\
-                                  USER_COLOR: %s\n"
-#define SETTINGS_STRING_2_PLAYER "SETTINGS:\n\
-                                  GAME_MODE: 2-player\n"
-
-char* chessColorToString(const ChessColor color) {
-    switch (color) {
+char* colorToString(const ChessGame *game) {
+    switch (game->settings.userColor) {
         case CHESS_PLAYER_COLOR_WHITE:
             return "white";
         case CHESS_PLAYER_COLOR_BLACK:
             return "black";
         case CHESS_PLAYER_COLOR_NONE:
         default:
-            return "none";
+            return "none"; // shouldn't happen
+    }
+}
+
+char *difficultyString(const ChessGame *game) {
+    switch (game->settings.difficulty) {
+        case CHESS_DIFFICULTY_AMATEUR:
+            return "amateur";
+        case CHESS_DIFFICULTY_EASY:
+            return "easy";
+        case CHESS_DIFFICULTY_MODERATE:
+            return "moderate";
+        case CHESS_DIFFICULTY_HARD:
+            return "hard";
+        case CHESS_DIFFICULTY_EXPERT:
+            return "expert";
+        default:
+            return ""; // shouldn't happen
     }
 }
 
 ChessResult ChessGame_SettingsToStream(const ChessGame *game, FILE *stream) {
     if (!game || !stream) return CHESS_INVALID_ARGUMENT;
-    if (game->settings.mode == CHESS_MODE_2_PLAYER) {
-        fprintf(stream, SETTINGS_STRING_2_PLAYER);
-    } else if (game->settings.mode == CHESS_MODE_1_PLAYER) {
-        int difficulty = game->settings.difficulty;
-        char *userColor = chessColorToString(game->settings.userColor);
-        fprintf(stream, SETTINGS_STRING_1_PLAYER, difficulty, userColor);
+    fprintf(stream, "SETTINGS:\n");
+    if (game->settings.mode == CHESS_MODE_1_PLAYER) {
+        fprintf(stream, "GAME_MODE: 1-player\n");
+        fprintf(stream, "DIFFICULTY: %s\n", difficultyString(game));
+        fprintf(stream, "USER_COLOR: %s\n", colorToString(game));
+    } else { // game->settings.mode == CHESS_MODE_2_PLAYER)
+        fprintf(stream, "GAME_MODE: 2-player\n");
     }
     return CHESS_SUCCESS;
 }
