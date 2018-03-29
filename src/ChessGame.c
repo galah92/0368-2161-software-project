@@ -352,24 +352,36 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
     return CHESS_SUCCESS;
 }
 
-ChessResult ChessGame_SettingsString(ChessGame *game, char **string) {
+#define MAX_STRING_LENGTH 256
+#define SETTINGS_STRING_1_PLAYER "SETTINGS:\n\
+                                  GAME_MODE: 1-player\n\
+                                  DIFFICULTY: %d\n\
+                                  USER_COLOR: %s\n"
+#define SETTINGS_STRING_2_PLAYER "SETTINGS:\n\
+                                  GAME_MODE: 2-player\n"
 
+char* chessColorToString(ChessColor color) {
+    switch (color) {
+        case CHESS_PLAYER_COLOR_WHITE:
+            return "white";
+        case CHESS_PLAYER_COLOR_BLACK:
+            return "black";
+        case CHESS_PLAYER_COLOR_NONE:
+        default:
+            return "none";
+    }
 }
 
-// ============================================================================
-// TODO: move to the right module
-
-#define SETTINGS_STRING_1_PLAYER "SETTINGS:\nGAME_MODE: 1-player\nDIFFICULTY: %d\nUSER_COLOR: %s\n"
-#define SETTINGS_STRING_2_PLAYER "SETTINGS:\nGAME_MODE: 2-player\n"
-
-ChessResult ChessGame_PrintSettings(ChessGame *game) {
+ChessResult ChessGame_SettingsString(ChessGame *game, char **string) {
     if (!game) return CHESS_INVALID_ARGUMENT;
+    *string = calloc(MAX_STRING_LENGTH, sizeof(char));
+    // TODO: handle *string == null (currently there's no good error type)
     if (game->settings.mode == CHESS_MODE_2_PLAYER) {
-        printf(SETTINGS_STRING_2_PLAYER);
+        sprintf(*string, SETTINGS_STRING_2_PLAYER);
     } else if (game->settings.mode == CHESS_MODE_1_PLAYER) {
-        int difficulty = game->settings.difficulty + 1;
-        char *userColor = game->settings.userColor == CHESS_PLAYER_COLOR_BLACK ? "black"  : "white";
-        printf(SETTINGS_STRING_1_PLAYER, difficulty, userColor);
+        int difficulty = game->settings.difficulty;
+        char *userColor = chessColorToString(game->settings.userColor);
+        sprintf(*string, SETTINGS_STRING_1_PLAYER, difficulty, userColor);
     }
     return CHESS_SUCCESS;
 }

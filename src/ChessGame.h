@@ -186,6 +186,8 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
 
 /**
  * Retrive a string representaion of a given ChessGame's ChessSettings.
+ * The third argument will be redirecred to string that should be free()d'
+ * (caller responsiblity).
  * @param   game        the instance to calculate it's settings string
  * @param   string      output parameter of the settings string
  * return   CHESS_SUCCESS
@@ -194,6 +196,8 @@ ChessResult ChessGame_SettingsString(ChessGame *game, char **string);
 
 /**
  * Retrive a string representaion of a given ChessGame's board.
+ * The third argument will be redirecred to string that should be free()d'
+ * (caller responsiblity).
  * @param   game        the instance to calculate it's board string
  * @param   string      output parameter of the board string
  * return   CHESS_SUCCESS
