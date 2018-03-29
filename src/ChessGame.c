@@ -6,7 +6,11 @@
 #define CHESS_HISTORY_SIZE 3
 #define CHESS_MAX_POSSIBLE_MOVES 27 // 7 * 3 + 6 for a queen piece
 
-
+/**
+ * Init a given ChessGame's board according to chess rules.
+ * White is at the "bottom" of the board - lower indexes.
+ * @param   game        the instance init board to
+ */
 void initChessBoard(ChessGame *game) {
     game->board[2][0].piece = game->board[2][1].piece = game->board[2][2].piece = game->board[2][3].piece =
     game->board[2][4].piece = game->board[2][5].piece = game->board[2][6].piece = game->board[2][7].piece =
@@ -38,6 +42,10 @@ void initChessBoard(ChessGame *game) {
     game->board[7][4].color = game->board[7][5].color = game->board[7][6].color = game->board[7][7].color = CHESS_PLAYER_COLOR_BLACK;
 }
 
+/**
+ * Check whether a given ChessMove's locations is on board.
+ * @param   move        the move to check
+ */
 bool isValidPositionsOnBoard(ChessMove move) {
     return move.from.x >= 0 && move.from.x < CHESS_GRID &&
            move.from.y >= 0 && move.from.y < CHESS_GRID &&
@@ -45,6 +53,12 @@ bool isValidPositionsOnBoard(ChessMove move) {
            move.to.y >= 0 && move.to.y < CHESS_GRID;
 }
 
+/**
+ * Check whether a given ChessMove's "from" location is of the current player,
+ * according to a given game.
+ * @param   game        the game the move is based on
+ * @param   move        the move to check
+ */
 bool isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
     if (!game) return false; // sanity check
     return game->board[move.from.x][move.from.y].piece != CHESS_PIECE_NONE &&
@@ -194,6 +208,20 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
     }
 }
 
+bool isCheckmate(ChessGame *game) {
+    ArrayStack *possibleMoves;
+    ChessPos pos;
+    for (int i = 0; i < CHESS_GRID; i ++) {
+        for (int j = 0; j < CHESS_GRID; j++) {
+            pos = (ChessPos){ .x = i, .y = j };
+            ChessResult res = ChessGame_GetMoves(game, pos, &possibleMoves);
+            if (res != CHESS_SUCCESS) return false;
+            if (!ArrayStack_IsEmpty(possibleMoves)) return false;
+        }
+    }
+    return true;
+}
+
 ChessGame* ChessGame_Create() {
     ChessGame *game = malloc(sizeof(ChessGame));
     if (!game) return NULL;
@@ -268,7 +296,9 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     ChessResult isValidResult = ChessGame_IsValidMove(game, move);
     if (isValidResult != CHESS_SUCCESS) return isValidResult;
     pseudoDoMove(game, move);
-    // TODO: check for CHECKMATE
+    if (isCheckmate(game)) {
+        game->status = CHESS_STATUS_CHECKMATE;
+    }
     return CHESS_SUCCESS;
 }
 
