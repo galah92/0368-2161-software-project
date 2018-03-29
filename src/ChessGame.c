@@ -55,7 +55,7 @@ bool isValidPositionOnBoard(ChessPos pos) {
  * @param   move        the move to check
  */
 bool isValidPositionsOnBoard(ChessMove move) {
-    return isValidPositionOnBoard(move.from) && isValidPositionsOnBoard(move.to);
+    return isValidPositionOnBoard(move.from) && isValidPositionOnBoard(move.to);
 }
 
 /**
