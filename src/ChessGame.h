@@ -174,6 +174,8 @@ ChessResult ChessGame_UndoMove(ChessGame *game);
  * that should be ArrayList_Destory()'d (caller responsibility).
  * @param   game        the instance to calculate moves on
  * return   CHESS_INVALID_ARGUMENT if game == NULL
+ *          CHESS_INVALID_POSITION is pos is not on board. In that case,
+ *              the stack won't be created
  *          CHESS_SUCCESS otherwise
  */
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack);

@@ -43,14 +43,19 @@ void initChessBoard(ChessGame *game) {
 }
 
 /**
+ * Check whether a given ChessPos's location is on board.
+ * @param   pos         the pos to check
+ */
+bool isValidPositionOnBoard(ChessPos pos) {
+    return pos.x >= 0 && pos.x < CHESS_GRID && pos.y >= 0 && pos.y < CHESS_GRID;
+}
+
+/**
  * Check whether a given ChessMove's locations is on board.
  * @param   move        the move to check
  */
 bool isValidPositionsOnBoard(ChessMove move) {
-    return move.from.x >= 0 && move.from.x < CHESS_GRID &&
-           move.from.y >= 0 && move.from.y < CHESS_GRID &&
-           move.to.y >= 0 && move.to.y < CHESS_GRID &&
-           move.to.y >= 0 && move.to.y < CHESS_GRID;
+    return isValidPositionOnBoard(move.from) && isValidPositionsOnBoard(move.to);
 }
 
 /**
@@ -312,6 +317,7 @@ ChessResult ChessGame_UndoMove(ChessGame *game) {
 
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack) {
     if (!game) return CHESS_INVALID_ARGUMENT;
+    if (!isValidPositionOnBoard(pos)) return CHESS_INVALID_POSITION;
     *stack = ArrayStack_Create(CHESS_MAX_POSSIBLE_MOVES, sizeof(ChessMove));
     // TODO: handle *stack == null (currently there's no good error type)
     ChessMove move = { .from = pos };
