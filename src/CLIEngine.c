@@ -160,28 +160,30 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
             break;  // TODO: consider check for more args and alert somehow
         case COMMAND_ARGS_MOVES:
             token = strtok(NULL, INPUT_DELIMITERS);
-            // printf("%s\n",token);
-            if (!token || token[0] != '<' || token[strlen(token)-1] != '>'){ //first position of move command
+            if (!token || strlen(token) != 5 || token[0] != '<' ||
+                token[2] != ',' || token[4] != '>' ){ //first position of move command
                 command.type = GAME_COMMAND_INVALID; // move command is invalid
+                while(token) token = strtok(NULL, INPUT_DELIMITERS);
                 break;
             }
-            // TODO : handle position (without <>)
-            for (int i = 0, argIndex = 0; i < GAME_COMMAND_ARGS_CAPACITY; i++) {
-                
-                if (!token) break;  // end of args
-                if (i == 2){
-                    if (strcmp("to",token)){
-                        command.type = GAME_COMMAND_INVALID; // move command is invalid
-                        break;
-                    }
-                }
-                if (isInt(token)) {  // should be 1-8
-                    command.args[argIndex++] = atoi(token) - 1;
-                } else if (strlen(token) == 1) {  // should be 'A'-'H'
-                    command.args[argIndex++] = token[0] - 'A';
-                }
+            command.args[0] = atoi(&token[1]) - 1;
+            command.args[1] = token[3] - 'A';
+            token = strtok(NULL, INPUT_DELIMITERS);
+            if (!token || strcmp("to", token)) {
+                while(token) token = strtok(NULL, INPUT_DELIMITERS);
+                break;
             }
-            break;            
+            token = strtok(NULL, INPUT_DELIMITERS);
+            if (!token || strlen(token) != 5 || token[0] != '<' ||
+                token[2] != ',' || token[4] != '>' ){
+                    command.type = GAME_COMMAND_INVALID;
+                    while(token) token = strtok(NULL, INPUT_DELIMITERS);
+                    break;
+                }
+            command.args[2] = atoi(&token[1]) - 1;
+            command.args[3] = token[3] - 'A';
+            while(token) token = strtok(NULL, INPUT_DELIMITERS);
+            break;
         case COMMAND_ARGS_NONE:
             break;
     }
