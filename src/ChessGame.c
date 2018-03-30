@@ -224,12 +224,9 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
     game->board[move.from.x][move.from.y] = CHESS_PIECE_NONE;
     game->turn = 3 - game->turn; // elegant way to switch player
     ArrayStack_Push(game->history, &move); // update history
-    if (isKingThreatened(game, game->turn)) {
-        game->status = CHESS_STATUS_CHECK;
-    }
 }
 
-bool isCheckmate(ChessGame *game) {
+bool hasMoves(ChessGame *game) {
     ArrayStack *possibleMoves;
     ChessPos pos;
     for (int i = 0; i < CHESS_GRID; i ++) {
@@ -239,19 +236,18 @@ bool isCheckmate(ChessGame *game) {
             ChessResult res = ChessGame_GetMoves(game, pos, &possibleMoves);
             bool areThereMoves = !ArrayStack_IsEmpty(possibleMoves);
             ArrayStack_Destroy(possibleMoves);
-            if (res != CHESS_SUCCESS || areThereMoves) return false;
+            if (res != CHESS_SUCCESS || areThereMoves) return true;
         }
     }
-    return true;
+    return false;
 }
 
 ChessGame* ChessGame_Create() {
     ChessGame *game = malloc(sizeof(ChessGame));
     if (!game) return NULL;
-    game->status = CHESS_STATUS_RUNNING;
+    game->turn = CHESS_PLAYER_COLOR_WHITE;
     ChessGame_SetDefaultSettings(game);
     initChessBoard(game);
-    game->turn = CHESS_PLAYER_COLOR_WHITE;
     game->history = ArrayStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
     if (!game->history) {
         ChessGame_Destroy(game);
@@ -268,9 +264,9 @@ void ChessGame_Destroy(ChessGame *game) {
 
 ChessResult ChessGame_SetDefaultSettings(ChessGame *game) {
     if (!game) return CHESS_INVALID_ARGUMENT;
-    game->settings.mode = CHESS_MODE_1_PLAYER;
-    game->settings.difficulty = CHESS_DIFFICULTY_EASY;
-    game->settings.userColor = CHESS_PLAYER_COLOR_WHITE;
+    game->mode = CHESS_MODE_1_PLAYER;
+    game->difficulty = CHESS_DIFFICULTY_EASY;
+    game->userColor = CHESS_PLAYER_COLOR_WHITE;
     return CHESS_SUCCESS;
 }
 
@@ -278,7 +274,7 @@ ChessResult ChessGame_SetGameMode(ChessGame *game, ChessMode mode) {
     if (!game) return CHESS_INVALID_ARGUMENT;
     if (mode < CHESS_MODE_1_PLAYER) return CHESS_INVALID_ARGUMENT;
     if (mode > CHESS_MODE_2_PLAYER) return CHESS_INVALID_ARGUMENT;
-    game->settings.mode = mode;
+    game->mode = mode;
     return CHESS_SUCCESS;
 }
 
@@ -286,7 +282,7 @@ ChessResult ChessGame_SetDifficulty(ChessGame *game, ChessDifficulty difficulty)
     if (!game) return CHESS_INVALID_ARGUMENT;
     if (difficulty < CHESS_DIFFICULTY_AMATEUR) return CHESS_INVALID_ARGUMENT;
     if (difficulty > CHESS_DIFFICULTY_EXPERT) return CHESS_INVALID_ARGUMENT;
-    game->settings.difficulty = difficulty;
+    game->difficulty = difficulty;
     return CHESS_SUCCESS;
 }
 
@@ -294,7 +290,17 @@ ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor) {
     if (!game) return CHESS_INVALID_ARGUMENT;
     if (userColor < CHESS_PLAYER_COLOR_BLACK) return CHESS_INVALID_ARGUMENT;
     if (userColor > CHESS_PLAYER_COLOR_WHITE) return CHESS_INVALID_ARGUMENT;
-    game->settings.userColor = userColor;
+    game->userColor = userColor;
+    return CHESS_SUCCESS;
+}
+
+ChessResult ChessGame_GetGameStatus(ChessGame *game, ChessStatus *status) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (isKingThreatened(game, game->turn)) {
+        *status = hasMoves(game) ? CHESS_STATUS_CHECK : CHESS_STATUS_CHECKMATE;
+    } else {
+        *status = hasMoves(game) ? CHESS_STATUS_RUNNING : CHESS_STATUS_DRAW;
+    }
     return CHESS_SUCCESS;
 }
 
@@ -304,13 +310,17 @@ ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     if (!isMoveOfPlayerPiece(game, move)) return CHESS_EMPTY_POSITION;
     if (!isValidToPosition(game, move)) return CHESS_ILLEGAL_MOVE;
     if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
+    ChessStatus currentTurnStatus, nextTurnStatus;
+    ChessGame_GetGameStatus(game, &currentTurnStatus);
     pseudoDoMove(game, move);
-    bool isKingWillBeThreatened = isKingThreatened(game, !game->turn);
+    ChessGame_GetGameStatus(game, &nextTurnStatus);
     ChessGame_UndoMove(game);
-    if (game->status == CHESS_STATUS_CHECK && isKingWillBeThreatened) {
-        return CHESS_KING_IS_STILL_THREATENED; 
-    } else if (isKingWillBeThreatened) {
-        return CHESS_KING_WILL_BE_THREATENED;
+    if (nextTurnStatus == CHESS_STATUS_CHECK) {
+        if (currentTurnStatus == CHESS_STATUS_CHECK) {
+            return CHESS_KING_IS_STILL_THREATENED; 
+        } else {
+            return CHESS_KING_WILL_BE_THREATENED;
+        }
     }
     return CHESS_SUCCESS;
 }
@@ -319,9 +329,6 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     ChessResult isValidResult = ChessGame_IsValidMove(game, move);
     if (isValidResult != CHESS_SUCCESS) return isValidResult;
     pseudoDoMove(game, move);
-    if (isCheckmate(game)) {
-        game->status = CHESS_STATUS_CHECKMATE;
-    }
     return CHESS_SUCCESS;
 }
 
@@ -351,7 +358,7 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
 }
 
 char* colorToString(const ChessGame *game) {
-    switch (game->settings.userColor) {
+    switch (game->userColor) {
         case CHESS_PLAYER_COLOR_WHITE:
             return "white";
         case CHESS_PLAYER_COLOR_BLACK:
@@ -363,7 +370,7 @@ char* colorToString(const ChessGame *game) {
 }
 
 char *difficultyString(const ChessGame *game) {
-    switch (game->settings.difficulty) {
+    switch (game->difficulty) {
         case CHESS_DIFFICULTY_AMATEUR:
             return "amateur";
         case CHESS_DIFFICULTY_EASY:
@@ -382,11 +389,11 @@ char *difficultyString(const ChessGame *game) {
 ChessResult ChessGame_SettingsToStream(const ChessGame *game, FILE *stream) {
     if (!game || !stream) return CHESS_INVALID_ARGUMENT;
     fprintf(stream, "SETTINGS:\n");
-    if (game->settings.mode == CHESS_MODE_1_PLAYER) {
+    if (game->mode == CHESS_MODE_1_PLAYER) {
         fprintf(stream, "GAME_MODE: 1-player\n");
         fprintf(stream, "DIFFICULTY: %s\n", difficultyString(game));
         fprintf(stream, "USER_COLOR: %s\n", colorToString(game));
-    } else { // game->settings.mode == CHESS_MODE_2_PLAYER)
+    } else { // game->mode == CHESS_MODE_2_PLAYER)
         fprintf(stream, "GAME_MODE: 2-player\n");
     }
     return CHESS_SUCCESS;

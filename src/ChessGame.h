@@ -37,19 +37,6 @@ typedef enum ChessColor {
     CHESS_PLAYER_COLOR_NONE,
 } ChessColor;
 
-typedef struct ChessSettings {
-    ChessMode mode;
-    ChessDifficulty difficulty;
-    ChessColor userColor;
-} ChessSettings;
-
-typedef enum ChessStatus {
-    CHESS_STATUS_RUNNING,
-    CHESS_STATUS_CHECK,
-    CHESS_STATUS_CHECKMATE,
-    CHESS_STATUS_DRAW,
-} ChessStatus;
-
 typedef enum ChessPiece {
     CHESS_PIECE_NONE = '_',
     CHESS_PIECE_WHITE_PAWN = 'm',
@@ -67,12 +54,20 @@ typedef enum ChessPiece {
 } ChessPiece;
 
 typedef struct ChessGame {
-    ChessStatus status;
-    ChessSettings settings;
     ChessColor turn;
+    ChessMode mode;
+    ChessDifficulty difficulty;
+    ChessColor userColor;
     ChessPiece board[CHESS_GRID][CHESS_GRID];
     ArrayStack *history;
 } ChessGame;
+
+typedef enum ChessStatus {
+    CHESS_STATUS_RUNNING,
+    CHESS_STATUS_CHECK,
+    CHESS_STATUS_CHECKMATE,
+    CHESS_STATUS_DRAW,
+} ChessStatus;
 
 typedef struct ChessPos {
     int x;
@@ -135,6 +130,15 @@ ChessResult ChessGame_SetDifficulty(ChessGame *game, ChessDifficulty difficulty)
  *          CHESS_SUCCESS otherwise
  */
 ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor);
+
+/**
+ * Calculate a GameStatus of a given ChessGame.
+ * @param   game        the instance to calculate a ChessStatus on
+ * @param   status      output parameter of the ChessGame's status
+ * return   CHESS_INVALID_ARGUMENT if game == NULL
+ *          CHESS_SUCCESS otherwise
+ */
+ChessResult ChessGame_GetGameStatus(ChessGame *game, ChessStatus *status);
 
 /**
  * Check if a given ChessMove is a valid next move for a given ChessGame.
