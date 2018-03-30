@@ -61,7 +61,17 @@ typedef struct GameState {
     GameError error;
 } GameState;
 
-void GameManager_ProcessCommand(GameCommand command);
+typedef struct GameManager {
+    ChessGame *game;
+    GamePhase phase;
+    GameError error;
+} GameManager;
+
+GameManager* GameManager_Create();
+
+void GameManager_Destory();
+
+void GameManager_ProcessCommand(GameManager *manager, GameCommand command);
 
 
 #endif
