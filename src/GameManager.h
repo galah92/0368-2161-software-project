@@ -34,42 +34,30 @@ typedef struct GameCommand {
     char path[GAME_COMMAND_MAX_LINE_LENGTH];
 } GameCommand;
 
-typedef struct GameManager {
-    ChessGame *game;
-} GameMananger;
-
-typedef enum GameErrorType {
-    ERROR_INVALID_COMMAND,
-    ERROR_INVALID_GAME_MODE,
-    ERROR_INVALID_DIFF_LEVEL,
-    ERROR_INVALID_USER_COLOR,
-    ERROR_INVALID_FILE,
-    ERROR_INVALID_POSITION,
-    ERROR_EMPTY_POSITION,
-    ERROR_INVALID_MOVE,
-    ERROR_INVALID_MOVE_KING_IS_T,
-    ERROR_INVALID_MOVE_KING_WILL_T,
-    ERROR_FILE_ALLOC,
-    ERROR_EMPTY_HISTORY,
-} GameErrorType;
-
-typedef struct GameError {
-    GameErrorType errorType;
-    char *description;
+typedef enum GameError {
+    GAME_ERROR_INVALID_COMMAND,
+    GAME_ERROR_INVALID_GAME_MODE,
+    GAME_ERROR_INVALID_DIFF_LEVEL,
+    GAME_ERROR_INVALID_USER_COLOR,
+    GAME_ERROR_INVALID_FILE,
+    GAME_ERROR_INVALID_POSITION,
+    GAME_ERROR_EMPTY_POSITION,
+    GAME_ERROR_INVALID_MOVE,
+    GAME_ERROR_INVALID_MOVE_KING_IS_T,
+    GAME_ERROR_INVALID_MOVE_KING_WILL_T,
+    GAME_ERROR_FILE_ALLOC,
+    GAME_ERROR_EMPTY_HISTORY,
 } GameError;
 
-typedef enum GameStatestate {
-    SETTINGS,
-    RUNNING,
-    PLAYER1_WON,
-    PLAYER2_WON,
-    TIE,
-    ERROR,
-} GameStateState;
+typedef enum GamePhase {
+    GAME_PHASE_SETTINGS,
+    GAME_PHASE_RUNNING,
+    GAME_PHASE_ERROR,
+} GamePhase;
 
 typedef struct GameState {
     ChessGame *game;
-    GameStateState state;
+    GamePhase state;
     GameError error;
 } GameState;
 
