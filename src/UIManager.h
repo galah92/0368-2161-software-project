@@ -3,8 +3,7 @@
 
 #include "CLIEngine.h"
 #include "GUIEngine.h"
-#include "GameState.h"
-#include "GameCommand.h"
+#include "GameManager.h"
 
 
 typedef struct UIManager UIManager;

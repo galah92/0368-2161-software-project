@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "UIManager.h"
-#include "GameCommand.h"
-// #include "GameManager.h"
+#include "GameManager.h"
+
 
 int main(int argc, const char *argv[]) {
     // UIManager *uiManager = UIManager_Create(argc, argv);

@@ -1,8 +1,7 @@
 #ifndef CLI_ENGINE_H_
 #define CLI_ENGINE_H_
 
-#include "GameState.h"
-#include "GameCommand.h"
+#include "GameManager.h"
 
 
 typedef struct CLIEngine CLIEngine;

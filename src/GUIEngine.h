@@ -1,8 +1,7 @@
 #ifndef GUI_ENGINE_H_
 #define GUI_ENGINE_H_
 
-#include "GameState.h"
-#include "GameCommand.h"
+#include "GameManager.h"
 
 
 typedef struct GUIEngine GUIEngine;
