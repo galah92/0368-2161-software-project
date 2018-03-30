@@ -51,6 +51,7 @@
 #define IN_STRING_QUIT                  "quit"
 
 #define INPUT_DELIMITERS                " \t\r\n"
+#define MAX_INT_VALUE                   50
 
 struct CLIEngine {
     char input[GAME_COMMAND_MAX_LINE_LENGTH];
@@ -151,6 +152,8 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
                     command.args[argIndex++] = atoi(token) - 1;
                 } else if (strlen(token) == 1) {  // should be 'A'-'H'
                     command.args[argIndex++] = token[0] - 'A';
+                } else {
+                    command.args[argIndex++] = MAX_INT_VALUE;
                 }
             }
             break;
