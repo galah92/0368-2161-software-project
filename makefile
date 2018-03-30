@@ -31,9 +31,9 @@ endif
 
 .PHONY: build clean
 
-default : build
+default : all
 
-build: $(TARGET)
+all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(OBJECTS) $(SDLLIB) -o $@
