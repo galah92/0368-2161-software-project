@@ -343,14 +343,14 @@ ChessResult ChessGame_UndoMove(ChessGame *game) {
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack) {
     if (!game) return CHESS_INVALID_ARGUMENT;
     if (!isValidPositionOnBoard(pos)) return CHESS_INVALID_POSITION;
-    *stack = ArrayStack_Create(CHESS_MAX_POSSIBLE_MOVES, sizeof(ChessMove));
+    *stack = ArrayStack_Create(CHESS_MAX_POSSIBLE_MOVES, sizeof(ChessPos));
     // TODO: handle *stack == null (currently there's no good error type)
     ChessMove move = { .from = pos };
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             move.to = (ChessPos){ .x = i, .y = j };
             if (ChessGame_IsValidMove(game, move) == CHESS_SUCCESS) {
-                ArrayStack_Push(*stack, &move);
+                ArrayStack_Push(*stack, &(ChessPos){ .x = i, .y = j });
             }
         }
     }

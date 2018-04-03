@@ -177,11 +177,11 @@ ChessResult ChessGame_UndoMove(ChessGame *game);
 
 /**
  * Calculate a list of all possible moves for a given ChessPos.
- * The third argument will be redirecred to an ArrayStack* of ChessMove's
+ * The third argument will be redirecred to an ArrayStack* of ChessPos's
  * that should be ArrayList_Destory()'d (caller responsibility).
  * @param   game        the instance to calculate moves on
  * @param   pos         the position to calculate moves from
- * @param   moves       output parameter of the possible moves
+ * @param   moves       output parameter of the possible positions
  * return   CHESS_INVALID_ARGUMENT if game == NULL
  *          CHESS_INVALID_POSITION is pos is not on board. In that case,
  *              the stack won't be created
