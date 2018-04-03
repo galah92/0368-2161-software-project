@@ -35,6 +35,7 @@ typedef struct GameCommand {
 } GameCommand;
 
 typedef enum GameError {
+    GAME_ERROR_NONE,
     GAME_ERROR_INVALID_COMMAND,
     GAME_ERROR_INVALID_GAME_MODE,
     GAME_ERROR_INVALID_DIFF_LEVEL,
@@ -53,6 +54,7 @@ typedef enum GamePhase {
     GAME_PHASE_SETTINGS,
     GAME_PHASE_RUNNING,
     GAME_PHASE_ERROR,
+    GAME_PHASE_QUIT,
 } GamePhase;
 
 typedef struct GameState {
@@ -60,6 +62,11 @@ typedef struct GameState {
     GamePhase state;
     GameError error;
 } GameState;
+
+typedef enum GamePlayerType {
+    GAME_PLAYER_TYPE_HUMAN,
+    GAME_PLAYER_TYPE_AI
+} GamePlayerType;
 
 typedef struct GameManager {
     ChessGame *game;
@@ -69,7 +76,9 @@ typedef struct GameManager {
 
 GameManager* GameManager_Create();
 
-void GameManager_Destory();
+void GameManager_Destroy(GameManager *manager);
+
+GamePlayerType GameManager_GetCurrentPlayerType(GameManager *manager);
 
 void GameManager_ProcessCommand(GameManager *manager, GameCommand command);
 

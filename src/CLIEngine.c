@@ -198,19 +198,44 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
     if (!manager) return;
     printf("%s", this->input);
     switch (manager->error) {
-        case GAME_ERROR_INVALID_COMMAND:             printf(MSG_ERR_INVALID_COMMAND);            break; return;
-        case GAME_ERROR_INVALID_GAME_MODE:           printf(MSG_ERR_WRONG_GAME_MODE);            break; return;
-        case GAME_ERROR_INVALID_DIFF_LEVEL:          printf(MSG_ERR_WRONG_DIFF_LEVEL);           break; return;
-        case GAME_ERROR_INVALID_USER_COLOR:          printf(MSG_ERR_WRONG_USER_COLOR);           break; return;
-        case GAME_ERROR_INVALID_FILE:                printf(MSG_ERR_FILE_NOT_EXIST);             break; return;
-        case GAME_ERROR_INVALID_POSITION:            printf(MSG_ERR_INVALID_POSITION);           break; return;
-        case GAME_ERROR_EMPTY_POSITION:              printf(MSG_ERR_POSITION_EMPTY);             break; return;
-        case GAME_ERROR_INVALID_MOVE:                printf(MSG_ERR_ILLEGAL_MOVE);               break; return;
-        case GAME_ERROR_INVALID_MOVE_KING_IS_T:      printf(MSG_ERR_ILLEGAL_MOVE_KING_IS_T);     break; return;
-        case GAME_ERROR_INVALID_MOVE_KING_WILL_T:    printf(MSG_ERR_ILLEGAL_MOVE_KING_WILL_T);   break; return;
-        case GAME_ERROR_FILE_ALLOC:                  printf(MSG_ERR_FILE_CANNOT_BE_CREATED);     break; return;
-        case GAME_ERROR_EMPTY_HISTORY:               printf(MSG_ERR_EMPTY_HISTORY);              break; return;
-        default: break;
+        case GAME_ERROR_INVALID_COMMAND:
+            printf(MSG_ERR_INVALID_COMMAND);
+            return;
+        case GAME_ERROR_INVALID_GAME_MODE:
+            printf(MSG_ERR_WRONG_GAME_MODE);
+            return;
+        case GAME_ERROR_INVALID_DIFF_LEVEL:
+            printf(MSG_ERR_WRONG_DIFF_LEVEL);
+            return;
+        case GAME_ERROR_INVALID_USER_COLOR:
+            printf(MSG_ERR_WRONG_USER_COLOR);
+            return;
+        case GAME_ERROR_INVALID_FILE:
+            printf(MSG_ERR_FILE_NOT_EXIST);
+            return;
+        case GAME_ERROR_INVALID_POSITION:
+            printf(MSG_ERR_INVALID_POSITION);
+            return;
+        case GAME_ERROR_EMPTY_POSITION:
+            printf(MSG_ERR_POSITION_EMPTY);
+            return;
+        case GAME_ERROR_INVALID_MOVE:
+            printf(MSG_ERR_ILLEGAL_MOVE);
+            return;
+        case GAME_ERROR_INVALID_MOVE_KING_IS_T:
+            printf(MSG_ERR_ILLEGAL_MOVE_KING_IS_T);
+            return;
+        case GAME_ERROR_INVALID_MOVE_KING_WILL_T:
+            printf(MSG_ERR_ILLEGAL_MOVE_KING_WILL_T);
+            return;
+        case GAME_ERROR_FILE_ALLOC:
+            printf(MSG_ERR_FILE_CANNOT_BE_CREATED);
+            return;
+        case GAME_ERROR_EMPTY_HISTORY:
+            printf(MSG_ERR_EMPTY_HISTORY);
+            return;
+        default:
+            break;
     }
     // success
     switch(command.type) {
