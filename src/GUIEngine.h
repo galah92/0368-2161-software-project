@@ -32,7 +32,7 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine);
  * @param   engine      the instance to use
  * @param   gameState   the gameState to output
  */
-void GUIEngine_Render(GUIEngine *engine, const GameState *gameState);
+void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand command);
 
 
 #endif

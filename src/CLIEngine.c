@@ -4,7 +4,7 @@
 
 #define MSG_APP_INIT                    " Chess\n-------\n"
 #define MSG_SETTINGS_STATE              "Specify game settings or type 'start' to begin a game with the current settings:\n"
-#define MSG_GAME_MODE                   "Game mode is set to %s\n"
+#define MSG_GAME_MODE                   "Game mode is set to %d%s\n"
 #define MSG_DIFFICULTY                  "Difficulty level is set to %s\n"
 #define MSG_USER_COLOR                  "User color is set to %s\n"
 #define MSG_DEFAULT_SETTINGS            "All settings reset to default\n"
@@ -193,15 +193,44 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
     return command;
 }
 
-void CLIEngine_Render(CLIEngine *this, const GameState *state) {
+void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand command) {
     // TODO: All CLI printing should go here basically
-    if (!state) return;
+    if (!manager) return;
     printf("%s", this->input);
-    // switch (something) {
-    //     // on success
-    //     case GAME_MODE_SUCCESS:     printf(MSG_GAME_MODE, "1-player");                      break;
-    //     case DIFFICULTY_SUCCESS:    printf(MSG_DIFFICULTY, "easy");                         break;
-    //     case USER_COLOR_SUCCESS:    printf(MSG_USER_COLOR, "white");                        break;
+    switch (manager->error) {
+        case GAME_ERROR_INVALID_COMMAND:             printf(MSG_ERR_INVALID_COMMAND);            break; return;
+        case GAME_ERROR_INVALID_GAME_MODE:           printf(MSG_ERR_WRONG_GAME_MODE);            break; return;
+        case GAME_ERROR_INVALID_DIFF_LEVEL:          printf(MSG_ERR_WRONG_DIFF_LEVEL);           break; return;
+        case GAME_ERROR_INVALID_USER_COLOR:          printf(MSG_ERR_WRONG_USER_COLOR);           break; return;
+        case GAME_ERROR_INVALID_FILE:                printf(MSG_ERR_FILE_NOT_EXIST);             break; return;
+        case GAME_ERROR_INVALID_POSITION:            printf(MSG_ERR_INVALID_POSITION);           break; return;
+        case GAME_ERROR_EMPTY_POSITION:              printf(MSG_ERR_POSITION_EMPTY);             break; return;
+        case GAME_ERROR_INVALID_MOVE:                printf(MSG_ERR_ILLEGAL_MOVE);               break; return;
+        case GAME_ERROR_INVALID_MOVE_KING_IS_T:      printf(MSG_ERR_ILLEGAL_MOVE_KING_IS_T);     break; return;
+        case GAME_ERROR_INVALID_MOVE_KING_WILL_T:    printf(MSG_ERR_ILLEGAL_MOVE_KING_WILL_T);   break; return;
+        case GAME_ERROR_FILE_ALLOC:                  printf(MSG_ERR_FILE_CANNOT_BE_CREATED);     break; return;
+        case GAME_ERROR_EMPTY_HISTORY:               printf(MSG_ERR_EMPTY_HISTORY);              break; return;
+        default: break;
+    }
+    // success
+    switch(command.type) {
+        case GAME_COMMAND_GAME_MODE:
+            printf(MSG_GAME_MODE, manager->game->mode, "-player");                             break;
+        case GAME_COMMAND_DIFFICULTY:
+            switch(manager->game->difficulty){
+                case CHESS_DIFFICULTY_AMATEUR:            printf(MSG_DIFFICULTY, "amateur");   break;
+                case CHESS_DIFFICULTY_EASY:               printf(MSG_DIFFICULTY, "easy");      break;  
+                case CHESS_DIFFICULTY_MODERATE:           printf(MSG_DIFFICULTY, "moderate");  break;
+                case CHESS_DIFFICULTY_HARD:               printf(MSG_DIFFICULTY, "hard");      break;  
+                case CHESS_DIFFICULTY_EXPERT:             printf(MSG_DIFFICULTY, "expert");    break;  
+            } break;
+        case GAME_COMMAND_USER_COLOR:
+            switch(manager->game->userColor){
+                case CHESS_PLAYER_COLOR_WHITE:            printf(MSG_USER_COLOR, "white");     break;
+                case CHESS_PLAYER_COLOR_BLACK:            printf(MSG_USER_COLOR, "black");     break;
+                default: break;
+            } break;
+        case 
     //     case DEFAULTS_SUCCESS:      printf(MSG_DEFAULT_SETTINGS);                           break;
     //     case QUIT:                  printf(MSG_QUIT);                                       break;
     //     case STARTED:               printf(MSG_START);                                      break;
@@ -216,19 +245,7 @@ void CLIEngine_Render(CLIEngine *this, const GameState *state) {
     //     case GAME_SAVED:            printf(MSG_GAME_SAVED, "c:/temp/...");                  break;
     //     case MOVE_UNDONE:           printf(MSG_UNDO_MOVE, "white", 0, 0 + 'A', 0, 0 + 'A'); break;
     //     case AI_MOVE:               printf(MSG_AI_MOVE, "white", 0, 0 + 'A', 0, 0 + 'A');   break;
-    //     // on errors
-    //     case ERROR_INVALID_COMMAND:             printf(MSG_ERR_INVALID_COMMAND);            break;
-    //     case ERROR_INVALID_GAME_MODE:           printf(MSG_ERR_WRONG_GAME_MODE);            break;
-    //     case ERROR_INVALID_DIFF_LEVEL:          printf(MSG_ERR_WRONG_DIFF_LEVEL);           break;
-    //     case ERROR_INVALID_USER_COLOR:          printf(MSG_ERR_WRONG_USER_COLOR);           break;
-    //     case ERROR_INVALID_FILE:                printf(MSG_ERR_FILE_NOT_EXIST);             break;
-    //     case ERROR_INVALID_POSITION:            printf(MSG_ERR_INVALID_POSITION);           break;
-    //     case ERROR_EMPTY_POSITION:              printf(MSG_ERR_POSITION_EMPTY);             break;
-    //     case ERROR_INVALID_MOVE:                printf(MSG_ERR_ILLEGAL_MOVE);               break;
-    //     case ERROR_INVALID_MOVE_KING_IS_T:      printf(MSG_ERR_ILLEGAL_MOVE_KING_IS_T);     break;
-    //     case ERROR_INVALID_MOVE_KING_WILL_T:    printf(MSG_ERR_ILLEGAL_MOVE_KING_WILL_T);   break;
-    //     case ERROR_FILE_ALLOC:                  printf(MSG_ERR_FILE_CANNOT_BE_CREATED);     break;
-    //     case ERROR_EMPTY_HISTORY:               printf(MSG_ERR_EMPTY_HISTORY);              break;
-    // }
+            default: break;
+    }
 
 }

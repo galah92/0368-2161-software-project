@@ -10,11 +10,11 @@ typedef struct UIManager UIManager;
 
 UIManager* UIManager_Create(int argc, const char *argv[]);
 
-void UIManager_Destroy(UIManager *manager);
+void UIManager_Destroy(UIManager *uiManager);
 
-GameCommand UIManager_ProcessInput(UIManager *manager);
+GameCommand UIManager_ProcessInput(UIManager *uiManager);
 
-void UIManager_Render(UIManager *manager, const GameState *gameState);
+void UIManager_Render(UIManager *uiManager, const GameManager *manager, GameCommand command);
 
 
 #endif

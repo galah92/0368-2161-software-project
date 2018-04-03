@@ -32,7 +32,7 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *engine);
  * @param   engine      the instance to use
  * @param   gameState   the gameState to output
  */
-void CLIEngine_Render(CLIEngine *engine, const GameState *gameState);
+void CLIEngine_Render(CLIEngine *engine, const GameManager *manager, GameCommand command);
 
 
 #endif

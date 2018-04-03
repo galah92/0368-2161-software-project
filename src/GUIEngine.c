@@ -26,7 +26,8 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *this) {
     return command;
 }
 
-void GUIEngine_Render(GUIEngine *this, const GameState *state) {
-    if (!state) return;
+void GUIEngine_Render(GUIEngine *this, const GameManager *manager, GameCommand command) {
+    if (!manager) return;
     printf("%d", this->x);
+    (void) command;
 }
