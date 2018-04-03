@@ -413,3 +413,8 @@ ChessResult ChessGame_BoardToStream(const ChessGame *game, FILE *stream) {
     fprintf(stream, "   A B C D E F G H\n");
     return CHESS_SUCCESS;
 }
+
+ChessResult ChessGame_GetPieceColor(ChessPiece piece, ChessColor *color) {
+    *color = getPieceColor(piece);
+    return CHESS_SUCCESS;
+}

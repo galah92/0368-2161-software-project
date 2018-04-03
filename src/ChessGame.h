@@ -208,4 +208,6 @@ ChessResult ChessGame_SettingsToStream(const ChessGame *game, FILE *stream);
 ChessResult ChessGame_BoardToStream(const ChessGame *game, FILE *stream);
 
 
+ChessResult ChessGame_GetPieceColor(ChessPiece piece, ChessColor *color);
+
 #endif

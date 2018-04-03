@@ -80,6 +80,8 @@ void GameManager_Destroy(GameManager *manager);
 
 GamePlayerType GameManager_GetCurrentPlayerType(GameManager *manager);
 
+GameCommand GameManager_GetAIMove(GameManager *manager);
+
 void GameManager_ProcessCommand(GameManager *manager, GameCommand command);
 
 

@@ -139,6 +139,61 @@ GamePlayerType GameManager_GetCurrentPlayerType(GameManager *manager) {
     return is1PlayerMode & isOtherPlayer ? GAME_PLAYER_TYPE_AI : GAME_PLAYER_TYPE_HUMAN;
 }
 
+int getPieceScore(ChessPiece piece) {
+    switch (piece) {
+        case CHESS_PIECE_WHITE_PAWN:
+        case CHESS_PIECE_BLACK_PAWN:
+            return 1;
+        case CHESS_PIECE_WHITE_ROOK:
+        case CHESS_PIECE_BLACK_ROOK:
+            return 5;
+        case CHESS_PIECE_WHITE_KNIGHT:
+        case CHESS_PIECE_BLACK_KNIGHT:
+            return 3;
+        case CHESS_PIECE_WHITE_BISHOP:
+        case CHESS_PIECE_BLACK_BISHOP:
+            return 3;
+        case CHESS_PIECE_WHITE_QUEEN:
+        case CHESS_PIECE_BLACK_QUEEN:
+            return 9;
+        case CHESS_PIECE_WHITE_KING:
+        case CHESS_PIECE_BLACK_KING:
+            return 100;
+        case CHESS_PIECE_NONE:
+        default:
+            return 0;
+    }
+}
+
+int getBoardScore(ChessGame *game) {
+    ChessStatus status;
+    ChessGame_GetGameStatus(game, &status);
+    switch (status) {
+        case CHESS_STATUS_DRAW:
+            return 0;
+        case CHESS_STATUS_CHECKMATE:
+            return 1000;
+        default:
+            break;
+    }
+    int score = 0;
+    ChessColor color;
+    for (int i = 0; i < CHESS_GRID; i++) {
+        for (int j = 0; j < CHESS_GRID; j++) {
+            ChessGame_GetPieceColor(game->board[i][j], &color);
+            if (color == game->turn)
+            score += (color == game->turn ? 1 : -1) * getPieceScore(game->board[i][j]);
+        }
+    }
+    return score;
+}
+
+GameCommand GameManager_GetAIMove(GameManager *manager) {
+    GameCommand command = { .type = GAME_COMMAND_MOVE };
+    (void)manager;
+    return command;
+}
+
 void GameManager_ProcessCommand(GameManager *manager, GameCommand command) {
     manager->error = GAME_ERROR_NONE;
     if (manager->phase == GAME_PHASE_SETTINGS) {
