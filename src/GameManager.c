@@ -2,7 +2,7 @@
 
 
 void processSettingsCommand(GameManager *manager, GameCommand command) {
-    (void)manager;
+    if (!manager) return;
     switch (command.type) {
         case GAME_COMMAND_GAME_MODE:
             if      (command.args[0] == 0)       manager->game->mode = CHESS_MODE_1_PLAYER; // one player mode
@@ -22,16 +22,19 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
             } else manager->error = GAME_ERROR_INVALID_DIFF_LEVEL;
             break;
         case GAME_COMMAND_USER_COLOR:
-            if      (command.args[0] == -1)         manager->game->userColor = CHESS_PLAYER_COLOR_WHITE; // user color 0 = white
-            else if (command.args[0] == 0)          manager->game->userColor = CHESS_PLAYER_COLOR_BLACK; // user color 1 = black
+            if      (command.args[0] == 0)          manager->game->userColor = CHESS_PLAYER_COLOR_WHITE; // user color 1 = white
+            else if (command.args[0] == -1)         manager->game->userColor = CHESS_PLAYER_COLOR_BLACK; // user color 0 = black
             else                                    manager->error = GAME_ERROR_INVALID_USER_COLOR;
             break;
         case GAME_COMMAND_LOAD_GAME:
+            // TODO - implement LOAD GAME
             break;
         case GAME_COMMAND_DEFAULT_SETTINGS:
+            //TODO - consider check the result
+            ChessGame_SetDefaultSettings(manager->game);
             break;
         case GAME_COMMAND_PRINT_SETTINGS:
-            break;
+            break; // nothing is updated in this case
         case GAME_COMMAND_START:
             break;
         case GAME_COMMAND_QUIT:

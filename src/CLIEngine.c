@@ -230,8 +230,10 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
                 case CHESS_PLAYER_COLOR_BLACK:            printf(MSG_USER_COLOR, "black");     break;
                 default: break;
             } break;
-        case 
-    //     case DEFAULTS_SUCCESS:      printf(MSG_DEFAULT_SETTINGS);                           break;
+        case GAME_COMMAND_DEFAULT_SETTINGS:               printf(MSG_DEFAULT_SETTINGS);        break;
+        case GAME_COMMAND_PRINT_SETTINGS:
+            // TODO - consider check the result
+            ChessGame_SettingsToStream(manager->game, stdout);                                 break;
     //     case QUIT:                  printf(MSG_QUIT);                                       break;
     //     case STARTED:               printf(MSG_START);                                      break;
     //     case RESTARTED:             printf(MSG_RESTART);                                    break;
