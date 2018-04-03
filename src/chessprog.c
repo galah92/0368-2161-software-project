@@ -7,7 +7,6 @@ int main(int argc, const char *argv[]) {
     UIManager *uiManager = UIManager_Create(argc, argv);
     GameManager *gameManager = GameManager_Create();
     GameCommand command;
-    // (void)command;
     while (gameManager->phase != GAME_PHASE_QUIT) {
         switch (GameManager_GetCurrentPlayerType(gameManager)) {
             case GAME_PLAYER_TYPE_HUMAN:

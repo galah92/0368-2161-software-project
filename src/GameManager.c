@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdbool.h>
 #include "GameManager.h"
 #include "ArrayStack.h"
@@ -30,7 +29,7 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
             ChessGame_SetDefaultSettings(manager->game);
             break;
         case GAME_COMMAND_PRINT_SETTINGS:
-            ChessGame_SettingsToStream(manager->game, stdout);
+            // done in CLIEngine
             break;
         case GAME_COMMAND_START:
             manager->phase = GAME_PHASE_RUNNING;

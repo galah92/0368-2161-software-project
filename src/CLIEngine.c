@@ -194,9 +194,8 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
 }
 
 void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand command) {
-    // TODO: All CLI printing should go here basically
     if (!manager) return;
-    printf("%s", this->input);
+    (void)this;
     switch (manager->error) {
         case GAME_ERROR_INVALID_COMMAND:
             printf(MSG_ERR_INVALID_COMMAND);
@@ -234,34 +233,62 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
         case GAME_ERROR_EMPTY_HISTORY:
             printf(MSG_ERR_EMPTY_HISTORY);
             return;
+        case GAME_ERROR_NONE:
         default:
             break;
     }
     // success
     switch(command.type) {
         case GAME_COMMAND_GAME_MODE:
-            printf(MSG_GAME_MODE, manager->game->mode, "-player");                             break;
+            printf(MSG_GAME_MODE, manager->game->mode, "-player");
+            break;
         case GAME_COMMAND_DIFFICULTY:
             switch(manager->game->difficulty){
-                case CHESS_DIFFICULTY_AMATEUR:            printf(MSG_DIFFICULTY, "amateur");   break;
-                case CHESS_DIFFICULTY_EASY:               printf(MSG_DIFFICULTY, "easy");      break;  
-                case CHESS_DIFFICULTY_MODERATE:           printf(MSG_DIFFICULTY, "moderate");  break;
-                case CHESS_DIFFICULTY_HARD:               printf(MSG_DIFFICULTY, "hard");      break;  
-                case CHESS_DIFFICULTY_EXPERT:             printf(MSG_DIFFICULTY, "expert");    break;  
-            } break;
+                case CHESS_DIFFICULTY_AMATEUR:
+                    printf(MSG_DIFFICULTY, "amateur");
+                    break;
+                case CHESS_DIFFICULTY_EASY:
+                    printf(MSG_DIFFICULTY, "easy");
+                    break;
+                case CHESS_DIFFICULTY_MODERATE:
+                    printf(MSG_DIFFICULTY, "moderate");
+                    break;
+                case CHESS_DIFFICULTY_HARD:
+                    printf(MSG_DIFFICULTY, "hard");
+                    break;  
+                case CHESS_DIFFICULTY_EXPERT:
+                    printf(MSG_DIFFICULTY, "expert");
+                    break;  
+            }
+            break;
         case GAME_COMMAND_USER_COLOR:
             switch(manager->game->userColor){
-                case CHESS_PLAYER_COLOR_WHITE:            printf(MSG_USER_COLOR, "white");     break;
-                case CHESS_PLAYER_COLOR_BLACK:            printf(MSG_USER_COLOR, "black");     break;
-                default: break;
-            } break;
-        case GAME_COMMAND_DEFAULT_SETTINGS:               printf(MSG_DEFAULT_SETTINGS);        break;
+                case CHESS_PLAYER_COLOR_WHITE:
+                    printf(MSG_USER_COLOR, "white");
+                    break;
+                case CHESS_PLAYER_COLOR_BLACK:
+                    printf(MSG_USER_COLOR, "black");
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case GAME_COMMAND_LOAD_GAME:
+            break;
+        case GAME_COMMAND_DEFAULT_SETTINGS:
+            printf(MSG_DEFAULT_SETTINGS);
+            break;
         case GAME_COMMAND_PRINT_SETTINGS:
-            // TODO - consider check the result
             ChessGame_SettingsToStream(manager->game, stdout);                                 break;
-    //     case QUIT:                  printf(MSG_QUIT);                                       break;
-    //     case STARTED:               printf(MSG_START);                                      break;
-    //     case RESTARTED:             printf(MSG_RESTART);                                    break;
+        case GAME_COMMAND_QUIT:
+            printf(MSG_QUIT);
+            break;
+        case GAME_COMMAND_START:
+            printf(MSG_START);
+            break;
+        case GAME_COMMAND_RESET:
+            printf(MSG_RESTART);
+            break;
     //     case CHECKMATE_DETECTED:    printf(MSG_CHECKMATE, "white");                         break;
     //     case CHECK_DETECT:          printf(MSG_CHECK, "white");                             break;
     //     case DRAW_DETECT:           printf(MSG_DRAW);                                       break;
