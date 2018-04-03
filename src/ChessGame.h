@@ -88,6 +88,14 @@ typedef struct ChessMove {
 ChessGame* ChessGame_Create();
 
 /**
+ * Create a copy of a given ChessGame instance.
+ * @param   game        the instance to copy
+ * @return  NULL if malloc failed
+ *          ChessGame* instance otherwise
+ */
+ChessGame* ChessGame_Copy(ChessGame *game);
+
+/**
  * Free all resources for a given ChessGame instance.
  * @param   game        the instance to destroy
  */

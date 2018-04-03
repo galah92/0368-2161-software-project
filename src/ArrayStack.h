@@ -18,6 +18,14 @@ typedef struct ArrayStack ArrayStack;
 ArrayStack* ArrayStack_Create(unsigned int capacity, size_t dataSize);
 
 /**
+ * Create a copy of a given ArrayStack instance.
+ * @param   stack       the instance to copy
+ * @return  NULL if malloc failed
+ *          ChessGame* instance otherwise
+ */
+ArrayStack* ArrayStack_Copy(ArrayStack *stack);
+
+/**
  * Free all resources for a given ArrayStack instance.
  * @param   stack       the instance to destroy
  */

@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <string.h>
 #include "ChessGame.h"
 
 #define CHESS_HISTORY_SIZE 3
@@ -254,6 +255,18 @@ ChessGame* ChessGame_Create() {
         return NULL;
     }
     return game;
+}
+
+ChessGame* ChessGame_Copy(ChessGame *game) {
+    ChessGame *copy = malloc(sizeof(ChessGame));
+    if (!copy) return NULL;
+    memcpy(copy, game, sizeof(ChessGame));
+    copy->history = ArrayStack_Copy(game->history);
+    if (!copy->history) {
+        ChessGame_Destroy(copy);
+        return NULL;
+    }
+    return copy;
 }
 
 void ChessGame_Destroy(ChessGame *game) {

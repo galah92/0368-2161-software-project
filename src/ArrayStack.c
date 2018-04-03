@@ -13,23 +13,35 @@ struct ArrayStack {
 };
 
 ArrayStack* ArrayStack_Create(unsigned int capacity, size_t dataSize) {
-    ArrayStack *this = malloc(sizeof(ArrayStack));
-    if (!this) return NULL;
-    this->dataSize = dataSize;
-    this->capacity = capacity;
-    this->start = this->size = 0;
-    this->array = malloc(dataSize * capacity);
-    if (!this->array) {
-        ArrayStack_Destroy(this);
+    ArrayStack *stack = malloc(sizeof(ArrayStack));
+    if (!stack) return NULL;
+    stack->dataSize = dataSize;
+    stack->capacity = capacity;
+    stack->start = stack->size = 0;
+    stack->array = malloc(dataSize * capacity);
+    if (!stack->array) {
+        ArrayStack_Destroy(stack);
         return NULL;
     }
-    return this;
+    return stack;
 }
 
-void ArrayStack_Destroy(ArrayStack* this) {
-    if (!this) return;
-    if (this->array) free(this->array);
-    free(this);
+ArrayStack* ArrayStack_Copy(ArrayStack *stack) {
+    ArrayStack *copy = malloc(sizeof(ArrayStack));
+    memcpy(copy, stack, sizeof(ArrayStack));
+    copy->array = malloc(copy->dataSize * copy->capacity);
+    if (!copy->array) {
+        ArrayStack_Destroy(copy);
+        return NULL;
+    }
+    memcpy(copy->array, stack->array, copy->capacity);
+    return stack;
+}
+
+void ArrayStack_Destroy(ArrayStack* stack) {
+    if (!stack) return;
+    if (stack->array) free(stack->array);
+    free(stack);
 }
 
 unsigned int ArrayStack_Capacity(const ArrayStack* stack) {
@@ -40,30 +52,30 @@ unsigned int ArrayStack_Size(const ArrayStack* stack) {
     return stack->size;
 }
 
-bool ArrayStack_IsFull(const ArrayStack* this) {
-    if (!this) return 0;
-    return this->size == this->capacity;
+bool ArrayStack_IsFull(const ArrayStack* stack) {
+    if (!stack) return 0;
+    return stack->size == stack->capacity;
 }
 
-bool ArrayStack_IsEmpty(const ArrayStack* this) {
-    if (!this) return 0;
-    return this->size == 0;
+bool ArrayStack_IsEmpty(const ArrayStack* stack) {
+    if (!stack) return 0;
+    return stack->size == 0;
 }
 
-void ArrayStack_Push(ArrayStack* this, void *data) {
-    if (!this) return;
-    unsigned int offset = (this->start + this->size) % this->capacity;
-    memcpy(this->array + offset * this->dataSize, data, this->dataSize);
-    if (ArrayStack_IsFull(this)) {
-        this->start = (this->start + 1) % this->capacity;
+void ArrayStack_Push(ArrayStack* stack, void *data) {
+    if (!stack) return;
+    unsigned int offset = (stack->start + stack->size) % stack->capacity;
+    memcpy(stack->array + offset * stack->dataSize, data, stack->dataSize);
+    if (ArrayStack_IsFull(stack)) {
+        stack->start = (stack->start + 1) % stack->capacity;
     } else {
-        this->size++;
+        stack->size++;
     }
 }
 
-void* ArrayStack_Pop(ArrayStack* this) {
-    if (!this || ArrayStack_IsEmpty(this)) return NULL;
-    this->size--;
-    unsigned int offset = (this->start + this->size) % this->capacity;
-    return this->array + offset * this->dataSize;
+void* ArrayStack_Pop(ArrayStack* stack) {
+    if (!stack || ArrayStack_IsEmpty(stack)) return NULL;
+    stack->size--;
+    unsigned int offset = (stack->start + stack->size) % stack->capacity;
+    return stack->array + offset * stack->dataSize;
 }
