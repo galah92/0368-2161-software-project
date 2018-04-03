@@ -195,21 +195,27 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, ChessMove *bestMove) 
     if (depth == 0) return getBoardScore(game);
     int bestScore = isMaximizing ? INT_MIN : INT_MAX;
     int moveScore;
-    ChessMove *move;
-    ArrayStack *moves;
+    ChessMove move;
+    ChessMove tempMove; // only here as a garbage pointer - need to find a better way
+    ArrayStack *positions;
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
-            ChessGame_GetMoves(game, (ChessPos){ .x = i, .y = j }, &moves);
-            while (ArrayStack_IsEmpty(moves)) {
-                move = (ChessMove *)ArrayStack_Pop(moves);
-                ChessGame_DoMove(game, *move);
-                moveScore = minimax(game, depth - 1, !isMaximizing, NULL);
-                if ((isMaximizing && moveScore > bestScore) || (!isMaximizing && moveScore < bestScore)) {
-                    memcpy(&bestMove, move, sizeof(ChessMove));
+            move.from = (ChessPos){ .x = i, .y = j };
+            ChessGame *gameCopy = ChessGame_Copy(game);
+            ChessGame_GetMoves(gameCopy, (ChessPos){ .x = i, .y = j }, &positions);
+            while (ArrayStack_IsEmpty(positions)) {
+                move.to = *(ChessPos *)ArrayStack_Pop(positions);
+                ChessGame_DoMove(gameCopy, move);
+                moveScore = minimax(gameCopy, depth - 1, !isMaximizing, &tempMove);
+                if ((isMaximizing && moveScore > bestScore)
+                    || (!isMaximizing && moveScore < bestScore)) {
+                    memcpy(&bestMove, &move, sizeof(ChessMove));
                     bestScore = moveScore;
                 }
                 ChessGame_UndoMove(game);
             }
+            ArrayStack_Destroy(positions);
+            ChessGame_Destroy(gameCopy);
         }
     }
     return bestScore;
