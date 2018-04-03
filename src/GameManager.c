@@ -1,4 +1,6 @@
 #include <stdbool.h>
+#include <limits.h>
+#include <string.h>
 #include "GameManager.h"
 #include "ArrayStack.h"
 
@@ -81,6 +83,7 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             break;
         case GAME_COMMAND_GET_MOVES:
             res = ChessGame_GetMoves(manager->game, pos, &moves);
+            // TODO: should ArrayStack_Desotry() somewhere !!
             switch (res) {
                 case CHESS_INVALID_ARGUMENT:
                     manager->error = GAME_ERROR_INVALID_COMMAND;
@@ -144,15 +147,14 @@ int getPieceScore(ChessPiece piece) {
         case CHESS_PIECE_WHITE_PAWN:
         case CHESS_PIECE_BLACK_PAWN:
             return 1;
-        case CHESS_PIECE_WHITE_ROOK:
-        case CHESS_PIECE_BLACK_ROOK:
-            return 5;
         case CHESS_PIECE_WHITE_KNIGHT:
         case CHESS_PIECE_BLACK_KNIGHT:
-            return 3;
         case CHESS_PIECE_WHITE_BISHOP:
         case CHESS_PIECE_BLACK_BISHOP:
             return 3;
+        case CHESS_PIECE_WHITE_ROOK:
+        case CHESS_PIECE_BLACK_ROOK:
+            return 5;
         case CHESS_PIECE_WHITE_QUEEN:
         case CHESS_PIECE_BLACK_QUEEN:
             return 9;
@@ -188,9 +190,39 @@ int getBoardScore(ChessGame *game) {
     return score;
 }
 
+// TODO: still not well implememnted (and probably not working)
+int minimax(ChessGame *game, int depth, bool isMaximizing, ChessMove *bestMove) {
+    if (depth == 0) return getBoardScore(game);
+    int bestScore = isMaximizing ? INT_MIN : INT_MAX;
+    int moveScore;
+    ChessMove *move;
+    ArrayStack *moves;
+    for (int i = 0; i < CHESS_GRID; i++) {
+        for (int j = 0; j < CHESS_GRID; j++) {
+            ChessGame_GetMoves(game, (ChessPos){ .x = i, .y = j }, &moves);
+            while (ArrayStack_IsEmpty(moves)) {
+                move = (ChessMove *)ArrayStack_Pop(moves);
+                ChessGame_DoMove(game, *move);
+                moveScore = minimax(game, depth - 1, !isMaximizing, NULL);
+                if ((isMaximizing && moveScore > bestScore) || (!isMaximizing && moveScore < bestScore)) {
+                    memcpy(&bestMove, move, sizeof(ChessMove));
+                    bestScore = moveScore;
+                }
+                ChessGame_UndoMove(game);
+            }
+        }
+    }
+    return bestScore;
+}
+
 GameCommand GameManager_GetAIMove(GameManager *manager) {
     GameCommand command = { .type = GAME_COMMAND_MOVE };
-    (void)manager;
+    ChessMove move;
+    minimax(manager->game, manager->game->difficulty, true, &move);
+    command.args[0] = move.from.x;
+    command.args[1] = move.from.y;
+    command.args[2] = move.to.x;
+    command.args[3] = move.to.y;
     return command;
 }
 

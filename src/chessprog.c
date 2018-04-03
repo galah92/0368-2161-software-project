@@ -13,7 +13,7 @@ int main(int argc, const char *argv[]) {
                 command = UIManager_ProcessInput(uiManager);
                 break;
             case GAME_PLAYER_TYPE_AI:
-                // command = AIEngine_GetMoveCommand(gameManager->game);
+                command = GameManager_GetAIMove(gameManager);
                 break;
         }
         GameManager_ProcessCommand(gameManager, command);
