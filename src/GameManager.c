@@ -50,22 +50,22 @@ void handleLoadGame(GameManager *manager, const char *path) {
     manager->game->turn = colorStrToChessColor(line);
     fgets(line, LINE_MAX_LENGTH, fp); // SETTINGS:
     fgets(line, LINE_MAX_LENGTH, fp);
-    strtok(line, ": "); // GAME_MODE
-    manager->game->mode = modeStrToChessMode(strtok(NULL, ": "));
+    strtok(line, " \n"); // GAME_MODE
+    manager->game->mode = modeStrToChessMode(strtok(NULL, " \n"));
     fgets(line, LINE_MAX_LENGTH, fp);
-    strtok(line, ": "); // DIFFICULTY
-    manager->game->difficulty = difficultyStrToChessDifficulty(strtok(NULL, ": "));
+    strtok(line, " \n"); // DIFFICULTY
+    manager->game->difficulty = difficultyStrToChessDifficulty(strtok(NULL, " \n"));
     fgets(line, LINE_MAX_LENGTH, fp);
-    strtok(line, ": "); // USER_COLOR
-    manager->game->userColor = colorStrToChessColor(line);
-    // TODO: parse board
+    strtok(line, " \n"); // USER_COLOR
+    manager->game->userColor = colorStrToChessColor(strtok(NULL, " \n"));
     for (int i = CHESS_GRID - 1; i >= 0; i--) {
         fgets(line, LINE_MAX_LENGTH, fp);
-        strtok(line, " ");
+        strtok(line, " \n");
         for (int j = 0; j < CHESS_GRID; j++) {
-            manager->game->board[i][j] = *strtok(NULL, " ");
+            manager->game->board[i][j] = *strtok(NULL, " \n");
         }
     }
+    fclose(fp);
 }
 
 void processSettingsCommand(GameManager *manager, GameCommand command) {

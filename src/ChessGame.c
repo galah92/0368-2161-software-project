@@ -414,13 +414,13 @@ ChessResult ChessGame_SettingsToStream(const ChessGame *game, FILE *stream) {
 
 ChessResult ChessGame_BoardToStream(const ChessGame *game, FILE *stream) {
     if (!game || !stream) return CHESS_INVALID_ARGUMENT;
-    fprintf(stream, "\n");
-    for (int i = CHESS_GRID; i >= 0; i--) {
+    // fprintf(stream, "\n");
+    for (int i = CHESS_GRID - 1; i >= 0; i--) {
         fprintf(stream, "%d| ", i + 1);
         for (int j = 0; j < CHESS_GRID; j++) {
             fprintf(stream, "%c ", game->board[i][j]);
         }
-        fprintf(stream, " |\n");
+        fprintf(stream, "|\n");
     }
     fprintf(stream, "  -----------------\n");
     fprintf(stream, "   A B C D E F G H\n");
