@@ -23,6 +23,7 @@ ifeq ($(OSNAME), nova)
 else ifeq ($(OSTYPE), Darwin)
 	SDLINC = $(SDLINC_DARWIN)
 	SDLLIB = $(SDLLIB_DARWIN)
+	CFLAGS += -Wno-builtin-memcpy-chk-size
 else
 	# assuming nova for now
 	SDLINC = $(SDLINC_NOVA)
