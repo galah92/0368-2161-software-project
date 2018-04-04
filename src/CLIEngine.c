@@ -62,6 +62,7 @@ CLIEngine* CLIEngine_Create() {
     CLIEngine *this = malloc(sizeof(CLIEngine));
     if (!this) return NULL;
     printf(MSG_APP_INIT);
+    printf(MSG_SETTINGS_STATE);
     return this;
 }
 
@@ -134,7 +135,6 @@ int isInt(const char* str) {
 GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
     GameCommand command = { .type = GAME_COMMAND_INVALID, .args = {-2} };
     if (!this) return command;
-    printf(MSG_SETTINGS_STATE);
     char* input = fgets(this->input, GAME_COMMAND_MAX_LINE_LENGTH, stdin);
     if (!input) return command;
     unsigned int lastCharIndex = strlen(this->input) - 1;
@@ -285,6 +285,7 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             break;
         case GAME_COMMAND_START:
             printf(MSG_START);
+            ChessGame_BoardToStream(manager->game, stdout);
             break;
         case GAME_COMMAND_RESET:
             printf(MSG_RESTART);
@@ -301,5 +302,9 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
     //     case AI_MOVE:               printf(MSG_AI_MOVE, "white", 0, 0 + 'A', 0, 0 + 'A');   break;
             default: break;
     }
-
+    if (manager->phase == GAME_PHASE_SETTINGS) {
+        printf(MSG_SETTINGS_STATE);
+    } else if (manager->phase == GAME_PHASE_RUNNING) {
+        printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+    }
 }
