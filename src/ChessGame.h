@@ -32,8 +32,8 @@ typedef enum ChessDifficulty {
 } ChessDifficulty;
 
 typedef enum ChessColor {
-    CHESS_PLAYER_COLOR_WHITE,
     CHESS_PLAYER_COLOR_BLACK,
+    CHESS_PLAYER_COLOR_WHITE,
     CHESS_PLAYER_COLOR_NONE,
 } ChessColor;
 

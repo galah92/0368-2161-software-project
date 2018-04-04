@@ -9,7 +9,7 @@
 #define MSG_USER_COLOR                  "User color is set to %s\n"
 #define MSG_DEFAULT_SETTINGS            "All settings reset to default\n"
 #define MSG_QUIT                        "Exiting...\n"
-#define MSG_START                       "Starting game…\n"
+#define MSG_START                       "Starting game...\n"
 #define MSG_MAKE_MOVE                   "Enter your move (%s player):\n"
 #define MSG_CHECKMATE                   "Checkmate! %s player wins the game\n"
 #define MSG_CHECK                       "Check: %s king is threatened\n"
@@ -132,7 +132,7 @@ int isInt(const char* str) {
 }
 
 GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
-    GameCommand command = { .type = GAME_COMMAND_INVALID };
+    GameCommand command = { .type = GAME_COMMAND_INVALID, .args = {-2} };
     if (!this) return command;
     printf(MSG_SETTINGS_STATE);
     char* input = fgets(this->input, GAME_COMMAND_MAX_LINE_LENGTH, stdin);

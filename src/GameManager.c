@@ -73,17 +73,17 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
     ChessResult res;
     switch (command.type) {
         case GAME_COMMAND_GAME_MODE:
-            res = ChessGame_SetGameMode(manager->game, command.args[0]);
+            res = ChessGame_SetGameMode(manager->game, command.args[0] + 1);
             if (res == CHESS_INVALID_ARGUMENT)
                 manager->error = GAME_ERROR_INVALID_GAME_MODE;
             break;
         case GAME_COMMAND_DIFFICULTY:
-            res = ChessGame_SetDifficulty(manager->game, command.args[0]);
+            res = ChessGame_SetDifficulty(manager->game, command.args[0] + 1);
             if (res == CHESS_INVALID_ARGUMENT)
                 manager->error = GAME_ERROR_INVALID_DIFF_LEVEL;
             break;
         case GAME_COMMAND_USER_COLOR:
-            res = ChessGame_SetUserColor(manager->game, command.args[0]);
+            res = ChessGame_SetUserColor(manager->game, command.args[0] + 1);
             if (res == CHESS_INVALID_ARGUMENT)
                 manager->error = GAME_ERROR_INVALID_USER_COLOR;
             break;
