@@ -4,6 +4,69 @@
 #include "GameManager.h"
 #include "ArrayStack.h"
 
+#define LINE_MAX_LENGTH 64
+
+
+ChessColor colorStrToChessColor(const char *color) {
+    if (strcmp(color, "white") == 0) {
+        return CHESS_PLAYER_COLOR_WHITE;
+    } else if (strcmp(color, "black") == 0) {
+        return CHESS_PLAYER_COLOR_BLACK;
+    } else {
+        return CHESS_PLAYER_COLOR_NONE;
+    }
+}
+
+ChessMode modeStrToChessMode(const char *mode) {
+    if (strcmp(mode, "1-player") == 0) {
+        return CHESS_MODE_1_PLAYER;
+    } else {
+        return CHESS_MODE_2_PLAYER;
+    }
+}
+
+ChessDifficulty difficultyStrToChessDifficulty(const char *difficulty) {
+    if (strcmp(difficulty, "amateur") == 0) {
+        return CHESS_DIFFICULTY_AMATEUR;
+    } else if (strcmp(difficulty, "easy") == 0) {
+        return CHESS_DIFFICULTY_EASY;
+    } else if (strcmp(difficulty, "moderate") == 0) {
+        return CHESS_DIFFICULTY_MODERATE;
+    } else if (strcmp(difficulty, "hard") == 0) {
+        return CHESS_DIFFICULTY_HARD;
+    } else {
+        return CHESS_DIFFICULTY_EXPERT;
+    }    
+}
+
+void handleLoadGame(GameManager *manager, const char *path) {
+    FILE *fp = fopen(path, "r");
+    if (!fp) {
+        manager->error = GAME_ERROR_INVALID_FILE;
+        return;
+    }
+    char line[LINE_MAX_LENGTH];
+    fgets(line, LINE_MAX_LENGTH, fp);
+    manager->game->turn = colorStrToChessColor(line);
+    fgets(line, LINE_MAX_LENGTH, fp); // SETTINGS:
+    fgets(line, LINE_MAX_LENGTH, fp);
+    strtok(line, ": "); // GAME_MODE
+    manager->game->mode = modeStrToChessMode(strtok(NULL, ": "));
+    fgets(line, LINE_MAX_LENGTH, fp);
+    strtok(line, ": "); // DIFFICULTY
+    manager->game->difficulty = difficultyStrToChessDifficulty(strtok(NULL, ": "));
+    fgets(line, LINE_MAX_LENGTH, fp);
+    strtok(line, ": "); // USER_COLOR
+    manager->game->userColor = colorStrToChessColor(line);
+    // TODO: parse board
+    for (int i = CHESS_GRID - 1; i >= 0; i--) {
+        fgets(line, LINE_MAX_LENGTH, fp);
+        strtok(line, " ");
+        for (int j = 0; j < CHESS_GRID; j++) {
+            manager->game->board[i][j] = *strtok(NULL, " ");
+        }
+    }
+}
 
 void processSettingsCommand(GameManager *manager, GameCommand command) {
     if (!manager) return;
@@ -25,7 +88,7 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
                 manager->error = GAME_ERROR_INVALID_USER_COLOR;
             break;
         case GAME_COMMAND_LOAD_GAME:
-            // TODO: implement
+            handleLoadGame(manager, command.path);
             break;
         case GAME_COMMAND_DEFAULT_SETTINGS:
             ChessGame_SetDefaultSettings(manager->game);
