@@ -23,7 +23,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/mnt/c/Coding/tau-cs-projects/chessproj/bin/chessprog",
-            "args": ["<", "tst/2.input"],
+            "args": ["<", "bin/test.input"],
             "stopAtEntry": false,
             "cwd": "/mnt/c/Coding/tau-cs-projects/chessproj",
             "environment": [],

@@ -105,7 +105,7 @@ bool isValidPawnMove(ChessGame *game, ChessMove move) {
         color != getPieceColor(game->board[move.to.x][move.to.y]);
     int regularMove = !isCapture && verDiff == 1 && horDiff == 0;
     int startingMove = !isCapture && isInStartPos && verDiff == 2 && horDiff == 0;
-    int capturingMove = !isCapture && verDiff == 1 && horDiff == 1;
+    int capturingMove = isCapture && verDiff == 1 && horDiff == 1;
     return regularMove || startingMove || capturingMove;
 }
 

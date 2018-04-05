@@ -38,19 +38,19 @@ typedef enum ChessColor {
 } ChessColor;
 
 typedef enum ChessPiece {
-    CHESS_PIECE_NONE = '_',
-    CHESS_PIECE_WHITE_PAWN = 'm',
-    CHESS_PIECE_WHITE_ROOK = 'r',
-    CHESS_PIECE_WHITE_KNIGHT = 'n',
-    CHESS_PIECE_WHITE_BISHOP = 'b',
-    CHESS_PIECE_WHITE_QUEEN = 'q',
-    CHESS_PIECE_WHITE_KING = 'k',
-    CHESS_PIECE_BLACK_PAWN = 'M',
-    CHESS_PIECE_BLACK_ROOK = 'R',
-    CHESS_PIECE_BLACK_KNIGHT = 'N',
-    CHESS_PIECE_BLACK_BISHOP = 'B',
-    CHESS_PIECE_BLACK_QUEEN = 'Q',
-    CHESS_PIECE_BLACK_KING = 'K',
+    CHESS_PIECE_NONE            = '_',
+    CHESS_PIECE_WHITE_PAWN      = 'm',
+    CHESS_PIECE_WHITE_ROOK      = 'r',
+    CHESS_PIECE_WHITE_KNIGHT    = 'n',
+    CHESS_PIECE_WHITE_BISHOP    = 'b',
+    CHESS_PIECE_WHITE_QUEEN     = 'q',
+    CHESS_PIECE_WHITE_KING      = 'k',
+    CHESS_PIECE_BLACK_PAWN      = 'M',
+    CHESS_PIECE_BLACK_ROOK      = 'R',
+    CHESS_PIECE_BLACK_KNIGHT    = 'N',
+    CHESS_PIECE_BLACK_BISHOP    = 'B',
+    CHESS_PIECE_BLACK_QUEEN     = 'Q',
+    CHESS_PIECE_BLACK_KING      = 'K',
 } ChessPiece;
 
 typedef struct ChessGame {
