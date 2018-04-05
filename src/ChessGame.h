@@ -74,10 +74,18 @@ typedef struct ChessPos {
     int y;
 } ChessPos;
 
+typedef enum ChessMoveType {
+    CHESS_MOVE_STANDARD,
+    CHESS_MOVE_THREATENED,
+    CHESS_MOVE_CAPTURE,
+    CHESS_MOVE_BOTH,
+} ChessMoveType;
+
 typedef struct ChessMove {
     ChessPos from;
     ChessPos to;
     ChessPiece capturedPiece;
+    ChessMoveType type;
 } ChessMove;
 
 /**

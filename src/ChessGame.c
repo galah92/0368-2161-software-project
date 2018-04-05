@@ -229,11 +229,11 @@ bool isKingThreatened(ChessGame *game, ChessColor playerColor) {
     return false;
 }
 
-void pseudoDoMove(ChessGame *game, ChessMove move) {
+void pseudoDoMove(ChessGame *game, ChessMove *move) {
     if (!game) return; // sanity check
-    move.capturedPiece = game->board[move.to.x][move.to.y];
-    game->board[move.to.x][move.to.y] = game->board[move.from.x][move.from.y];
-    game->board[move.from.x][move.from.y] = CHESS_PIECE_NONE;
+    move->capturedPiece = game->board[move->to.x][move->to.y];
+    game->board[move->to.x][move->to.y] = game->board[move->from.x][move->from.y];
+    game->board[move->from.x][move->from.y] = CHESS_PIECE_NONE;
     game->turn = switchColor(game->turn);
     ArrayStack_Push(game->history, &move); // update history
 }
@@ -251,6 +251,15 @@ bool hasMoves(ChessGame *game) {
         }
     }
     return false;
+}
+
+ChessMoveType getMoveType(ChessGame *game, ChessMove move) {
+    bool isThreatened = false;
+    bool isCapture = game->board[move.to.x][move.to.y] != CHESS_PIECE_NONE;
+    if (isThreatened && isCapture) return CHESS_MOVE_BOTH;
+    if (isThreatened) return CHESS_MOVE_THREATENED;
+    if (isCapture) return CHESS_MOVE_CAPTURE;
+    return CHESS_MOVE_STANDARD;
 }
 
 ChessGame* ChessGame_Create() {
@@ -334,7 +343,7 @@ ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     if (!isValidToPosition(game, move)) return CHESS_ILLEGAL_MOVE;
     if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
     bool isThreatened = isKingThreatened(game, game->turn);
-    pseudoDoMove(game, move);
+    pseudoDoMove(game, &move);
     bool willBeThreatened = isKingThreatened(game, game->turn);
     ChessGame_UndoMove(game);
     if (isThreatened && willBeThreatened) return CHESS_KING_IS_STILL_THREATENED;
@@ -345,7 +354,7 @@ ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
 ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     ChessResult isValidResult = ChessGame_IsValidMove(game, move);
     if (isValidResult != CHESS_SUCCESS) return isValidResult;
-    pseudoDoMove(game, move);
+    pseudoDoMove(game, &move);
     return CHESS_SUCCESS;
 }
 
@@ -368,6 +377,7 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
         for (int j = 0; j < CHESS_GRID; j++) {
             move.to = (ChessPos){ .x = i, .y = j };
             if (ChessGame_IsValidMove(game, move) == CHESS_SUCCESS) {
+                move.type = getMoveType(game, move);
                 ArrayStack_Push(*stack, &(ChessPos){ .x = i, .y = j });
             }
         }
