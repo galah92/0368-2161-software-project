@@ -146,7 +146,6 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
     if (!manager) return;
     ChessResult res;
     ChessMove move;
-    ArrayStack *moves;
     ChessPos pos = { .x = command.args[1], .y = command.args[0] };
     switch (command.type) {
         case GAME_COMMAND_MOVE:
@@ -179,8 +178,8 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             }
             break;
         case GAME_COMMAND_GET_MOVES:
-            res = ChessGame_GetMoves(manager->game, pos, &moves);
-            // TODO: should ArrayStack_Desotry() somewhere !!
+            ArrayStack_Destroy(manager->moves);
+            res = ChessGame_GetMoves(manager->game, pos, &manager->moves);
             switch (res) {
                 case CHESS_INVALID_ARGUMENT:
                     manager->error = GAME_ERROR_INVALID_COMMAND;
@@ -232,6 +231,7 @@ GameManager* GameManager_Create() {
 
 void GameManager_Destroy(GameManager *manager) {
     ChessGame_Destroy(manager->game);
+    ArrayStack_Destroy(manager->moves);
     free(manager);
 }
 
@@ -289,7 +289,7 @@ int getBoardScore(ChessGame *game) {
     return score;
 }
 
-// TODO: still not well implememnted (and probably not working)
+// TODO: add pruning
 int minimax(ChessGame *game, int depth, bool isMaximizing, ChessMove *bestMove) {
     if (depth == 0) return getBoardScore(game);
     int bestScore = isMaximizing ? INT_MIN : INT_MAX;

@@ -72,6 +72,7 @@ typedef struct GameManager {
     ChessGame *game;
     GamePhase phase;
     GameError error;
+    ArrayStack *moves;
 } GameManager;
 
 GameManager* GameManager_Create();
