@@ -68,6 +68,31 @@ void handleLoadGame(GameManager *manager, const char *path) {
     fclose(fp);
 }
 
+char* chessColorToColorStr(ChessColor color) {
+    switch (color) {
+        case CHESS_PLAYER_COLOR_BLACK:
+            return "black";
+        case CHESS_PLAYER_COLOR_WHITE:
+            return "white";
+        case CHESS_PLAYER_COLOR_NONE:
+        default:
+            return "none";
+    }
+}
+
+void handleSaveGame(GameManager *manager, const char *path) {
+    FILE *fp = fopen(path, "w+");
+    if (!fp) {
+        manager->error = GAME_ERROR_FILE_ALLOC;
+        return;
+    }
+    fputs(chessColorToColorStr(manager->game->turn), fp);
+    fputs("\n", fp);
+    ChessGame_SettingsToStream(manager->game, fp);
+    ChessGame_BoardToStream(manager->game, fp);
+    fclose(fp);
+}
+
 void processSettingsCommand(GameManager *manager, GameCommand command) {
     if (!manager) return;
     ChessResult res;
@@ -160,7 +185,7 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             }
             break;
         case GAME_COMMAND_SAVE:
-            // TODO: implement
+            handleSaveGame(manager, command.path);
             break;
         case GAME_COMMAND_UNDO:
             res = ChessGame_UndoMove(manager->game);

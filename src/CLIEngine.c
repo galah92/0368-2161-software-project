@@ -290,6 +290,9 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
         case GAME_COMMAND_RESET:
             printf(MSG_RESTART);
             break;
+        case GAME_COMMAND_SAVE:
+            printf(MSG_GAME_SAVED, command.path);
+            break;
     //     case CHECKMATE_DETECTED:    printf(MSG_CHECKMATE, "white");                         break;
     //     case CHECK_DETECT:          printf(MSG_CHECK, "white");                             break;
     //     case DRAW_DETECT:           printf(MSG_DRAW);                                       break;
