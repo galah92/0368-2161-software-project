@@ -8,6 +8,7 @@ SDLLIB_DARWIN	:= -L/usr/local/SDL/lib -Wl,-rpath,/usr/local/SDL/lib -Wl,-install
 SRCDIR			:= src
 OBJDIR			:= obj
 BINDIR			:= bin
+GOLDEN			:= chessprog
 
 # detecting all src files
 SOURCES	= $(wildcard $(SRCDIR)/*.c)
@@ -46,7 +47,9 @@ clean:
 	rm -f $(TARGET) $(OBJECTS)
 
 test:
+	@$(BINDIR)/$(GOLDEN) < tst/1.input > tst/1.correct
 	@$(BINDIR)/$(EXEC) < tst/1.input > tst/1.output
 	@diff -q tst/1.correct tst/1.output > /dev/null || echo "1 failed"
+	@$(BINDIR)/$(GOLDEN) < tst/2.input > tst/2.correct
 	@$(BINDIR)/$(EXEC) < tst/2.input > tst/2.output
 	@diff -q tst/2.correct tst/2.output > /dev/null || echo "2 failed"
