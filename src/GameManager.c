@@ -39,6 +39,32 @@ ChessDifficulty difficultyStrToChessDifficulty(const char *difficulty) {
     }    
 }
 
+char* chessPieceLocationToStr(ChessGame *game, int x, int y){
+    switch (game->board[x][y]){
+        case CHESS_PIECE_WHITE_PAWN:
+        case CHESS_PIECE_BLACK_PAWN:
+            return "pawn";
+        case CHESS_PIECE_WHITE_BISHOP:
+        case CHESS_PIECE_BLACK_BISHOP:
+            return "bishop";  
+        case CHESS_PIECE_BLACK_ROOK:
+        case CHESS_PIECE_WHITE_ROOK:
+            return "rook";  
+        case CHESS_PIECE_BLACK_KNIGHT:
+        case CHESS_PIECE_WHITE_KNIGHT:  
+            return "knight";
+        case CHESS_PIECE_BLACK_QUEEN:  
+        case CHESS_PIECE_WHITE_QUEEN:   
+            return "queen";
+        case CHESS_PIECE_BLACK_KING:   
+        case CHESS_PIECE_WHITE_KING:
+            return "king";
+        case CHESS_PIECE_NONE:
+        default:
+            return "";
+    }
+}
+
 void handleLoadGame(GameManager *manager, const char *path) {
     FILE *fp = fopen(path, "r");
     if (!fp) {

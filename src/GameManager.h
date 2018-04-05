@@ -85,5 +85,5 @@ GameCommand GameManager_GetAIMove(GameManager *manager);
 
 void GameManager_ProcessCommand(GameManager *manager, GameCommand command);
 
-
+char* chessPieceLocationToStr(ChessGame *game, int x, int y);
 #endif

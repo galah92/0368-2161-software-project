@@ -21,7 +21,7 @@
 #define MSG_GAME_SAVED                  "Game saved to: %s\n"
 #define MSG_UNDO_MOVE                   "Undo move for %s player: <%c,%c> -> <%c,%c>\n"
 #define MSG_RESTART                     "Restarting...\n"
-#define MSG_AI_MOVE                     "Computer: move %s at <%c,%c> to <%c,%c>\n"
+#define MSG_AI_MOVE                     "Computer: move %s at <%d,%c> to <%d,%c>\n"
 
 #define MSG_ERR_INVALID_COMMAND             "ERROR: invalid command\n"
 #define MSG_ERR_WRONG_GAME_MODE             "Wrong game mode\n"
@@ -288,12 +288,22 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             break;
         case GAME_COMMAND_START:
             printf(MSG_START);
-            ChessGame_BoardToStream(manager->game, stdout);
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+            if (manager->game->turn == manager->game->userColor){
+                ChessGame_BoardToStream(manager->game, stdout);
+                printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+            }
             break;
         case GAME_COMMAND_MOVE:
-            ChessGame_BoardToStream(manager->game, stdout);
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+            if (manager->game->mode == CHESS_MODE_2_PLAYER){
+                ChessGame_BoardToStream(manager->game, stdout);
+                printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+            } else {
+                if (manager->game->turn == manager->game->userColor){
+                    printf(MSG_AI_MOVE, chessPieceLocationToStr(manager->game,command.args[3]-'A' ,command.args[2]-1),command.args[0],command.args[1],command.args[2],command.args[3]);
+                    ChessGame_BoardToStream(manager->game, stdout);
+                    printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+                }
+            }
             break;
         case GAME_COMMAND_GET_MOVES:
             // TODO: complete
