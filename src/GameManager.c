@@ -103,11 +103,19 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
                 manager->error = GAME_ERROR_INVALID_GAME_MODE;
             break;
         case GAME_COMMAND_DIFFICULTY:
+            if (manager->game->mode == CHESS_MODE_2_PLAYER){ //difficulty valid only for 1-player mode
+                manager->error = GAME_ERROR_INVALID_COMMAND;
+                break;
+            }
             res = ChessGame_SetDifficulty(manager->game, command.args[0]);
             if (res == CHESS_INVALID_ARGUMENT)
                 manager->error = GAME_ERROR_INVALID_DIFF_LEVEL;
             break;
         case GAME_COMMAND_USER_COLOR:
+            if (manager->game->mode == CHESS_MODE_2_PLAYER){ //difficulty valid only for 1-player mode
+                manager->error = GAME_ERROR_INVALID_COMMAND;
+                break;
+            }
             res = ChessGame_SetUserColor(manager->game, command.args[0]);
             if (res == CHESS_INVALID_ARGUMENT)
                 manager->error = GAME_ERROR_INVALID_USER_COLOR;
@@ -195,6 +203,8 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             }
             break;
         case GAME_COMMAND_RESET:
+            ChessGame_Destroy(manager->game);
+            manager->game = ChessGame_Create();
             manager->phase = GAME_PHASE_SETTINGS;
             break;
         case GAME_COMMAND_QUIT:
