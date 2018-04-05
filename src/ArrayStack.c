@@ -35,7 +35,7 @@ ArrayStack* ArrayStack_Copy(ArrayStack *stack) {
         return NULL;
     }
     memcpy(copy->array, stack->array, copy->capacity);
-    return stack;
+    return copy;
 }
 
 void ArrayStack_Destroy(ArrayStack* stack) {

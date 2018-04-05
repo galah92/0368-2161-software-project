@@ -301,22 +301,22 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, ChessMove *bestMove) 
         for (int j = 0; j < CHESS_GRID; j++) {
             move.from = (ChessPos){ .x = i, .y = j };
             ChessGame *gameCopy = ChessGame_Copy(game);
-            ChessGame_GetMoves(gameCopy, (ChessPos){ .x = i, .y = j }, &positions);
-            while (ArrayStack_IsEmpty(positions)) {
+            ChessGame_GetMoves(gameCopy, move.from, &positions);
+            while (!ArrayStack_IsEmpty(positions)) {
                 move.to = *(ChessPos *)ArrayStack_Pop(positions);
                 ChessGame_DoMove(gameCopy, move);
                 moveScore = minimax(gameCopy, depth - 1, !isMaximizing, &tempMove);
                 if ((isMaximizing && moveScore > bestScore)
                     || (!isMaximizing && moveScore < bestScore)) {
-                    memcpy(&bestMove, &move, sizeof(ChessMove));
+                    memcpy(bestMove, &move, sizeof(ChessMove));
                     bestScore = moveScore;
                 }
-                ChessGame_UndoMove(game);
+                ChessGame_UndoMove(gameCopy);
             }
-            ArrayStack_Destroy(positions);
             ChessGame_Destroy(gameCopy);
         }
     }
+    ArrayStack_Destroy(positions);
     return bestScore;
 }
 
@@ -324,10 +324,10 @@ GameCommand GameManager_GetAIMove(GameManager *manager) {
     GameCommand command = { .type = GAME_COMMAND_MOVE };
     ChessMove move;
     minimax(manager->game, manager->game->difficulty, true, &move);
-    command.args[0] = move.from.x;
-    command.args[1] = move.from.y;
-    command.args[2] = move.to.x;
-    command.args[3] = move.to.y;
+    command.args[1] = move.from.x + 'A';
+    command.args[0] = move.from.y + 1;
+    command.args[3] = move.to.x + 'A';
+    command.args[2] = move.to.y + 1;
     return command;
 }
 
