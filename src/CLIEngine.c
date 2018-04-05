@@ -302,7 +302,8 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             printf(MSG_GAME_SAVED, command.path);
             break;
         case GAME_COMMAND_UNDO:
-            // TODO: complete
+            // TODO: should print MSG_UNDO_MOVE somewhow
+            ChessGame_BoardToStream(manager->game, stdout);
             break;
         case GAME_COMMAND_RESET:
             printf(MSG_RESTART);

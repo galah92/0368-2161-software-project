@@ -200,6 +200,9 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             if (res == CHESS_EMPTY_HISTORY) {
                 manager->error = GAME_ERROR_EMPTY_HISTORY;
             }
+            if (manager->game->mode == CHESS_MODE_1_PLAYER) {
+                res = ChessGame_UndoMove(manager->game);
+            }
             break;
         case GAME_COMMAND_RESET:
             ChessGame_Destroy(manager->game);
