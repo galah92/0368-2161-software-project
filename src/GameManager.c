@@ -139,11 +139,11 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
     ChessResult res;
     ChessMove move;
     ArrayStack *moves;
-    ChessPos pos = { .x = command.args[0], .y = command.args[1] };
+    ChessPos pos = { .x = command.args[1], .y = command.args[0] };
     switch (command.type) {
         case GAME_COMMAND_MOVE:
-            move.from = (ChessPos){ .x = command.args[0] - 1, .y = command.args[1] - 'A' };
-            move.to = (ChessPos){ .x = command.args[2] - 1, .y = command.args[3] - 'A' };
+            move.from = (ChessPos){ .x = command.args[1] - 'A', .y = command.args[0] - 1 };
+            move.to = (ChessPos){ .x = command.args[3] - 'A', .y = command.args[2] - 1 };
             res = ChessGame_IsValidMove(manager->game, move);
             switch (res) {
                 case CHESS_INVALID_ARGUMENT:

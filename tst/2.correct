@@ -1,0 +1,28 @@
+ Chess
+-------
+Specify game settings or type 'start' to begin a game with the current settings:
+Starting game...
+8| R N B Q K B N R |
+7| M M M M M M M M |
+6| _ _ _ _ _ _ _ _ |
+5| _ _ _ _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| r n b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (white player):
+Computer: move pawn at <7,H> to <5,H>
+8| R N B Q K B N R |
+7| M M M M M M M _ |
+6| _ _ _ _ _ _ _ _ |
+5| _ _ _ _ _ _ _ M |
+4| _ _ _ _ _ _ _ _ |
+3| m _ _ _ _ _ _ _ |
+2| _ m m m m m m m |
+1| r n b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (white player):
+Exiting...

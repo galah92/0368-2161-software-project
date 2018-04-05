@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/mnt/c/Coding/tau-cs-projects/chessproj/bin/chessprog",
-            "args": [],
+            "args": ["<", "tst/2.input"],
             "stopAtEntry": false,
             "cwd": "/mnt/c/Coding/tau-cs-projects/chessproj",
             "environment": [],
@@ -31,7 +31,8 @@
             },
             "sourceFileMap": {
                 "/mnt/c": "c:\\"
-            }
+            },
+            "preLaunchTask": "build"
         },
         {
             "name": "(gdb) Launch (Mac)",
@@ -58,9 +59,7 @@
                 "pipeArgs": ["-c"],
                 "debuggerPath": "/usr/local/bin/gdb"
             },
-            "sourceFileMap": {
-                "/mnt/c": "c:\\"
-            }
+            "preLaunchTask": "build"
         }
     ]
 }

@@ -48,3 +48,5 @@ clean:
 test:
 	@$(BINDIR)/$(EXEC) < tst/1.input > tst/1.output
 	@diff -q tst/1.correct tst/1.output > /dev/null || echo "1 failed"
+	@$(BINDIR)/$(EXEC) < tst/2.input > tst/2.output
+	@diff -q tst/2.correct tst/2.output > /dev/null || echo "2 failed"

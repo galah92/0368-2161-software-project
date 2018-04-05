@@ -11,25 +11,44 @@
  * @param   game        the instance init board to
  */
 void initChessBoard(ChessGame *game) {
-    game->board[0][0] = game->board[0][7] = CHESS_PIECE_WHITE_ROOK;
-    game->board[0][1] = game->board[0][6] = CHESS_PIECE_WHITE_KNIGHT;
-    game->board[0][2] = game->board[0][5] = CHESS_PIECE_WHITE_BISHOP;
-    game->board[0][3] = CHESS_PIECE_WHITE_QUEEN;
-    game->board[0][4] = CHESS_PIECE_WHITE_KING;
-    game->board[7][0] = game->board[7][7] = CHESS_PIECE_BLACK_ROOK;
-    game->board[7][1] = game->board[7][6] = CHESS_PIECE_BLACK_KNIGHT;
-    game->board[7][2] = game->board[7][5] = CHESS_PIECE_BLACK_BISHOP;
-    game->board[7][3] = CHESS_PIECE_BLACK_QUEEN;
-    game->board[7][4] = CHESS_PIECE_BLACK_KING;
+    game->board[0][0] = game->board[7][0] = CHESS_PIECE_WHITE_ROOK;
+    game->board[1][0] = game->board[6][0] = CHESS_PIECE_WHITE_KNIGHT;
+    game->board[2][0] = game->board[5][0] = CHESS_PIECE_WHITE_BISHOP;
+    game->board[3][0] = CHESS_PIECE_WHITE_QUEEN;
+    game->board[4][0] = CHESS_PIECE_WHITE_KING;
+    game->board[0][7] = game->board[7][7] = CHESS_PIECE_BLACK_ROOK;
+    game->board[1][7] = game->board[6][7] = CHESS_PIECE_BLACK_KNIGHT;
+    game->board[2][7] = game->board[5][7] = CHESS_PIECE_BLACK_BISHOP;
+    game->board[3][7] = CHESS_PIECE_BLACK_QUEEN;
+    game->board[4][7] = CHESS_PIECE_BLACK_KING;
     for (int j = 0; j < CHESS_GRID; j++) {
-        game->board[1][j] = CHESS_PIECE_WHITE_PAWN;
-        game->board[6][j] = CHESS_PIECE_BLACK_PAWN;
+        game->board[j][1] = CHESS_PIECE_WHITE_PAWN;
+        game->board[j][6] = CHESS_PIECE_BLACK_PAWN;
     }
     for (int i = 2; i < CHESS_GRID - 2; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
-            game->board[i][j] = CHESS_PIECE_NONE;
+            game->board[j][i] = CHESS_PIECE_NONE;
         }
     }
+    // game->board[0][0] = game->board[0][7] = CHESS_PIECE_WHITE_ROOK;
+    // game->board[0][1] = game->board[0][6] = CHESS_PIECE_WHITE_KNIGHT;
+    // game->board[0][2] = game->board[0][5] = CHESS_PIECE_WHITE_BISHOP;
+    // game->board[0][3] = CHESS_PIECE_WHITE_QUEEN;
+    // game->board[0][4] = CHESS_PIECE_WHITE_KING;
+    // game->board[7][0] = game->board[7][7] = CHESS_PIECE_BLACK_ROOK;
+    // game->board[7][1] = game->board[7][6] = CHESS_PIECE_BLACK_KNIGHT;
+    // game->board[7][2] = game->board[7][5] = CHESS_PIECE_BLACK_BISHOP;
+    // game->board[7][3] = CHESS_PIECE_BLACK_QUEEN;
+    // game->board[7][4] = CHESS_PIECE_BLACK_KING;
+    // for (int j = 0; j < CHESS_GRID; j++) {
+    //     game->board[1][j] = CHESS_PIECE_WHITE_PAWN;
+    //     game->board[6][j] = CHESS_PIECE_BLACK_PAWN;
+    // }
+    // for (int i = 2; i < CHESS_GRID - 2; i++) {
+    //     for (int j = 0; j < CHESS_GRID; j++) {
+    //         game->board[i][j] = CHESS_PIECE_NONE;
+    //     }
+    // }
 }
 
 /**
@@ -100,7 +119,7 @@ bool isValidPawnMove(ChessGame *game, ChessMove move) {
     ChessColor color = getPieceColor(game->board[move.from.x][move.from.y]);
     int isInStartPos = move.from.y == (color == CHESS_PLAYER_COLOR_WHITE ? 1 : 6);
     int horDiff = abs(move.from.x - move.to.x);
-    int verDiff = (move.from.y - move.to.y) * (color == CHESS_PLAYER_COLOR_WHITE ? 1 : -1);
+    int verDiff = (move.from.y - move.to.y) * (color == CHESS_PLAYER_COLOR_WHITE ? -1 : 1);
     int isCapture = game->board[move.to.x][move.to.y] != CHESS_PIECE_NONE &&
         color != getPieceColor(game->board[move.to.x][move.to.y]);
     int regularMove = !isCapture && verDiff == 1 && horDiff == 0;
@@ -112,7 +131,7 @@ bool isValidPawnMove(ChessGame *game, ChessMove move) {
 bool isValidRookMove(ChessGame *game, ChessMove move) {
     int horDiff = move.from.x - move.to.x;
     int verDiff = move.from.y - move.to.y;
-    if ((horDiff != 0) ^ (verDiff != 0)) return 0; // exclusive ver / hor move
+    if (!((horDiff != 0) ^ (verDiff != 0))) return 0; // exclusive ver / hor move
     if (horDiff != 0) { // check there isn't overleap
         int start = move.from.x < move.to.x ? move.from.x + 1 : move.to.x + 1;
         int end = move.from.x < move.to.x ? move.to.x : move.from.x;
@@ -204,11 +223,22 @@ ChessPos getKingPosition(ChessGame *game, ChessColor color){
     return (ChessPos){ .x = -1, .y = -1 }; // can't happen
 }
 
+ChessColor switchColor(ChessColor color) {
+    switch (color) {
+        case CHESS_PLAYER_COLOR_BLACK:
+            return CHESS_PLAYER_COLOR_WHITE;
+        case CHESS_PLAYER_COLOR_WHITE:
+            return CHESS_PLAYER_COLOR_BLACK;
+        default:
+            return CHESS_PLAYER_COLOR_NONE;
+    }
+}
+
 bool isKingThreatened(ChessGame *game, ChessColor playerColor) {
-    ChessColor opponentColor = 3 - playerColor;
+    ChessColor opponentColor = switchColor(playerColor);
     ChessMove move = { .to = getKingPosition(game, opponentColor) };
     for (int i = 0; i < CHESS_GRID; i++) {
-        for (int j = 0; i < CHESS_GRID; i++) {
+        for (int j = 0; j < CHESS_GRID; j++) {
             if (getPieceColor(game->board[i][j]) == playerColor) {
                 move.from = (ChessPos){ .x = i, .y = j };
                 if (isValidPieceMove(game, move)) return true;
@@ -223,7 +253,7 @@ void pseudoDoMove(ChessGame *game, ChessMove move) {
     move.capturedPiece = game->board[move.to.x][move.to.y];
     game->board[move.to.x][move.to.y] = game->board[move.from.x][move.from.y];
     game->board[move.from.x][move.from.y] = CHESS_PIECE_NONE;
-    game->turn = 3 - game->turn; // elegant way to switch player
+    game->turn = switchColor(game->turn);
     ArrayStack_Push(game->history, &move); // update history
 }
 
@@ -233,7 +263,6 @@ bool hasMoves(ChessGame *game) {
     for (int i = 0; i < CHESS_GRID; i ++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             pos = (ChessPos){ .x = i, .y = j };
-            if (!isValidPositionOnBoard(pos)) continue;
             ChessResult res = ChessGame_GetMoves(game, pos, &possibleMoves);
             bool areThereMoves = !ArrayStack_IsEmpty(possibleMoves);
             ArrayStack_Destroy(possibleMoves);
@@ -418,7 +447,7 @@ ChessResult ChessGame_BoardToStream(const ChessGame *game, FILE *stream) {
     for (int i = CHESS_GRID - 1; i >= 0; i--) {
         fprintf(stream, "%d| ", i + 1);
         for (int j = 0; j < CHESS_GRID; j++) {
-            fprintf(stream, "%c ", game->board[i][j]);
+            fprintf(stream, "%c ", game->board[j][i]);
         }
         fprintf(stream, "|\n");
     }
