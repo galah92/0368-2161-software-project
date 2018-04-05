@@ -1,13 +1,13 @@
 EXEC			:= chessprog
-SRCDIR			:= src
-OBJDIR			:= obj
-BINDIR			:= bin
 CC				:= gcc
 CFLAGS			:= -std=c99 -Wall -Wextra -Werror -pedantic-errors -ggdb
 SDLINC_NOVA		:= -I/usr/local/lib/sdl_2.0.5/include/SDL2 -D_REENTRANT
 SDLLIB_NOVA		:= -L/usr/local/lib/sdl_2.0.5/lib -Wl,-rpath,/usr/local/lib/sdl_2.0.5/lib -Wl,--enable-new-dtags -lSDL2 -lSDL2main
 SDLINC_DARWIN	:= -I/usr/local/SDL/include -D_REENTRANT
 SDLLIB_DARWIN	:= -L/usr/local/SDL/lib -Wl,-rpath,/usr/local/SDL/lib -Wl,-install_name,--enable-new-dtags -lSDL2 -lSDL2main
+SRCDIR			:= src
+OBJDIR			:= obj
+BINDIR			:= bin
 
 # detecting all src files
 SOURCES	= $(wildcard $(SRCDIR)/*.c)
@@ -30,7 +30,7 @@ else
 	SDLLIB = $(SDLLIB_NOVA)
 endif
 
-.PHONY: build clean
+.PHONY: build clean test
 
 default : all
 
@@ -44,3 +44,7 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)
+
+test:
+	@$(BINDIR)/$(EXEC) < tst/1.input > tst/1.output
+	@diff -q tst/1.correct tst/1.output > /dev/null || echo "1 failed"

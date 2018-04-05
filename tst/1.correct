@@ -1,0 +1,8 @@
+ Chess
+-------
+Specify game settings or type 'start' to begin a game with the current settings:
+SETTINGS:
+GAME_MODE: 1-player
+DIFFICULTY: easy
+USER_COLOR: white
+Exiting...

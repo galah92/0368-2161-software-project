@@ -282,13 +282,15 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             ChessGame_SettingsToStream(manager->game, stdout);                                 break;
         case GAME_COMMAND_QUIT:
             printf(MSG_QUIT);
-            break;
+            return;
         case GAME_COMMAND_START:
             printf(MSG_START);
             ChessGame_BoardToStream(manager->game, stdout);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             break;
         case GAME_COMMAND_RESET:
             printf(MSG_RESTART);
+            printf(MSG_SETTINGS_STATE);
             break;
         case GAME_COMMAND_SAVE:
             printf(MSG_GAME_SAVED, command.path);
@@ -304,10 +306,5 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
     //     case MOVE_UNDONE:           printf(MSG_UNDO_MOVE, "white", 0, 0 + 'A', 0, 0 + 'A'); break;
     //     case AI_MOVE:               printf(MSG_AI_MOVE, "white", 0, 0 + 'A', 0, 0 + 'A');   break;
             default: break;
-    }
-    if (manager->phase == GAME_PHASE_SETTINGS) {
-        printf(MSG_SETTINGS_STATE);
-    } else if (manager->phase == GAME_PHASE_RUNNING) {
-        printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
     }
 }
