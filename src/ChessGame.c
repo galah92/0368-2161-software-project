@@ -230,12 +230,16 @@ bool isKingThreatened(ChessGame *game, ChessColor playerColor) {
 }
 
 void pseudoDoMove(ChessGame *game, ChessMove *move) {
-    if (!game) return; // sanity check
     move->capturedPiece = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = game->board[move->from.x][move->from.y];
     game->board[move->from.x][move->from.y] = CHESS_PIECE_NONE;
     game->turn = switchColor(game->turn);
-    ArrayStack_Push(game->history, &move); // update history
+}
+
+void pseudoUndoMove(ChessGame *game, ChessMove *move) {
+    game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
+    game->board[move->to.x][move->to.y] = move->capturedPiece; 
+    game->turn = switchColor(game->turn);
 }
 
 bool hasMoves(ChessGame *game) {
@@ -345,7 +349,7 @@ ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     bool isThreatened = isKingThreatened(game, game->turn);
     pseudoDoMove(game, &move);
     bool willBeThreatened = isKingThreatened(game, game->turn);
-    ChessGame_UndoMove(game);
+    pseudoUndoMove(game, &move);
     if (isThreatened && willBeThreatened) return CHESS_KING_IS_STILL_THREATENED;
     if (willBeThreatened) return CHESS_KING_WILL_BE_THREATENED;
     return CHESS_SUCCESS;
@@ -355,15 +359,14 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     ChessResult isValidResult = ChessGame_IsValidMove(game, move);
     if (isValidResult != CHESS_SUCCESS) return isValidResult;
     pseudoDoMove(game, &move);
+    ArrayStack_Push(game->history, &move);
     return CHESS_SUCCESS;
 }
 
 ChessResult ChessGame_UndoMove(ChessGame *game) {
     if (ArrayStack_IsEmpty(game->history)) return CHESS_EMPTY_HISTORY;
     ChessMove *move = ArrayStack_Pop(game->history);
-    game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
-    game->board[move->to.x][move->to.y] = move->capturedPiece; 
-    game->turn = switchColor(game->turn);
+    pseudoUndoMove(game, move);
     return CHESS_SUCCESS;
 }
 
