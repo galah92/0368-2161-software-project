@@ -165,6 +165,7 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
                     manager->error = GAME_ERROR_INVALID_MOVE_KING_WILL_T;
                     break;
                 case CHESS_SUCCESS:
+                    ChessGame_DoMove(manager->game, move);
                 default:
                     break;
             }

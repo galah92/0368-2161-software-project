@@ -373,6 +373,7 @@ ChessResult ChessGame_UndoMove(ChessGame *game) {
     ChessMove *move = ArrayStack_Pop(game->history);
     game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = move->capturedPiece; 
+    game->turn = switchColor(game->turn);
     return CHESS_SUCCESS;
 }
 

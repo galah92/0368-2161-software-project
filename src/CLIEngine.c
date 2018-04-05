@@ -279,32 +279,34 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             printf(MSG_DEFAULT_SETTINGS);
             break;
         case GAME_COMMAND_PRINT_SETTINGS:
-            ChessGame_SettingsToStream(manager->game, stdout);                                 break;
-        case GAME_COMMAND_QUIT:
-            printf(MSG_QUIT);
-            return;
+            ChessGame_SettingsToStream(manager->game, stdout);
+            break;
         case GAME_COMMAND_START:
             printf(MSG_START);
             ChessGame_BoardToStream(manager->game, stdout);
             printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             break;
-        case GAME_COMMAND_RESET:
-            printf(MSG_RESTART);
-            printf(MSG_SETTINGS_STATE);
+        case GAME_COMMAND_MOVE:
+            ChessGame_BoardToStream(manager->game, stdout);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+            break;
+        case GAME_COMMAND_GET_MOVES:
+            // TODO: complete
             break;
         case GAME_COMMAND_SAVE:
             printf(MSG_GAME_SAVED, command.path);
             break;
-    //     case CHECKMATE_DETECTED:    printf(MSG_CHECKMATE, "white");                         break;
-    //     case CHECK_DETECT:          printf(MSG_CHECK, "white");                             break;
-    //     case DRAW_DETECT:           printf(MSG_DRAW);                                       break;
-    //     case MOVE_DEFAULT:          printf(MSG_MOVE_DEFAULT, 0, 0 + 'A');                   break;
-    //     case MOVE_THREATENED:       printf(MSG_MOVE_THREATENED, 0, 0 + 'A');                break;
-    //     case MOVE_CAPTURES:         printf(MSG_MOVE_CAPTURES, 0, 0 + 'A');                  break;
-    //     case MOVE_BOTH:             printf(MSG_MOVE_BOTH, 0, 0 + 'A');                      break;
-    //     case GAME_SAVED:            printf(MSG_GAME_SAVED, "c:/temp/...");                  break;
-    //     case MOVE_UNDONE:           printf(MSG_UNDO_MOVE, "white", 0, 0 + 'A', 0, 0 + 'A'); break;
-    //     case AI_MOVE:               printf(MSG_AI_MOVE, "white", 0, 0 + 'A', 0, 0 + 'A');   break;
-            default: break;
+        case GAME_COMMAND_UNDO:
+            // TODO: complete
+            break;
+        case GAME_COMMAND_RESET:
+            printf(MSG_RESTART);
+            printf(MSG_SETTINGS_STATE);
+            break;
+        case GAME_COMMAND_QUIT:
+            printf(MSG_QUIT);
+            return;
+        default:
+            break;
     }
 }
