@@ -30,25 +30,6 @@ void initChessBoard(ChessGame *game) {
             game->board[j][i] = CHESS_PIECE_NONE;
         }
     }
-    // game->board[0][0] = game->board[0][7] = CHESS_PIECE_WHITE_ROOK;
-    // game->board[0][1] = game->board[0][6] = CHESS_PIECE_WHITE_KNIGHT;
-    // game->board[0][2] = game->board[0][5] = CHESS_PIECE_WHITE_BISHOP;
-    // game->board[0][3] = CHESS_PIECE_WHITE_QUEEN;
-    // game->board[0][4] = CHESS_PIECE_WHITE_KING;
-    // game->board[7][0] = game->board[7][7] = CHESS_PIECE_BLACK_ROOK;
-    // game->board[7][1] = game->board[7][6] = CHESS_PIECE_BLACK_KNIGHT;
-    // game->board[7][2] = game->board[7][5] = CHESS_PIECE_BLACK_BISHOP;
-    // game->board[7][3] = CHESS_PIECE_BLACK_QUEEN;
-    // game->board[7][4] = CHESS_PIECE_BLACK_KING;
-    // for (int j = 0; j < CHESS_GRID; j++) {
-    //     game->board[1][j] = CHESS_PIECE_WHITE_PAWN;
-    //     game->board[6][j] = CHESS_PIECE_BLACK_PAWN;
-    // }
-    // for (int i = 2; i < CHESS_GRID - 2; i++) {
-    //     for (int j = 0; j < CHESS_GRID; j++) {
-    //         game->board[i][j] = CHESS_PIECE_NONE;
-    //     }
-    // }
 }
 
 /**
@@ -141,7 +122,7 @@ bool isValidRookMove(ChessGame *game, ChessMove move) {
     } else { // verDiff != 0
         int start = move.from.y < move.to.y ? move.from.y + 1 : move.to.y + 1;
         int end = move.from.y < move.to.y ? move.to.y : move.from.y;
-        for (int i = start + 1; i < end; i++) {
+        for (int i = start; i < end; i++) {
             if (game->board[move.from.x][i] != CHESS_PIECE_NONE) return false;
         }
     }
