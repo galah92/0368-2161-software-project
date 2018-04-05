@@ -352,18 +352,12 @@ ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     if (!isMoveOfPlayerPiece(game, move)) return CHESS_EMPTY_POSITION;
     if (!isValidToPosition(game, move)) return CHESS_ILLEGAL_MOVE;
     if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
-    ChessStatus currentTurnStatus, nextTurnStatus;
-    ChessGame_GetGameStatus(game, &currentTurnStatus);
+    bool isThreatened = isKingThreatened(game, game->turn);
     pseudoDoMove(game, move);
-    ChessGame_GetGameStatus(game, &nextTurnStatus);
+    bool willBeThreatened = isKingThreatened(game, game->turn);
     ChessGame_UndoMove(game);
-    if (nextTurnStatus == CHESS_STATUS_CHECK) {
-        if (currentTurnStatus == CHESS_STATUS_CHECK) {
-            return CHESS_KING_IS_STILL_THREATENED; 
-        } else {
-            return CHESS_KING_WILL_BE_THREATENED;
-        }
-    }
+    if (isThreatened && willBeThreatened) return CHESS_KING_IS_STILL_THREATENED;
+    if (willBeThreatened) return CHESS_KING_WILL_BE_THREATENED;
     return CHESS_SUCCESS;
 }
 
