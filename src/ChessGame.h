@@ -69,23 +69,23 @@ typedef enum ChessStatus {
     CHESS_STATUS_DRAW,
 } ChessStatus;
 
+typedef enum ChessPosType {
+    CHESS_POS_STANDARD,
+    CHESS_POS_THREATENED,
+    CHESS_POS_CAPTURE,
+    CHESS_POS_BOTH,
+} ChessPosType;
+
 typedef struct ChessPos {
     int x;
     int y;
+    ChessPosType type;
 } ChessPos;
-
-typedef enum ChessMoveType {
-    CHESS_MOVE_STANDARD,
-    CHESS_MOVE_THREATENED,
-    CHESS_MOVE_CAPTURE,
-    CHESS_MOVE_BOTH,
-} ChessMoveType;
 
 typedef struct ChessMove {
     ChessPos from;
     ChessPos to;
     ChessPiece capturedPiece;
-    ChessMoveType type;
 } ChessMove;
 
 /**

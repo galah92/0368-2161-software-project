@@ -191,19 +191,6 @@ bool isValidPieceMove(ChessGame *game, ChessMove move) {
     }
 }
 
-ChessPos getKingPosition(ChessGame *game, ChessColor color){
-    if (!game) return (ChessPos){ .x = -1, .y = -1 };
-    ChessPiece king = color == CHESS_PLAYER_COLOR_WHITE
-        ? CHESS_PIECE_WHITE_KING
-        : CHESS_PIECE_BLACK_KING;
-    for (int i = 0 ; i < CHESS_GRID; i++) {
-        for (int j = 0; j < CHESS_GRID; j++) {
-            if (game->board[i][j] == king) return (ChessPos){ .x = i, .y = j };
-        }
-    }
-    return (ChessPos){ .x = -1, .y = -1 }; // can't happen
-}
-
 ChessColor switchColor(ChessColor color) {
     switch (color) {
         case CHESS_PLAYER_COLOR_BLACK:
@@ -215,9 +202,8 @@ ChessColor switchColor(ChessColor color) {
     }
 }
 
-bool isKingThreatened(ChessGame *game, ChessColor playerColor) {
-    ChessColor opponentColor = switchColor(playerColor);
-    ChessMove move = { .to = getKingPosition(game, opponentColor) };
+bool isPosThreatenedBy(ChessGame *game, ChessPos pos, ChessColor playerColor) {
+    ChessMove move = { .to = pos };
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             if (getPieceColor(game->board[i][j]) == playerColor) {
@@ -227,6 +213,22 @@ bool isKingThreatened(ChessGame *game, ChessColor playerColor) {
         }
     }
     return false;
+}
+
+bool isKingThreatenedBy(ChessGame *game, ChessColor playerColor) {
+    ChessPiece king = switchColor(playerColor) == CHESS_PLAYER_COLOR_WHITE
+        ? CHESS_PIECE_WHITE_KING
+        : CHESS_PIECE_BLACK_KING;
+    ChessPos opponentKingPos;
+    for (int i = 0 ; i < CHESS_GRID; i++) {
+        for (int j = 0; j < CHESS_GRID; j++) {
+            if (game->board[i][j] == king) {
+                opponentKingPos.x = i;
+                opponentKingPos.y = j;
+            }
+        }
+    }
+    return isPosThreatenedBy(game, opponentKingPos, playerColor);
 }
 
 void pseudoDoMove(ChessGame *game, ChessMove *move) {
@@ -257,13 +259,15 @@ bool hasMoves(ChessGame *game) {
     return false;
 }
 
-ChessMoveType getMoveType(ChessGame *game, ChessMove move) {
+ChessPosType getMoveType(ChessGame *game, ChessMove move) {
+    pseudoDoMove(game, &move);
     bool isThreatened = false;
+    pseudoUndoMove(game, &move);
     bool isCapture = game->board[move.to.x][move.to.y] != CHESS_PIECE_NONE;
-    if (isThreatened && isCapture) return CHESS_MOVE_BOTH;
-    if (isThreatened) return CHESS_MOVE_THREATENED;
-    if (isCapture) return CHESS_MOVE_CAPTURE;
-    return CHESS_MOVE_STANDARD;
+    if (isThreatened && isCapture) return CHESS_POS_BOTH;
+    if (isThreatened) return CHESS_POS_THREATENED;
+    if (isCapture) return CHESS_POS_CAPTURE;
+    return CHESS_POS_STANDARD;
 }
 
 ChessGame* ChessGame_Create() {
@@ -332,7 +336,7 @@ ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor) {
 
 ChessResult ChessGame_GetGameStatus(ChessGame *game, ChessStatus *status) {
     if (!game) return CHESS_INVALID_ARGUMENT;
-    if (isKingThreatened(game, game->turn)) {
+    if (isKingThreatenedBy(game, game->turn)) {
         *status = hasMoves(game) ? CHESS_STATUS_CHECK : CHESS_STATUS_CHECKMATE;
     } else {
         *status = hasMoves(game) ? CHESS_STATUS_RUNNING : CHESS_STATUS_DRAW;
@@ -346,9 +350,9 @@ ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
     if (!isMoveOfPlayerPiece(game, move)) return CHESS_EMPTY_POSITION;
     if (!isValidToPosition(game, move)) return CHESS_ILLEGAL_MOVE;
     if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
-    bool isThreatened = isKingThreatened(game, game->turn);
+    bool isThreatened = isKingThreatenedBy(game, game->turn);
     pseudoDoMove(game, &move);
-    bool willBeThreatened = isKingThreatened(game, game->turn);
+    bool willBeThreatened = isKingThreatenedBy(game, game->turn);
     pseudoUndoMove(game, &move);
     if (isThreatened && willBeThreatened) return CHESS_KING_IS_STILL_THREATENED;
     if (willBeThreatened) return CHESS_KING_WILL_BE_THREATENED;
@@ -380,8 +384,8 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
         for (int j = 0; j < CHESS_GRID; j++) {
             move.to = (ChessPos){ .x = i, .y = j };
             if (ChessGame_IsValidMove(game, move) == CHESS_SUCCESS) {
-                move.type = getMoveType(game, move);
-                ArrayStack_Push(*stack, &(ChessPos){ .x = i, .y = j });
+                move.to.type = getMoveType(game, move);
+                ArrayStack_Push(*stack, &move.to);
             }
         }
     }
