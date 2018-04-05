@@ -133,7 +133,7 @@ int isInt(const char* str) {
 }
 
 GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
-    GameCommand command = { .type = GAME_COMMAND_INVALID, .args = {-2} };
+    GameCommand command = { .type = GAME_COMMAND_INVALID, .args = {-1} };
     if (!this) return command;
     char* input = fgets(this->input, GAME_COMMAND_MAX_LINE_LENGTH, stdin);
     if (!input) return command;
@@ -149,9 +149,9 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
                 token = strtok(NULL, INPUT_DELIMITERS);
                 if (!token) break;  // end of args
                 if (isInt(token)) {  // should be 1-8
-                    command.args[argIndex++] = atoi(token) - 1;
+                    command.args[argIndex++] = atoi(token);
                 } else if (strlen(token) == 1) {  // should be 'A'-'H'
-                    command.args[argIndex++] = token[0] - 'A';
+                    command.args[argIndex++] = token[0];
                 } else {
                     command.args[argIndex++] = MAX_INT_VALUE;
                 }
@@ -169,8 +169,8 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
                 while(token) token = strtok(NULL, INPUT_DELIMITERS);
                 break;
             }
-            command.args[0] = atoi(&token[1]) - 1;
-            command.args[1] = token[3] - 'A';
+            command.args[0] = atoi(&token[1]);
+            command.args[1] = token[3];
             token = strtok(NULL, INPUT_DELIMITERS);
             if (!token || strcmp("to", token)) {
                 while(token) token = strtok(NULL, INPUT_DELIMITERS);
@@ -183,8 +183,8 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
                     while(token) token = strtok(NULL, INPUT_DELIMITERS);
                     break;
                 }
-            command.args[2] = atoi(&token[1]) - 1;
-            command.args[3] = token[3] - 'A';
+            command.args[2] = atoi(&token[1]);
+            command.args[3] = token[3];
             while(token) token = strtok(NULL, INPUT_DELIMITERS);
             break;
         case COMMAND_ARGS_NONE:

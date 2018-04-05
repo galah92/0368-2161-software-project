@@ -98,17 +98,17 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
     ChessResult res;
     switch (command.type) {
         case GAME_COMMAND_GAME_MODE:
-            res = ChessGame_SetGameMode(manager->game, command.args[0] + 1);
+            res = ChessGame_SetGameMode(manager->game, command.args[0]);
             if (res == CHESS_INVALID_ARGUMENT)
                 manager->error = GAME_ERROR_INVALID_GAME_MODE;
             break;
         case GAME_COMMAND_DIFFICULTY:
-            res = ChessGame_SetDifficulty(manager->game, command.args[0] + 1);
+            res = ChessGame_SetDifficulty(manager->game, command.args[0]);
             if (res == CHESS_INVALID_ARGUMENT)
                 manager->error = GAME_ERROR_INVALID_DIFF_LEVEL;
             break;
         case GAME_COMMAND_USER_COLOR:
-            res = ChessGame_SetUserColor(manager->game, command.args[0] + 1);
+            res = ChessGame_SetUserColor(manager->game, command.args[0]);
             if (res == CHESS_INVALID_ARGUMENT)
                 manager->error = GAME_ERROR_INVALID_USER_COLOR;
             break;
@@ -142,8 +142,8 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
     ChessPos pos = { .x = command.args[0], .y = command.args[1] };
     switch (command.type) {
         case GAME_COMMAND_MOVE:
-            move.from = (ChessPos){ .x = command.args[0], .y = command.args[1] };
-            move.to = (ChessPos){ .x = command.args[2], .y = command.args[3] };
+            move.from = (ChessPos){ .x = command.args[0] - 1, .y = command.args[1] - 'A' };
+            move.to = (ChessPos){ .x = command.args[2] - 1, .y = command.args[3] - 'A' };
             res = ChessGame_IsValidMove(manager->game, move);
             switch (res) {
                 case CHESS_INVALID_ARGUMENT:
