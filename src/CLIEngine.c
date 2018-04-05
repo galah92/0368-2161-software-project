@@ -214,18 +214,23 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             return;
         case GAME_ERROR_INVALID_POSITION:
             printf(MSG_ERR_INVALID_POSITION);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_EMPTY_POSITION:
             printf(MSG_ERR_POSITION_EMPTY);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_INVALID_MOVE:
             printf(MSG_ERR_ILLEGAL_MOVE);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_INVALID_MOVE_KING_IS_T:
             printf(MSG_ERR_ILLEGAL_MOVE_KING_IS_T);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_INVALID_MOVE_KING_WILL_T:
             printf(MSG_ERR_ILLEGAL_MOVE_KING_WILL_T);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_FILE_ALLOC:
             printf(MSG_ERR_FILE_CANNOT_BE_CREATED);

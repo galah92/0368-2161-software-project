@@ -50,3 +50,5 @@ test:
 	@diff -q tst/1.correct tst/1.output > /dev/null || echo "1 failed"
 	@./$(BINDIR)/$(EXEC) < tst/2.input > tst/2.output
 	@diff -q tst/2.correct tst/2.output > /dev/null || echo "2 failed"
+	@./$(BINDIR)/$(EXEC) < tst/3.input > tst/3.output
+	@diff -q tst/3.correct tst/3.output > /dev/null || echo "3 failed"
