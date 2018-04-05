@@ -172,7 +172,7 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
     if (!manager) return;
     ChessResult res;
     ChessMove move;
-    ChessPos pos = { .x = command.args[1], .y = command.args[0] };
+    ChessPos pos = { .x = command.args[1] - 'A', .y = command.args[0] - 1 };
     switch (command.type) {
         case GAME_COMMAND_MOVE:
             move.from = (ChessPos){ .x = command.args[1] - 'A', .y = command.args[0] - 1 };
@@ -255,6 +255,7 @@ GameManager* GameManager_Create() {
     }
     manager->phase = GAME_PHASE_SETTINGS;
     manager->error = GAME_ERROR_NONE;
+    manager->moves = NULL;
     return manager;
 }
 

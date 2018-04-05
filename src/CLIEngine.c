@@ -14,10 +14,10 @@
 #define MSG_CHECKMATE                   "Checkmate! %s player wins the game\n"
 #define MSG_CHECK                       "Check: %s king is threatened\n"
 #define MSG_DRAW                        "The game ends in a draw\n"
-#define MSG_MOVE_DEFAULT                "<%c,%c>\n"
-#define MSG_MOVE_THREATENED             "<%c,%c>*\n"
-#define MSG_MOVE_CAPTURES               "<%c,%c>^\n"
-#define MSG_MOVE_BOTH                   "<%c,%c>*^\n"
+#define MSG_MOVE_DEFAULT                "<%d,%c>\n"
+#define MSG_MOVE_THREATENED             "<%d,%c>*\n"
+#define MSG_MOVE_CAPTURES               "<%d,%c>^\n"
+#define MSG_MOVE_BOTH                   "<%d,%c>*^\n"
 #define MSG_GAME_SAVED                  "Game saved to: %s\n"
 #define MSG_UNDO_MOVE                   "Undo move for %s player: <%c,%c> -> <%c,%c>\n"
 #define MSG_RESTART                     "Restarting...\n"
@@ -243,6 +243,7 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             break;
     }
     // success
+    ChessMove move;
     switch(command.type) {
         case GAME_COMMAND_GAME_MODE:
             printf(MSG_GAME_MODE, manager->game->mode, "-player");
@@ -307,6 +308,25 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             break;
         case GAME_COMMAND_GET_MOVES:
             // TODO: complete
+            while (!ArrayStack_IsEmpty(manager->moves)){
+                move = *(ChessMove *) ArrayStack_Pop(manager->moves);
+                switch(move.type){
+                    case CHESS_MOVE_STANDARD:
+                        printf(MSG_MOVE_DEFAULT, move.from.y + 1, move.from.x + 'A');
+                        break;
+                    case CHESS_MOVE_THREATENED:
+                        printf(MSG_MOVE_THREATENED, move.from.y + 1, move.from.x + 'A');
+                        break;
+                    case CHESS_MOVE_CAPTURE:
+                        printf(MSG_MOVE_CAPTURES, move.from.y + 1, move.from.x + 'A');
+                        break;
+                    case CHESS_MOVE_BOTH:
+                        printf(MSG_MOVE_BOTH, move.from.y + 1, move.from.x + 'A');
+                        break;
+                    default:
+                        break;
+                }
+            }
             break;
         case GAME_COMMAND_SAVE:
             printf(MSG_GAME_SAVED, command.path);
