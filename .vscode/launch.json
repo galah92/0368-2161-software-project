@@ -5,6 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(gdb) Launch Mac",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/chessprog",
+            "args": ["<", "./tst/2.input"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb"
+
+        },
+        {
             "name": "(gdb) Launch (Linux)",
             "type": "cppdbg",
             "request": "launch",
@@ -34,32 +47,5 @@
             },
             "preLaunchTask": "build"
         },
-        {
-            "name": "(gdb) Launch (Mac)",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "/Users/eyalgomel/Documents/Study/2nd year/Semester A/Software Project/HW/tau-cs-projects/chessproj/bin/chessprog",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "/Users/eyalgomel/Documents/Study/2nd year/Semester A/Software Project/HW/tau-cs-projects/chessproj/bin",
-            "environment": [],
-            "externalConsole": true,
-            "MIMode": "gdb",
-            "miDebuggerPath": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "pipeTransport": {
-                "pipeCwd": "/bin",
-                "pipeProgram": "/bin/bash",
-                "pipeArgs": ["-c"],
-                "debuggerPath": "/usr/local/bin/gdb"
-            },
-            "preLaunchTask": "build"
-        }
     ]
 }
