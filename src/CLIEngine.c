@@ -108,8 +108,12 @@ int isInt(const char* str) {
 GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
     GameCommand command = { .type = GAME_COMMAND_INVALID, .args = {-1} };
     if (!this) return command;
-    char* input = fgets(this->input, GAME_COMMAND_MAX_LINE_LENGTH, stdin);
-    if (!input) return command;
+    char* input;
+    while ((input = fgets(this->input, GAME_COMMAND_MAX_LINE_LENGTH, stdin))){
+        if (!input) return command;
+        if (input[0] == '\n') continue; // handle newline (only) input
+        else break;
+    }
     unsigned int lastCharIndex = strlen(this->input) - 1;
     if (this->input[lastCharIndex] == '\n') {
         this->input[lastCharIndex] = '\0';  // trim possible EOL char
