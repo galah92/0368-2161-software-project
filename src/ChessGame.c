@@ -307,10 +307,7 @@ ChessGame* ChessGame_Create() {
     ChessGame_SetDefaultSettings(game);
     initChessBoard(game);
     game->history = ArrayStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
-    if (!game->history) {
-        ChessGame_Destroy(game);
-        return NULL;
-    }
+    if (!game->history) ChessGame_Destroy(game);
     return game;
 }
 
@@ -319,17 +316,24 @@ ChessGame* ChessGame_Copy(const ChessGame *game) {
     if (!copy) return NULL;
     memcpy(copy, game, sizeof(ChessGame));
     copy->history = ArrayStack_Copy(game->history);
-    if (!copy->history) {
-        ChessGame_Destroy(copy);
-        return NULL;
-    }
+    if (!copy->history) ChessGame_Destroy(copy);
     return copy;
 }
 
-void ChessGame_Destroy(ChessGame *game) {
-    if (!game) return;
+ChessGame* ChessGame_Destroy(ChessGame *game) {
+    if (!game) return NULL;
     ArrayStack_Destroy(game->history);
     free(game);
+    return NULL;
+}
+
+ChessResult ChessGame_ResetGame(ChessGame *game) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    game->turn = CHESS_PLAYER_COLOR_WHITE;
+    initChessBoard(game);
+    ArrayStack_Destroy(game->history);
+    game->history = ArrayStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
+    return CHESS_SUCCESS;
 }
 
 ChessResult ChessGame_SetDefaultSettings(ChessGame *game) {

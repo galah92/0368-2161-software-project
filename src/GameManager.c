@@ -234,8 +234,7 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             handleUndoMove(manager);
             break;
         case GAME_COMMAND_RESET:
-            ChessGame_Destroy(manager->game);
-            manager->game = ChessGame_Create();
+            ChessGame_ResetGame(manager->game);
             manager->phase = GAME_PHASE_SETTINGS;
             break;
         case GAME_COMMAND_QUIT:

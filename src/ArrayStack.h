@@ -29,7 +29,7 @@ ArrayStack* ArrayStack_Copy(const ArrayStack *stack);
  * Free all resources for a given ArrayStack instance.
  * @param   stack       the instance to destroy
  */
-void ArrayStack_Destroy(ArrayStack* stack);
+ArrayStack* ArrayStack_Destroy(ArrayStack* stack);
 
 /**
  * Retrieve a given ArrayStack instance's max capacity.

@@ -108,7 +108,16 @@ ChessGame* ChessGame_Copy(const ChessGame *game);
  * Free all resources for a given ChessGame instance.
  * @param   game        the instance to destroy
  */
-void ChessGame_Destroy(ChessGame *game);
+ChessGame* ChessGame_Destroy(ChessGame *game);
+
+/**
+ * Reset a given ChessGame turn, board & history.
+ * Keep the other settings as they are.
+ * @param   game        the instance to reset
+ * return   CHESS_INVALID_ARGUMENT if game == NULL
+ *          CHESS_SUCCESS otherwise
+ */
+ChessResult ChessGame_ResetGame(ChessGame *game);
 
 /**
  * Apply the default settings to a given game.

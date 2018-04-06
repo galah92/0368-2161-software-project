@@ -19,10 +19,7 @@ ArrayStack* ArrayStack_Create(unsigned int capacity, size_t dataSize) {
     stack->capacity = capacity;
     stack->start = stack->size = 0;
     stack->array = malloc(dataSize * capacity);
-    if (!stack->array) {
-        ArrayStack_Destroy(stack);
-        return NULL;
-    }
+    if (!stack->array) ArrayStack_Destroy(stack);
     return stack;
 }
 
@@ -38,10 +35,11 @@ ArrayStack* ArrayStack_Copy(const ArrayStack *stack) {
     return copy;
 }
 
-void ArrayStack_Destroy(ArrayStack* stack) {
-    if (!stack) return;
+ArrayStack* ArrayStack_Destroy(ArrayStack* stack) {
+    if (!stack) return NULL;
     if (stack->array) free(stack->array);
     free(stack);
+    return NULL;
 }
 
 unsigned int ArrayStack_Capacity(const ArrayStack* stack) {
