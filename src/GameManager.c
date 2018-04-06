@@ -196,8 +196,8 @@ void handleSaveGame(GameManager *manager, const char *path) {
     }
     fputs(ChessColorToString[manager->game->turn].string, fp);
     fputs("\n", fp);
-    ChessGame_SettingsToStream(manager->game, fp);
-    ChessGame_BoardToStream(manager->game, fp);
+    GameManager_SettingsToStream(manager, fp);
+    GameManager_BoardToStream(manager, fp);
     fclose(fp);
 }
 
@@ -373,4 +373,58 @@ void GameManager_ProcessCommand(GameManager *manager, GameCommand command) {
     } else if (manager->phase == GAME_PHASE_RUNNING) {
         processRunningCommand(manager, command);
     }
+}
+
+char* colorToString(const ChessGame *game) {
+    switch (game->userColor) {
+        case CHESS_PLAYER_COLOR_WHITE:
+            return "white";
+        case CHESS_PLAYER_COLOR_BLACK:
+            return "black";
+        case CHESS_PLAYER_COLOR_NONE:
+        default:
+            return "none"; // shouldn't happen
+    }
+}
+
+char *difficultyString(const ChessGame *game) {
+    switch (game->difficulty) {
+        case CHESS_DIFFICULTY_AMATEUR:
+            return "amateur";
+        case CHESS_DIFFICULTY_EASY:
+            return "easy";
+        case CHESS_DIFFICULTY_MODERATE:
+            return "moderate";
+        case CHESS_DIFFICULTY_HARD:
+            return "hard";
+        case CHESS_DIFFICULTY_EXPERT:
+            return "expert";
+        default:
+            return ""; // shouldn't happen
+    }
+}
+
+void GameManager_SettingsToStream(const GameManager *manager, FILE *stream) {
+    if (!manager || !stream) return;
+    fprintf(stream, "SETTINGS:\n");
+    if (manager->game->mode == CHESS_MODE_1_PLAYER) {
+        fprintf(stream, "GAME_MODE: 1-player\n");
+        fprintf(stream, "DIFFICULTY: %s\n", difficultyString(manager->game));
+        fprintf(stream, "USER_COLOR: %s\n", colorToString(manager->game));
+    } else { // game->mode == CHESS_MODE_2_PLAYER)
+        fprintf(stream, "GAME_MODE: 2-player\n");
+    }
+}
+
+void GameManager_BoardToStream(const GameManager *manager, FILE *stream) {
+    if (!manager || !stream) return;
+    for (int i = CHESS_GRID - 1; i >= 0; i--) {
+        fprintf(stream, "%d| ", i + 1);
+        for (int j = 0; j < CHESS_GRID; j++) {
+            fprintf(stream, "%c ", manager->game->board[j][i]);
+        }
+        fprintf(stream, "|\n");
+    }
+    fprintf(stream, "  -----------------\n");
+    fprintf(stream, "   A B C D E F G H\n");
 }

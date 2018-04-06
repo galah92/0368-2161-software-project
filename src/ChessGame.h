@@ -1,7 +1,6 @@
 #ifndef CHESS_H_
 #define CHESS_H_
 
-#include <stdio.h>
 #include "ArrayStack.h"
 
 #define CHESS_GRID 8
@@ -199,24 +198,6 @@ ChessResult ChessGame_UndoMove(ChessGame *game, ChessMove *move);
  *          CHESS_SUCCESS otherwise
  */
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack);
-
-/**
- * Send a formatted string of a given ChessGame's settings to a given stream.
- * @param   game        the instance to fetch the string from
- * @param   stream      the stream to send the string to
- * return   CHESS_INVALID_ARGUMENT if game == NULL || stream == NULL
- *          CHESS_SUCCESS otherwise
- */
-ChessResult ChessGame_SettingsToStream(const ChessGame *game, FILE *stream);
-
-/**
- * Send a formatted string of a given ChessGame's board to a given stream.
- * @param   game        the instance to fetch the string from
- * @param   stream      the stream to send the string to
- * return   CHESS_INVALID_ARGUMENT if game == NULL || stream == NULL
- *          CHESS_SUCCESS otherwise
- */
-ChessResult ChessGame_BoardToStream(const ChessGame *game, FILE *stream);
 
 ChessResult ChessGame_GetPieceColor(ChessPiece piece, ChessColor *color);
 

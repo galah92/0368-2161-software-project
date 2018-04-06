@@ -1,6 +1,7 @@
 #ifndef GAME_MANAGER_H_
 #define GAME_MANAGER_H_
 
+#include <stdio.h>
 #include "ChessGame.h"
 
 #define GAME_COMMAND_MAX_LINE_LENGTH    1024
@@ -84,6 +85,24 @@ GamePlayerType GameManager_GetCurrentPlayerType(GameManager *manager);
 GameCommand GameManager_GetAIMove(GameManager *manager);
 
 void GameManager_ProcessCommand(GameManager *manager, GameCommand command);
+
+/**
+ * Send a formatted string of a given ChessGame's settings to a given stream.
+ * @param   game        the instance to fetch the string from
+ * @param   stream      the stream to send the string to
+ * return   CHESS_INVALID_ARGUMENT if game == NULL || stream == NULL
+ *          CHESS_SUCCESS otherwise
+ */
+void GameManager_SettingsToStream(const GameManager *manager, FILE *stream);
+
+/**
+ * Send a formatted string of a given ChessGame's board to a given stream.
+ * @param   game        the instance to fetch the string from
+ * @param   stream      the stream to send the string to
+ * return   CHESS_INVALID_ARGUMENT if game == NULL || stream == NULL
+ *          CHESS_SUCCESS otherwise
+ */
+void GameManager_BoardToStream(const GameManager *manager, FILE *stream);
 
 char* chessPieceLocationToStr(ChessGame *game, int x, int y);
 
