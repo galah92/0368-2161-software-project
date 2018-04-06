@@ -7,7 +7,6 @@
             "label": "build",
             "type": "shell",
             "command": "make",
-            // start the build without prompting for task selection, use "group": "build" otherwise
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -18,10 +17,11 @@
                 "focus": true,
                 "panel": "shared"
             },
-            // Use the standard less compilation problem matcher.
             "problemMatcher": {
                 "owner": "c",
-                "fileLocation": ["absolute"],
+                "fileLocation": [
+                    "absolute"
+                ],
                 "pattern": {
                     "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
                     "file": 1,
@@ -30,6 +30,21 @@
                     "severity": 4,
                     "message": 5
                 }
+            }
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "make test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
             }
         }
     ]
