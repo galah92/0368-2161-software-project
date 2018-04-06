@@ -46,8 +46,6 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
         SDL_WaitEvent(&engine->event);
         switch (engine->event.type) {
             case SDL_WINDOWEVENT_CLOSE:
-                command.type = GAME_COMMAND_QUIT;
-                return command;
             case SDL_QUIT:
                 command.type = GAME_COMMAND_QUIT;
                 return command;
