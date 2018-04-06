@@ -23,26 +23,13 @@
 #define MSG_RESTART                     "Restarting...\n"
 #define MSG_AI_MOVE                     "Computer: move %s at <%d,%c> to <%d,%c>\n"
 
-#define MSG_ERR_INVALID_COMMAND             "ERROR: invalid command\n"
-#define MSG_ERR_WRONG_GAME_MODE             "Wrong game mode\n"
-#define MSG_ERR_WRONG_DIFF_LEVEL            "Wrong difficulty level. The value shold be between 1 to 5\n"
-#define MSG_ERR_WRONG_USER_COLOR            "Wrong user color. The value should be 0 or 1\n"
-#define MSG_ERR_FILE_NOT_EXIST              "ERROR: File doesn’t exist or cannot be opened\n"
-#define MSG_ERR_INVALID_POSITION            "Invalid position on the board\n"
-#define MSG_ERR_POSITION_EMPTY              "The specified position does not contain your piece\n"
-#define MSG_ERR_ILLEGAL_MOVE                "Illegal move\n"
-#define MSG_ERR_ILLEGAL_MOVE_KING_IS_T      "Illegal move: king is still threatened\n"
-#define MSG_ERR_ILLEGAL_MOVE_KING_WILL_T    "Ilegal move: king will be threatened\n"
-#define MSG_ERR_FILE_CANNOT_BE_CREATED      "File cannot be created or modified\n"
-#define MSG_ERR_EMPTY_HISTORY               "Empty history, no move to undo\n"
-
 #define INPUT_DELIMITERS                " \t\r\n"
 #define MAX_INT_VALUE                   50
+
 
 struct CLIEngine {
     char input[GAME_COMMAND_MAX_LINE_LENGTH];
 };
-
 
 CLIEngine* CLIEngine_Create() {
     CLIEngine *this = malloc(sizeof(CLIEngine));
@@ -179,60 +166,37 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
     return command;
 }
 
+static const struct GameErrorToString {
+    GameError error;
+    const char *string;
+} GameErrorToString[] = {
+    { GAME_ERROR_NONE, "" },
+    { GAME_ERROR_INVALID_COMMAND, "ERROR: invalid command\n" },
+    { GAME_ERROR_INVALID_GAME_MODE, "Wrong game mode\n" },
+    { GAME_ERROR_INVALID_DIFF_LEVEL, "Wrong difficulty level. The value shold be between 1 to 5\n" },
+    { GAME_ERROR_INVALID_USER_COLOR, "Wrong user color. The value should be 0 or 1\n" },
+    { GAME_ERROR_INVALID_FILE, "ERROR: File doesn’t exist or cannot be opened\n" },
+    { GAME_ERROR_INVALID_POSITION, "Invalid position on the board\n" },
+    { GAME_ERROR_EMPTY_POSITION, "The specified position does not contain your piece\n" },
+    { GAME_ERROR_INVALID_MOVE, "Illegal move\n" },
+    { GAME_ERROR_INVALID_MOVE_KING_IS_T, "Illegal move: king is still threatened\n" },
+    { GAME_ERROR_INVALID_MOVE_KING_WILL_T, "Ilegal move: king will be threatened\n" },
+    { GAME_ERROR_FILE_ALLOC, "File cannot be created or modified\n" },
+    { GAME_ERROR_EMPTY_HISTORY, "Empty history, no move to undo\n" },
+};
+
 void handleError(const GameManager *manager) {
-    switch (manager->error) {
-        case GAME_ERROR_INVALID_COMMAND:
-            printf(MSG_ERR_INVALID_COMMAND);
-            return;
-        case GAME_ERROR_INVALID_GAME_MODE:
-            printf(MSG_ERR_WRONG_GAME_MODE);
-            return;
-        case GAME_ERROR_INVALID_DIFF_LEVEL:
-            printf(MSG_ERR_WRONG_DIFF_LEVEL);
-            return;
-        case GAME_ERROR_INVALID_USER_COLOR:
-            printf(MSG_ERR_WRONG_USER_COLOR);
-            return;
-        case GAME_ERROR_INVALID_FILE:
-            printf(MSG_ERR_FILE_NOT_EXIST);
-            return;
-        case GAME_ERROR_INVALID_POSITION:
-            printf(MSG_ERR_INVALID_POSITION);
-            return;
-        case GAME_ERROR_EMPTY_POSITION:
-            printf(MSG_ERR_POSITION_EMPTY);
-            return;
-        case GAME_ERROR_INVALID_MOVE:
-            printf(MSG_ERR_ILLEGAL_MOVE);
-            return;
-        case GAME_ERROR_INVALID_MOVE_KING_IS_T:
-            printf(MSG_ERR_ILLEGAL_MOVE_KING_IS_T);
-            return;
-        case GAME_ERROR_INVALID_MOVE_KING_WILL_T:
-            printf(MSG_ERR_ILLEGAL_MOVE_KING_WILL_T);
-            return;
-        case GAME_ERROR_FILE_ALLOC:
-            printf(MSG_ERR_FILE_CANNOT_BE_CREATED);
-            return;
-        case GAME_ERROR_EMPTY_HISTORY:
-            printf(MSG_ERR_EMPTY_HISTORY);            
-            return;
-        case GAME_ERROR_NONE:
-        default:
-            return;
+    printf("%s", GameErrorToString[manager->error].string);
+    if (manager->error >= GAME_ERROR_INVALID_POSITION) {
+        printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
     }
 }
-
-
 
 void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand command) {
     (void)this;
     if (!manager) return;
     if (manager->error != GAME_ERROR_NONE) {
         handleError(manager);
-        if (manager->error >= GAME_ERROR_INVALID_POSITION) {
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
-        }
         return;
     }
     ChessPos *pos;
@@ -282,18 +246,18 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             break;
         case GAME_COMMAND_START:
             printf(MSG_START);
-            if (manager->game->turn == manager->game->userColor){
+            if (manager->game->turn == manager->game->userColor) {
                 ChessGame_BoardToStream(manager->game, stdout);
                 printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             }
             break;
         case GAME_COMMAND_MOVE:
-            if (manager->game->mode == CHESS_MODE_2_PLAYER){
+            if (manager->game->mode == CHESS_MODE_2_PLAYER) {
                 ChessGame_BoardToStream(manager->game, stdout);
                 printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             } else {
-                if (manager->game->turn == manager->game->userColor){
-                    printf(MSG_AI_MOVE, chessPieceLocationToStr(manager->game,command.args[3]-'A' ,command.args[2]-1),command.args[0],command.args[1],command.args[2],command.args[3]);
+                if (manager->game->turn == manager->game->userColor) {
+                    printf(MSG_AI_MOVE, chessPieceLocationToStr(manager->game, command.args[3]-'A', command.args[2]-1), command.args[0], command.args[1], command.args[2], command.args[3]);
                     ChessGame_BoardToStream(manager->game, stdout);
                     printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
                 }
