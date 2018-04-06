@@ -65,6 +65,18 @@ char* chessPieceLocationToStr(ChessGame *game, int x, int y){
     }
 }
 
+char* chessColorToColorStr(ChessColor color) {
+    switch (color) {
+        case CHESS_PLAYER_COLOR_BLACK:
+            return "black";
+        case CHESS_PLAYER_COLOR_WHITE:
+            return "white";
+        case CHESS_PLAYER_COLOR_NONE:
+        default:
+            return "none";
+    }
+}
+
 void handleLoadGame(GameManager *manager, const char *path) {
     FILE *fp = fopen(path, "r");
     if (!fp) {
@@ -91,31 +103,6 @@ void handleLoadGame(GameManager *manager, const char *path) {
             manager->game->board[i][j] = *strtok(NULL, " \n");
         }
     }
-    fclose(fp);
-}
-
-char* chessColorToColorStr(ChessColor color) {
-    switch (color) {
-        case CHESS_PLAYER_COLOR_BLACK:
-            return "black";
-        case CHESS_PLAYER_COLOR_WHITE:
-            return "white";
-        case CHESS_PLAYER_COLOR_NONE:
-        default:
-            return "none";
-    }
-}
-
-void handleSaveGame(GameManager *manager, const char *path) {
-    FILE *fp = fopen(path, "w+");
-    if (!fp) {
-        manager->error = GAME_ERROR_FILE_ALLOC;
-        return;
-    }
-    fputs(chessColorToColorStr(manager->game->turn), fp);
-    fputs("\n", fp);
-    ChessGame_SettingsToStream(manager->game, fp);
-    ChessGame_BoardToStream(manager->game, fp);
     fclose(fp);
 }
 
@@ -168,66 +155,95 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
     }
 }
 
-void processRunningCommand(GameManager *manager, GameCommand command) {
-    if (!manager) return;
-    ChessResult res;
+void handleMove(GameManager *manager, GameCommand command) {
     ChessMove move;
+    move.from = (ChessPos){ .x = command.args[1] - 'A', .y = command.args[0] - 1 };
+    move.to = (ChessPos){ .x = command.args[3] - 'A', .y = command.args[2] - 1 };
+    switch (ChessGame_DoMove(manager->game, move)) {
+        case CHESS_INVALID_ARGUMENT:
+            manager->error = GAME_ERROR_INVALID_COMMAND;
+            break;
+        case CHESS_INVALID_POSITION:
+            manager->error = GAME_ERROR_INVALID_POSITION;
+            break;
+        case CHESS_EMPTY_POSITION:
+            manager->error = GAME_ERROR_EMPTY_POSITION;
+            break;
+        case CHESS_ILLEGAL_MOVE:
+            manager->error = GAME_ERROR_INVALID_MOVE;
+            break;
+        case CHESS_KING_IS_STILL_THREATENED:
+            manager->error = GAME_ERROR_INVALID_MOVE_KING_IS_T;
+            break;
+        case CHESS_KING_WILL_BE_THREATENED:
+            manager->error = GAME_ERROR_INVALID_MOVE_KING_WILL_T;
+            break;
+        case CHESS_SUCCESS:
+        default:
+            break;
+    }
+}
+
+void handleGetMoves(GameManager *manager, GameCommand command) {
     ChessPos pos = { .x = command.args[1] - 'A', .y = command.args[0] - 1 };
+    ArrayStack_Destroy(manager->moves);
+    switch (ChessGame_GetMoves(manager->game, pos, &manager->moves)) {
+        case CHESS_INVALID_ARGUMENT:
+            manager->error = GAME_ERROR_INVALID_COMMAND;
+            break;
+        case CHESS_INVALID_POSITION:
+            manager->error = GAME_ERROR_INVALID_POSITION;
+            break;
+        case CHESS_SUCCESS:
+        default:
+            break;
+    }
+}
+
+void handleSaveGame(GameManager *manager, const char *path) {
+    FILE *fp = fopen(path, "w+");
+    if (!fp) {
+        manager->error = GAME_ERROR_FILE_ALLOC;
+        return;
+    }
+    fputs(chessColorToColorStr(manager->game->turn), fp);
+    fputs("\n", fp);
+    ChessGame_SettingsToStream(manager->game, fp);
+    ChessGame_BoardToStream(manager->game, fp);
+    fclose(fp);
+}
+
+void handleUndoMove(GameManager *manager) {
+    ArrayStack_Destroy(manager->moves);
+    manager->moves = ArrayStack_Create(2, sizeof(ChessMove));
+    ChessMove firstUndoneMove, secondUndoneMove;
+    ChessResult res = ChessGame_UndoMove(manager->game, &firstUndoneMove);
+    if (res == CHESS_EMPTY_HISTORY) {
+        manager->error = GAME_ERROR_EMPTY_HISTORY;
+        return;
+    }
+    if (manager->game->mode == CHESS_MODE_1_PLAYER) {
+        res = ChessGame_UndoMove(manager->game, &secondUndoneMove);
+        if (res != CHESS_EMPTY_HISTORY) {
+            ArrayStack_Push(manager->moves, &secondUndoneMove);
+        }
+    }
+    ArrayStack_Push(manager->moves, &firstUndoneMove);
+}
+
+void processRunningCommand(GameManager *manager, GameCommand command) {
     switch (command.type) {
         case GAME_COMMAND_MOVE:
-            move.from = (ChessPos){ .x = command.args[1] - 'A', .y = command.args[0] - 1 };
-            move.to = (ChessPos){ .x = command.args[3] - 'A', .y = command.args[2] - 1 };
-            res = ChessGame_DoMove(manager->game, move);
-            switch (res) {
-                case CHESS_INVALID_ARGUMENT:
-                    manager->error = GAME_ERROR_INVALID_COMMAND;
-                    break;
-                case CHESS_INVALID_POSITION:
-                    manager->error = GAME_ERROR_INVALID_POSITION;
-                    break;
-                case CHESS_EMPTY_POSITION:
-                    manager->error = GAME_ERROR_EMPTY_POSITION;
-                    break;
-                case CHESS_ILLEGAL_MOVE:
-                    manager->error = GAME_ERROR_INVALID_MOVE;
-                    break;
-                case CHESS_KING_IS_STILL_THREATENED:
-                    manager->error = GAME_ERROR_INVALID_MOVE_KING_IS_T;
-                    break;
-                case CHESS_KING_WILL_BE_THREATENED:
-                    manager->error = GAME_ERROR_INVALID_MOVE_KING_WILL_T;
-                    break;
-                case CHESS_SUCCESS:
-                default:
-                    break;
-            }
+            handleMove(manager, command);
             break;
         case GAME_COMMAND_GET_MOVES:
-            ArrayStack_Destroy(manager->moves);
-            res = ChessGame_GetMoves(manager->game, pos, &manager->moves);
-            switch (res) {
-                case CHESS_INVALID_ARGUMENT:
-                    manager->error = GAME_ERROR_INVALID_COMMAND;
-                    break;
-                case CHESS_INVALID_POSITION:
-                    manager->error = GAME_ERROR_INVALID_POSITION;
-                    break;
-                case CHESS_SUCCESS:
-                default:
-                    break;
-            }
+            handleGetMoves(manager, command);
             break;
         case GAME_COMMAND_SAVE:
             handleSaveGame(manager, command.path);
             break;
         case GAME_COMMAND_UNDO:
-            res = ChessGame_UndoMove(manager->game);
-            if (res == CHESS_EMPTY_HISTORY) {
-                manager->error = GAME_ERROR_EMPTY_HISTORY;
-            }
-            if (manager->game->mode == CHESS_MODE_1_PLAYER) {
-                res = ChessGame_UndoMove(manager->game);
-            }
+            handleUndoMove(manager);
             break;
         case GAME_COMMAND_RESET:
             ChessGame_Destroy(manager->game);
@@ -340,7 +356,7 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, ChessMove *bestMove) 
                     memcpy(bestMove, &move, sizeof(ChessMove));
                     bestScore = moveScore;
                 }
-                ChessGame_UndoMove(gameCopy);
+                ChessGame_UndoMove(gameCopy, &move);
             }
             ChessGame_Destroy(gameCopy);
         }

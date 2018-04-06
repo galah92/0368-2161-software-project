@@ -168,10 +168,12 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move);
 /**
  * Undo the last move of a given ChessGame.
  * @param   game        the instance to undo a move on
+ * @param   move        output parameter for the move that was undone,
+ *                      won't change in operation failed
  * return   CHESS_EMPTY_HISTORY if there are no moves to undo
  *          CHESS_SUCCESS otherwise (after undo a move)
  */
-ChessResult ChessGame_UndoMove(ChessGame *game);
+ChessResult ChessGame_UndoMove(ChessGame *game, ChessMove *move);
 
 /**
  * Calculate a list of all possible moves for a given ChessPos.

@@ -249,7 +249,8 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
         handleError(manager);
         return;
     }
-    ChessPos pos;
+    ChessPos *pos;
+    // ChessPos *move;
     switch(command.type) {
         case GAME_COMMAND_GAME_MODE:
             printf(MSG_GAME_MODE, manager->game->mode, "-player");
@@ -313,20 +314,20 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             }
             break;
         case GAME_COMMAND_GET_MOVES:
-            while (!ArrayStack_IsEmpty(manager->moves)){
-                pos = *(ChessPos *) ArrayStack_Pop(manager->moves);
-                switch(pos.type){
+            while (!ArrayStack_IsEmpty(manager->moves)) {
+                pos = ArrayStack_Pop(manager->moves);
+                switch (pos->type) {
                     case CHESS_POS_STANDARD:
-                        printf(MSG_MOVE_DEFAULT, pos.y + 1, pos.x + 'A');
+                        printf(MSG_MOVE_DEFAULT, pos->y + 1, pos->x + 'A');
                         break;
                     case CHESS_POS_THREATENED:
-                        printf(MSG_MOVE_THREATENED, pos.y + 1, pos.x + 'A');
+                        printf(MSG_MOVE_THREATENED, pos->y + 1, pos->x + 'A');
                         break;
                     case CHESS_POS_CAPTURE:
-                        printf(MSG_MOVE_CAPTURES, pos.y + 1, pos.x + 'A');
+                        printf(MSG_MOVE_CAPTURES, pos->y + 1, pos->x + 'A');
                         break;
                     case CHESS_POS_BOTH:
-                        printf(MSG_MOVE_BOTH, pos.y + 1, pos.x + 'A');
+                        printf(MSG_MOVE_BOTH, pos->y + 1, pos->x + 'A');
                         break;
                     default:
                         break;
@@ -338,7 +339,10 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             printf(MSG_GAME_SAVED, command.path);
             break;
         case GAME_COMMAND_UNDO:
-            // TODO: should print MSG_UNDO_MOVE somewhow
+            while (!ArrayStack_IsEmpty(manager->moves)) {
+                // move = ArrayStack_Pop(manager->moves);
+                // printf(MSG_UNDO_MOVE, ) // TODO: complete with move color
+            }
             ChessGame_BoardToStream(manager->game, stdout);
             break;
         case GAME_COMMAND_RESET:

@@ -383,9 +383,9 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     return CHESS_SUCCESS;
 }
 
-ChessResult ChessGame_UndoMove(ChessGame *game) {
+ChessResult ChessGame_UndoMove(ChessGame *game, ChessMove *move) {
     if (ArrayStack_IsEmpty(game->history)) return CHESS_EMPTY_HISTORY;
-    ChessMove *move = ArrayStack_Pop(game->history);
+    move = ArrayStack_Pop(game->history);
     pseudoUndoMove(game, move);
     return CHESS_SUCCESS;
 }
