@@ -193,9 +193,7 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
     return command;
 }
 
-void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand command) {
-    if (!manager) return;
-    (void)this;
+void handleError(const GameManager *manager) {
     switch (manager->error) {
         case GAME_ERROR_INVALID_COMMAND:
             printf(MSG_ERR_INVALID_COMMAND);
@@ -242,7 +240,15 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
         default:
             break;
     }
-    // success
+}
+
+void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand command) {
+    (void)this;
+    if (!manager) return;
+    if (manager->error != GAME_ERROR_NONE) {
+        handleError(manager);
+        return;
+    }
     ChessPos pos;
     switch(command.type) {
         case GAME_COMMAND_GAME_MODE:
@@ -307,7 +313,6 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             }
             break;
         case GAME_COMMAND_GET_MOVES:
-            // TODO: complete
             while (!ArrayStack_IsEmpty(manager->moves)){
                 pos = *(ChessPos *) ArrayStack_Pop(manager->moves);
                 switch(pos.type){

@@ -26,7 +26,7 @@ ArrayStack* ArrayStack_Create(unsigned int capacity, size_t dataSize) {
     return stack;
 }
 
-ArrayStack* ArrayStack_Copy(ArrayStack *stack) {
+ArrayStack* ArrayStack_Copy(const ArrayStack *stack) {
     ArrayStack *copy = malloc(sizeof(ArrayStack));
     memcpy(copy, stack, sizeof(ArrayStack));
     copy->array = malloc(copy->dataSize * copy->capacity);

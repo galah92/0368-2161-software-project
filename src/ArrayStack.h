@@ -23,7 +23,7 @@ ArrayStack* ArrayStack_Create(unsigned int capacity, size_t dataSize);
  * @return  NULL if malloc failed
  *          ChessGame* instance otherwise
  */
-ArrayStack* ArrayStack_Copy(ArrayStack *stack);
+ArrayStack* ArrayStack_Copy(const ArrayStack *stack);
 
 /**
  * Free all resources for a given ArrayStack instance.

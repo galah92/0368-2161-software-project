@@ -101,7 +101,7 @@ ChessGame* ChessGame_Create();
  * @return  NULL if malloc failed
  *          ChessGame* instance otherwise
  */
-ChessGame* ChessGame_Copy(ChessGame *game);
+ChessGame* ChessGame_Copy(const ChessGame *game);
 
 /**
  * Free all resources for a given ChessGame instance.
@@ -155,24 +155,6 @@ ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor);
  *          CHESS_SUCCESS otherwise
  */
 ChessResult ChessGame_GetGameStatus(ChessGame *game, ChessStatus *status);
-
-/**
- * Check if a given ChessMove is a valid next move for a given ChessGame.
- * @param   game        the instance to set mode to
- * @param   move        the move to check it's validity
- * return   CHESS_INVALID_ARGUMENT if game == NULL
- *          CHESS_INVALID_POSITION if move locations are not on board
- *          CHESS_EMPTY_POSITION if the source position doesn't contain
- *              the player's piece
- *          CHESS_ILLEGAL_MOVE if the piece can't move in that way,
- *              or if the destination position contains a player's piece
- *          CHESS_KING_IS_STILL_THREATENED if the status is CHECK and
- *              the move won't change that status
- *          CHESS_KING_WILL_BE_THREATENED if the move will expose the
- *              player to CHECK
- *          CHESS_SUCCESS otherwise (there's no other choise left!)
- */
-ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move);
 
 /**
  * Apply a given ChessMove on a given ChessGame after checking it's validity.

@@ -270,6 +270,37 @@ ChessPosType getMoveType(ChessGame *game, ChessMove move) {
     return CHESS_POS_STANDARD;
 }
 
+/**
+ * Check if a given ChessMove is a valid next move for a given ChessGame.
+ * @param   game        the instance to set mode to
+ * @param   move        the move to check it's validity
+ * return   CHESS_INVALID_ARGUMENT if game == NULL
+ *          CHESS_INVALID_POSITION if move locations are not on board
+ *          CHESS_EMPTY_POSITION if the source position doesn't contain
+ *              the player's piece
+ *          CHESS_ILLEGAL_MOVE if the piece can't move in that way,
+ *              or if the destination position contains a player's piece
+ *          CHESS_KING_IS_STILL_THREATENED if the status is CHECK and
+ *              the move won't change that status
+ *          CHESS_KING_WILL_BE_THREATENED if the move will expose the
+ *              player to CHECK
+ *          CHESS_SUCCESS otherwise (there's no other choise left!)
+ */
+ChessResult isValidMove(ChessGame *game, ChessMove move) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    if (!isValidPositionsOnBoard(move)) return CHESS_INVALID_POSITION;
+    if (!isMoveOfPlayerPiece(game, move)) return CHESS_EMPTY_POSITION;
+    if (!isValidToPosition(game, move)) return CHESS_ILLEGAL_MOVE;
+    if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
+    bool isThreatened = isKingThreatenedBy(game, game->turn);
+    pseudoDoMove(game, &move);
+    bool willBeThreatened = isKingThreatenedBy(game, game->turn);
+    pseudoUndoMove(game, &move);
+    if (isThreatened && willBeThreatened) return CHESS_KING_IS_STILL_THREATENED;
+    if (willBeThreatened) return CHESS_KING_WILL_BE_THREATENED;
+    return CHESS_SUCCESS;
+}
+
 ChessGame* ChessGame_Create() {
     ChessGame *game = malloc(sizeof(ChessGame));
     if (!game) return NULL;
@@ -284,7 +315,7 @@ ChessGame* ChessGame_Create() {
     return game;
 }
 
-ChessGame* ChessGame_Copy(ChessGame *game) {
+ChessGame* ChessGame_Copy(const ChessGame *game) {
     ChessGame *copy = malloc(sizeof(ChessGame));
     if (!copy) return NULL;
     memcpy(copy, game, sizeof(ChessGame));
@@ -344,23 +375,8 @@ ChessResult ChessGame_GetGameStatus(ChessGame *game, ChessStatus *status) {
     return CHESS_SUCCESS;
 }
 
-ChessResult ChessGame_IsValidMove(ChessGame *game, ChessMove move) {
-    if (!game) return CHESS_INVALID_ARGUMENT;
-    if (!isValidPositionsOnBoard(move)) return CHESS_INVALID_POSITION;
-    if (!isMoveOfPlayerPiece(game, move)) return CHESS_EMPTY_POSITION;
-    if (!isValidToPosition(game, move)) return CHESS_ILLEGAL_MOVE;
-    if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
-    bool isThreatened = isKingThreatenedBy(game, game->turn);
-    pseudoDoMove(game, &move);
-    bool willBeThreatened = isKingThreatenedBy(game, game->turn);
-    pseudoUndoMove(game, &move);
-    if (isThreatened && willBeThreatened) return CHESS_KING_IS_STILL_THREATENED;
-    if (willBeThreatened) return CHESS_KING_WILL_BE_THREATENED;
-    return CHESS_SUCCESS;
-}
-
 ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
-    ChessResult isValidResult = ChessGame_IsValidMove(game, move);
+    ChessResult isValidResult = isValidMove(game, move);
     if (isValidResult != CHESS_SUCCESS) return isValidResult;
     pseudoDoMove(game, &move);
     ArrayStack_Push(game->history, &move);
@@ -383,7 +399,7 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             move.to = (ChessPos){ .x = i, .y = j };
-            if (ChessGame_IsValidMove(game, move) == CHESS_SUCCESS) {
+            if (isValidMove(game, move) == CHESS_SUCCESS) {
                 move.to.type = getMoveType(game, move);
                 ArrayStack_Push(*stack, &move.to);
             }

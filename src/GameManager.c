@@ -129,7 +129,7 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
                 manager->error = GAME_ERROR_INVALID_GAME_MODE;
             break;
         case GAME_COMMAND_DIFFICULTY:
-            if (manager->game->mode == CHESS_MODE_2_PLAYER){ //difficulty valid only for 1-player mode
+            if (manager->game->mode == CHESS_MODE_2_PLAYER) {
                 manager->error = GAME_ERROR_INVALID_COMMAND;
                 break;
             }
@@ -138,7 +138,7 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
                 manager->error = GAME_ERROR_INVALID_DIFF_LEVEL;
             break;
         case GAME_COMMAND_USER_COLOR:
-            if (manager->game->mode == CHESS_MODE_2_PLAYER){ //difficulty valid only for 1-player mode
+            if (manager->game->mode == CHESS_MODE_2_PLAYER) {
                 manager->error = GAME_ERROR_INVALID_COMMAND;
                 break;
             }
@@ -177,7 +177,7 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
         case GAME_COMMAND_MOVE:
             move.from = (ChessPos){ .x = command.args[1] - 'A', .y = command.args[0] - 1 };
             move.to = (ChessPos){ .x = command.args[3] - 'A', .y = command.args[2] - 1 };
-            res = ChessGame_IsValidMove(manager->game, move);
+            res = ChessGame_DoMove(manager->game, move);
             switch (res) {
                 case CHESS_INVALID_ARGUMENT:
                     manager->error = GAME_ERROR_INVALID_COMMAND;
@@ -198,7 +198,6 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
                     manager->error = GAME_ERROR_INVALID_MOVE_KING_WILL_T;
                     break;
                 case CHESS_SUCCESS:
-                    ChessGame_DoMove(manager->game, move);
                 default:
                     break;
             }
