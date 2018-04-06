@@ -235,13 +235,11 @@ void pseudoDoMove(ChessGame *game, ChessMove *move) {
     move->capturedPiece = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = game->board[move->from.x][move->from.y];
     game->board[move->from.x][move->from.y] = CHESS_PIECE_NONE;
-    game->turn = switchColor(game->turn);
 }
 
 void pseudoUndoMove(ChessGame *game, ChessMove *move) {
     game->board[move->from.x][move->from.y] = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = move->capturedPiece; 
-    game->turn = switchColor(game->turn);
 }
 
 bool hasMoves(ChessGame *game) {
@@ -294,7 +292,7 @@ ChessResult isValidMove(ChessGame *game, ChessMove move) {
     if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
     bool isThreatened = isKingThreatenedBy(game, game->turn);
     pseudoDoMove(game, &move);
-    bool willBeThreatened = isKingThreatenedBy(game, game->turn);
+    bool willBeThreatened = isKingThreatenedBy(game, switchColor(game->turn));
     pseudoUndoMove(game, &move);
     if (isThreatened && willBeThreatened) return CHESS_KING_IS_STILL_THREATENED;
     if (willBeThreatened) return CHESS_KING_WILL_BE_THREATENED;
@@ -380,6 +378,7 @@ ChessResult ChessGame_DoMove(ChessGame *game, ChessMove move) {
     if (isValidResult != CHESS_SUCCESS) return isValidResult;
     pseudoDoMove(game, &move);
     ArrayStack_Push(game->history, &move);
+    game->turn = switchColor(game->turn);
     return CHESS_SUCCESS;
 }
 
@@ -387,15 +386,19 @@ ChessResult ChessGame_UndoMove(ChessGame *game, ChessMove *move) {
     if (ArrayStack_IsEmpty(game->history)) return CHESS_EMPTY_HISTORY;
     move = ArrayStack_Pop(game->history);
     pseudoUndoMove(game, move);
+    game->turn = switchColor(game->turn);
     return CHESS_SUCCESS;
 }
 
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack) {
     if (!game) return CHESS_INVALID_ARGUMENT;
     if (!isValidPositionOnBoard(pos)) return CHESS_INVALID_POSITION;
-    if (!isPosOfPlayerPiece(game, pos)) return CHESS_EMPTY_POSITION;
+    if (game->board[pos.x][pos.y] == CHESS_PIECE_NONE) return CHESS_EMPTY_POSITION;
+    ChessColor originalTurn = game->turn;
+    if (!isPosOfPlayerPiece(game, pos)) {
+        game->turn = switchColor(game->turn);
+    }
     *stack = ArrayStack_Create(CHESS_MAX_POSSIBLE_MOVES, sizeof(ChessPos));
-    // TODO: handle *stack == null (currently there's no good error type)
     ChessMove move = { .from = pos };
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
@@ -406,6 +409,7 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
             }
         }
     }
+    game->turn = originalTurn;
     return CHESS_SUCCESS;
 }
 

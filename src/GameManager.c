@@ -341,10 +341,13 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, ChessMove *bestMove) 
     int moveScore;
     ChessMove move;
     ChessMove tempMove; // only here as a garbage pointer - need to find a better way
+    ChessColor color;
     ArrayStack *positions;
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             move.from = (ChessPos){ .x = i, .y = j };
+            ChessGame_GetPieceColor(game->board[i][j], &color);
+            if (color != game->turn) continue;
             ChessGame *gameCopy = ChessGame_Copy(game);
             ChessGame_GetMoves(gameCopy, move.from, &positions);
             while (!ArrayStack_IsEmpty(positions)) {
