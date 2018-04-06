@@ -87,6 +87,13 @@ void GameManager_ProcessCommand(GameManager *manager, GameCommand command);
 
 char* chessPieceLocationToStr(ChessGame *game, int x, int y);
 
-char* chessColorToColorStr(ChessColor color);
+static const struct ChessColorToString {
+    ChessColor color;
+    const char *string;
+} ChessColorToString[] = {
+    { CHESS_PLAYER_COLOR_BLACK, "black" },
+    { CHESS_PLAYER_COLOR_WHITE, "white" },
+    { CHESS_PLAYER_COLOR_NONE, "none" },
+};
 
 #endif

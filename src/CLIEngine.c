@@ -2,29 +2,29 @@
 #include <string.h>
 #include "CLIEngine.h"
 
-#define MSG_APP_INIT                    " Chess\n-------\n"
-#define MSG_SETTINGS_STATE              "Specify game settings or type 'start' to begin a game with the current settings:\n"
-#define MSG_GAME_MODE                   "Game mode is set to %d%s\n"
-#define MSG_DIFFICULTY                  "Difficulty level is set to %s\n"
-#define MSG_USER_COLOR                  "User color is set to %s\n"
-#define MSG_DEFAULT_SETTINGS            "All settings reset to default\n"
-#define MSG_QUIT                        "Exiting...\n"
-#define MSG_START                       "Starting game...\n"
-#define MSG_MAKE_MOVE                   "Enter your move (%s player):\n"
-#define MSG_CHECKMATE                   "Checkmate! %s player wins the game\n"
-#define MSG_CHECK                       "Check: %s king is threatened\n"
-#define MSG_DRAW                        "The game ends in a draw\n"
-#define MSG_MOVE_DEFAULT                "<%d,%c>\n"
-#define MSG_MOVE_THREATENED             "<%d,%c>*\n"
-#define MSG_MOVE_CAPTURES               "<%d,%c>^\n"
-#define MSG_MOVE_BOTH                   "<%d,%c>*^\n"
-#define MSG_GAME_SAVED                  "Game saved to: %s\n"
-#define MSG_UNDO_MOVE                   "Undo move for %s player: <%d,%c> -> <%d,%c>\n"
-#define MSG_RESTART                     "Restarting...\n"
-#define MSG_AI_MOVE                     "Computer: move %s at <%d,%c> to <%d,%c>\n"
+#define MSG_APP_INIT            " Chess\n-------\n"
+#define MSG_SETTINGS_STATE      "Specify game settings or type 'start' to begin a game with the current settings:\n"
+#define MSG_GAME_MODE           "Game mode is set to %d%s\n"
+#define MSG_DIFFICULTY          "Difficulty level is set to %s\n"
+#define MSG_USER_COLOR          "User color is set to %s\n"
+#define MSG_DEFAULT_SETTINGS    "All settings reset to default\n"
+#define MSG_QUIT                "Exiting...\n"
+#define MSG_START               "Starting game...\n"
+#define MSG_MAKE_MOVE           "Enter your move (%s player):\n"
+#define MSG_CHECKMATE           "Checkmate! %s player wins the game\n"
+#define MSG_CHECK               "Check: %s king is threatened\n"
+#define MSG_DRAW                "The game ends in a draw\n"
+#define MSG_MOVE_DEFAULT        "<%d,%c>\n"
+#define MSG_MOVE_THREATENED     "<%d,%c>*\n"
+#define MSG_MOVE_CAPTURES       "<%d,%c>^\n"
+#define MSG_MOVE_BOTH           "<%d,%c>*^\n"
+#define MSG_GAME_SAVED          "Game saved to: %s\n"
+#define MSG_UNDO_MOVE           "Undo move for %s player: <%d,%c> -> <%d,%c>\n"
+#define MSG_RESTART             "Restarting...\n"
+#define MSG_AI_MOVE             "Computer: move %s at <%d,%c> to <%d,%c>\n"
 
-#define INPUT_DELIMITERS                " \t\r\n"
-#define MAX_INT_VALUE                   50
+#define INPUT_DELIMITERS        " \t\r\n"
+#define MAX_INT_VALUE           50
 
 
 struct CLIEngine {
@@ -291,7 +291,7 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
         case GAME_COMMAND_UNDO:
             while (!ArrayStack_IsEmpty(manager->moves)) {
                 move = ArrayStack_Pop(manager->moves);
-                printf(MSG_UNDO_MOVE, chessColorToColorStr(move->player), move->to.y + 1 ,move->to.x + 'A', move->from.y + 1 ,move->from.x + 'A');
+                printf(MSG_UNDO_MOVE, ChessColorToString[move->player].string, move->to.y + 1 ,move->to.x + 'A', move->from.y + 1 ,move->from.x + 'A');
             }
             ChessGame_BoardToStream(manager->game, stdout);
             break;

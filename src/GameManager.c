@@ -65,18 +65,6 @@ char* chessPieceLocationToStr(ChessGame *game, int x, int y){
     }
 }
 
-char* chessColorToColorStr(ChessColor color) {
-    switch (color) {
-        case CHESS_PLAYER_COLOR_BLACK:
-            return "black";
-        case CHESS_PLAYER_COLOR_WHITE:
-            return "white";
-        case CHESS_PLAYER_COLOR_NONE:
-        default:
-            return "none";
-    }
-}
-
 void handleLoadGame(GameManager *manager, const char *path) {
     FILE *fp = fopen(path, "r");
     if (!fp) {
@@ -206,7 +194,7 @@ void handleSaveGame(GameManager *manager, const char *path) {
         manager->error = GAME_ERROR_FILE_ALLOC;
         return;
     }
-    fputs(chessColorToColorStr(manager->game->turn), fp);
+    fputs(ChessColorToString[manager->game->turn].string, fp);
     fputs("\n", fp);
     ChessGame_SettingsToStream(manager->game, fp);
     ChessGame_BoardToStream(manager->game, fp);
