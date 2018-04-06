@@ -235,6 +235,7 @@ void handleError(const GameManager *manager) {
             return;
         case GAME_ERROR_EMPTY_HISTORY:
             printf(MSG_ERR_EMPTY_HISTORY);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");            
             return;
         case GAME_ERROR_NONE:
         default:
