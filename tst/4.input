@@ -1,8 +1,12 @@
+invalidcommand
+undo
+game_mode 100
+difficulty 100
+user_color 100
 start
-get_moves <2,A>
-move <2,A> to <3,A>
-get_moves <1,B>
-move <1,B> to <3,C>
-get_moves <3,C>
-move <3,C> to <5,D>
+move <0,a> to <0,b>
+move <4,D> to <5,D>
+move <2,A> to <1,A>
+save illegal/file/name
+undo
 quit

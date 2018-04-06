@@ -25,7 +25,7 @@
 
 #define MSG_ERR_INVALID_COMMAND             "ERROR: invalid command\n"
 #define MSG_ERR_WRONG_GAME_MODE             "Wrong game mode\n"
-#define MSG_ERR_WRONG_DIFF_LEVEL            "Wrong difficulty level. The value should be between 1 to 5\n"
+#define MSG_ERR_WRONG_DIFF_LEVEL            "Wrong difficulty level. The value shold be between 1 to 5\n"
 #define MSG_ERR_WRONG_USER_COLOR            "Wrong user color. The value should be 0 or 1\n"
 #define MSG_ERR_FILE_NOT_EXIST              "ERROR: File doesn’t exist or cannot be opened\n"
 #define MSG_ERR_INVALID_POSITION            "Invalid position on the board\n"
@@ -35,20 +35,6 @@
 #define MSG_ERR_ILLEGAL_MOVE_KING_WILL_T    "Ilegal move: king will be threatened\n"
 #define MSG_ERR_FILE_CANNOT_BE_CREATED      "File cannot be created or modified\n"
 #define MSG_ERR_EMPTY_HISTORY               "Empty history, no move to undo\n"
-
-#define IN_STRING_GAME_MODE             "game_mode"
-#define IN_STRING_DIFFICULTY            "difficulty"
-#define IN_STRING_USER_COLOR            "user_color"
-#define IN_STRING_LOAD_GAME             "load"
-#define IN_STRING_DEFAULT               "default"
-#define IN_STRING_PRINT                 "print_settings"
-#define IN_STRING_START                 "start"
-#define IN_STRING_MOVE                  "move"
-#define IN_STRING_GET_MOVES             "get_moves"
-#define IN_STRING_SAVE                  "save"
-#define IN_STRING_UNDO                  "undo"
-#define IN_STRING_RESET                 "reset"
-#define IN_STRING_QUIT                  "quit"
 
 #define INPUT_DELIMITERS                " \t\r\n"
 #define MAX_INT_VALUE                   50
@@ -72,23 +58,23 @@ void CLIEngine_Destroy(CLIEngine *this) {
 }
 
 GameCommandType strToCommandType(const char *str) {
-    if (!strcmp(str, IN_STRING_GAME_MODE))  return GAME_COMMAND_GAME_MODE;
-    if (!strcmp(str, IN_STRING_DIFFICULTY)) return GAME_COMMAND_DIFFICULTY;
-    if (!strcmp(str, IN_STRING_USER_COLOR)) return GAME_COMMAND_USER_COLOR;
-    if (!strcmp(str, IN_STRING_LOAD_GAME))  return GAME_COMMAND_LOAD_GAME;
-    if (!strcmp(str, IN_STRING_DEFAULT))    return GAME_COMMAND_DEFAULT_SETTINGS;
-    if (!strcmp(str, IN_STRING_PRINT))      return GAME_COMMAND_PRINT_SETTINGS;
-    if (!strcmp(str, IN_STRING_START))      return GAME_COMMAND_START;
-    if (!strcmp(str, IN_STRING_MOVE))       return GAME_COMMAND_MOVE;
-    if (!strcmp(str, IN_STRING_GET_MOVES))  return GAME_COMMAND_GET_MOVES;
-    if (!strcmp(str, IN_STRING_SAVE))       return GAME_COMMAND_SAVE;
-    if (!strcmp(str, IN_STRING_UNDO))       return GAME_COMMAND_UNDO;
-    if (!strcmp(str, IN_STRING_RESET))      return GAME_COMMAND_RESET;
-    if (!strcmp(str, IN_STRING_QUIT))       return GAME_COMMAND_QUIT;
+    if (!strcmp(str, "game_mode"))          return GAME_COMMAND_GAME_MODE;
+    if (!strcmp(str, "difficulty"))         return GAME_COMMAND_DIFFICULTY;
+    if (!strcmp(str, "user_color"))         return GAME_COMMAND_USER_COLOR;
+    if (!strcmp(str, "load"))               return GAME_COMMAND_LOAD_GAME;
+    if (!strcmp(str, "default"))            return GAME_COMMAND_DEFAULT_SETTINGS;
+    if (!strcmp(str, "print_settings"))     return GAME_COMMAND_PRINT_SETTINGS;
+    if (!strcmp(str, "start"))              return GAME_COMMAND_START;
+    if (!strcmp(str, "move"))               return GAME_COMMAND_MOVE;
+    if (!strcmp(str, "get_moves"))          return GAME_COMMAND_GET_MOVES;
+    if (!strcmp(str, "save"))               return GAME_COMMAND_SAVE;
+    if (!strcmp(str, "undo"))               return GAME_COMMAND_UNDO;
+    if (!strcmp(str, "reset"))              return GAME_COMMAND_RESET;
+    if (!strcmp(str, "quit"))               return GAME_COMMAND_QUIT;
     return GAME_COMMAND_INVALID;
 }
 
-typedef enum GameCommandArgsType_t {
+typedef enum GameCommandArgsType {
     COMMAND_ARGS_INTS,
     COMMAND_ARGS_STRING,
     COMMAND_ARGS_MOVES,
@@ -212,34 +198,28 @@ void handleError(const GameManager *manager) {
             return;
         case GAME_ERROR_INVALID_POSITION:
             printf(MSG_ERR_INVALID_POSITION);
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_EMPTY_POSITION:
             printf(MSG_ERR_POSITION_EMPTY);
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_INVALID_MOVE:
             printf(MSG_ERR_ILLEGAL_MOVE);
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_INVALID_MOVE_KING_IS_T:
             printf(MSG_ERR_ILLEGAL_MOVE_KING_IS_T);
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_INVALID_MOVE_KING_WILL_T:
             printf(MSG_ERR_ILLEGAL_MOVE_KING_WILL_T);
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             return;
         case GAME_ERROR_FILE_ALLOC:
             printf(MSG_ERR_FILE_CANNOT_BE_CREATED);
             return;
         case GAME_ERROR_EMPTY_HISTORY:
-            printf(MSG_ERR_EMPTY_HISTORY);
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");            
+            printf(MSG_ERR_EMPTY_HISTORY);            
             return;
         case GAME_ERROR_NONE:
         default:
-            break;
+            return;
     }
 }
 
@@ -250,6 +230,9 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
     if (!manager) return;
     if (manager->error != GAME_ERROR_NONE) {
         handleError(manager);
+        if (manager->error >= GAME_ERROR_INVALID_POSITION) {
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+        }
         return;
     }
     ChessPos *pos;
