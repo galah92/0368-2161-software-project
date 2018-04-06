@@ -147,6 +147,7 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
             token = strtok(NULL, INPUT_DELIMITERS);
             if (!token || strcmp("to", token)) {
                 while(token) token = strtok(NULL, INPUT_DELIMITERS);
+                if (command.type == GAME_COMMAND_MOVE) command.type = GAME_COMMAND_INVALID;// invalid move syntax
                 break;
             }
             token = strtok(NULL, INPUT_DELIMITERS);
