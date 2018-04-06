@@ -1,0 +1,64 @@
+ Chess
+-------
+Specify game settings or type 'start' to begin a game with the current settings:
+Starting game...
+8| R N B Q K B N R |
+7| M M M M M M M M |
+6| _ _ _ _ _ _ _ _ |
+5| _ _ _ _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| r n b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (white player):
+<3,A>
+<4,A>
+Enter your move (white player):
+Computer: move pawn at <7,H> to <5,H>
+8| R N B Q K B N R |
+7| M M M M M M M _ |
+6| _ _ _ _ _ _ _ _ |
+5| _ _ _ _ _ _ _ M |
+4| _ _ _ _ _ _ _ _ |
+3| m _ _ _ _ _ _ _ |
+2| _ m m m m m m m |
+1| r n b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (white player):
+<3,C>
+Enter your move (white player):
+Computer: move rook at <8,H> to <7,H>
+8| R N B Q K B N _ |
+7| M M M M M M M R |
+6| _ _ _ _ _ _ _ _ |
+5| _ _ _ _ _ _ _ M |
+4| _ _ _ _ _ _ _ _ |
+3| m _ n _ _ _ _ _ |
+2| _ m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (white player):
+<4,E>
+<5,D>
+<4,A>
+<5,B>
+<2,A>
+<1,B>
+Enter your move (white player):
+Computer: move knight at <8,G> to <6,H>
+8| R N B Q K B _ _ |
+7| M M M M M M M R |
+6| _ _ _ _ _ _ _ N |
+5| _ _ _ n _ _ _ M |
+4| _ _ _ _ _ _ _ _ |
+3| m _ _ _ _ _ _ _ |
+2| _ m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (white player):
+Exiting...
