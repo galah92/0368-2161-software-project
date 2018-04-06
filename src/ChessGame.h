@@ -185,6 +185,7 @@ ChessResult ChessGame_UndoMove(ChessGame *game, ChessMove *move);
  * return   CHESS_INVALID_ARGUMENT if game == NULL
  *          CHESS_INVALID_POSITION is pos is not on board. In that case,
  *              the stack won't be created
+ *          CHESS_EMPTY_POSITION if pos doesn't contain a player piece
  *          CHESS_SUCCESS otherwise
  */
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack);
@@ -207,7 +208,7 @@ ChessResult ChessGame_SettingsToStream(const ChessGame *game, FILE *stream);
  */
 ChessResult ChessGame_BoardToStream(const ChessGame *game, FILE *stream);
 
-
 ChessResult ChessGame_GetPieceColor(ChessPiece piece, ChessColor *color);
+
 
 #endif

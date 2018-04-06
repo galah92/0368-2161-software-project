@@ -76,9 +76,9 @@ ChessColor getPieceColor(ChessPiece piece) {
  * @param   game        the game the move is based on
  * @param   move        the move to check
  */
-bool isMoveOfPlayerPiece(ChessGame *game, ChessMove move) {
+bool isPosOfPlayerPiece(ChessGame *game, ChessPos pos) {
     if (!game) return false; // sanity check
-    return getPieceColor(game->board[move.from.x][move.from.y]) == game->turn;
+    return getPieceColor(game->board[pos.x][pos.y]) == game->turn;
 }
 
 /**
@@ -289,7 +289,7 @@ ChessPosType getMoveType(ChessGame *game, ChessMove move) {
 ChessResult isValidMove(ChessGame *game, ChessMove move) {
     if (!game) return CHESS_INVALID_ARGUMENT;
     if (!isValidPositionsOnBoard(move)) return CHESS_INVALID_POSITION;
-    if (!isMoveOfPlayerPiece(game, move)) return CHESS_EMPTY_POSITION;
+    if (!isPosOfPlayerPiece(game, move.from)) return CHESS_EMPTY_POSITION;
     if (!isValidToPosition(game, move)) return CHESS_ILLEGAL_MOVE;
     if (!isValidPieceMove(game, move)) return CHESS_ILLEGAL_MOVE;
     bool isThreatened = isKingThreatenedBy(game, game->turn);
@@ -393,6 +393,7 @@ ChessResult ChessGame_UndoMove(ChessGame *game, ChessMove *move) {
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack) {
     if (!game) return CHESS_INVALID_ARGUMENT;
     if (!isValidPositionOnBoard(pos)) return CHESS_INVALID_POSITION;
+    if (!isPosOfPlayerPiece(game, pos)) return CHESS_EMPTY_POSITION;
     *stack = ArrayStack_Create(CHESS_MAX_POSSIBLE_MOVES, sizeof(ChessPos));
     // TODO: handle *stack == null (currently there's no good error type)
     ChessMove move = { .from = pos };
