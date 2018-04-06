@@ -84,8 +84,8 @@ void handleLoadGame(GameManager *manager, const char *path) {
         return;
     }
     char line[LINE_MAX_LENGTH];
-    fgets(line, LINE_MAX_LENGTH, fp);
-    manager->game->turn = colorStrToChessColor(line);
+    fgets(line, LINE_MAX_LENGTH, fp); // turn
+    manager->game->turn = colorStrToChessColor(strtok(line, " \n"));
     fgets(line, LINE_MAX_LENGTH, fp); // SETTINGS:
     fgets(line, LINE_MAX_LENGTH, fp);
     strtok(line, " \n"); // GAME_MODE
