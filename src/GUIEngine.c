@@ -13,15 +13,15 @@ struct GUIEngine {
 GUIEngine* GUIEngine_Create() {
     GUIEngine *engine = malloc(sizeof(GUIEngine));
     if (!engine) return NULL;
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
+        GUIEngine_Destroy(engine);
+        return NULL;
+	}
     engine->window = SDL_CreateWindow("Chess",
                                       SDL_WINDOWPOS_CENTERED,
                                       SDL_WINDOWPOS_CENTERED,
                                       800, 600, SDL_WINDOW_OPENGL);
-    if (!engine->window) {
-        printf("SDL Failure.\n");
-        GUIEngine_Destroy(engine);
-        return NULL;
-    }
     return engine;
 }
 

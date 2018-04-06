@@ -19,20 +19,21 @@ UIManager* UIManager_Create(int argc, const char *argv[]) {
     if (argc > 1 && strcmp(argv[1], "-g") == 0) {
         uiManager->type = UI_TYPE_GUI;
         uiManager->guiEngine = GUIEngine_Create();
-        if (!uiManager->guiEngine) UIManager_Destroy(uiManager);
+        if (!uiManager->guiEngine) return UIManager_Destroy(uiManager);
     } else {
         uiManager->type = UI_TYPE_CLI;
         uiManager->cliEngine = CLIEngine_Create();  // we need CLI anyway
-        if (!uiManager->cliEngine) UIManager_Destroy(uiManager);
+        if (!uiManager->cliEngine) return UIManager_Destroy(uiManager);
     }
     return uiManager;
 }
 
-void UIManager_Destroy(UIManager *uiManager) {
-    if (!uiManager) return;
+UIManager* UIManager_Destroy(UIManager *uiManager) {
+    if (!uiManager) return NULL;
     CLIEngine_Destroy(uiManager->cliEngine);
     GUIEngine_Destroy(uiManager->guiEngine);
     free(uiManager);
+    return NULL;
 }
 
 GameCommand UIManager_ProcessInput(UIManager *uiManager) {
