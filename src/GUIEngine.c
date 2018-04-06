@@ -52,11 +52,11 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
                 command.type = GAME_COMMAND_QUIT;
                 return command;
             case SDL_WINDOWEVENT:
-                command.type = GAME_COMMAND_QUIT;
-                return command;
-            default:
-                return command;
-            
+                if (engine->event.window.event == SDL_WINDOWEVENT_CLOSE) {
+                    command.type = GAME_COMMAND_QUIT;
+                    return command;
+                }
+                break;
         }
     }
 }
