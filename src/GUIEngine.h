@@ -17,7 +17,7 @@ GUIEngine* GUIEngine_Create();
  * Free all resources for a given GUIEngine instance.
  * @param   engine      the instance to destroy
  */
-void GUIEngine_Destroy(GUIEngine *engine);
+GUIEngine* GUIEngine_Destroy(GUIEngine *engine);
 
 /**
  * Get and parse user input from stdin.

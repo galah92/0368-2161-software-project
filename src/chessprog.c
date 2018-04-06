@@ -5,6 +5,7 @@
 
 int main(int argc, const char *argv[]) {
     UIManager *uiManager = UIManager_Create(argc, argv);
+    if (!uiManager) return -1;
     GameManager *gameManager = GameManager_Create();
     GameCommand command;
     while (gameManager->phase != GAME_PHASE_QUIT) {
