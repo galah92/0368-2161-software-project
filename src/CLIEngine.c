@@ -243,7 +243,7 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             break;
     }
     // success
-    ChessMove move;
+    ChessPos pos;
     switch(command.type) {
         case GAME_COMMAND_GAME_MODE:
             printf(MSG_GAME_MODE, manager->game->mode, "-player");
@@ -309,19 +309,19 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
         case GAME_COMMAND_GET_MOVES:
             // TODO: complete
             while (!ArrayStack_IsEmpty(manager->moves)){
-                move = *(ChessMove *) ArrayStack_Pop(manager->moves);
-                switch(move.type){
-                    case CHESS_MOVE_STANDARD:
-                        printf(MSG_MOVE_DEFAULT, move.from.y + 1, move.from.x + 'A');
+                pos = *(ChessPos *) ArrayStack_Pop(manager->moves);
+                switch(pos.type){
+                    case CHESS_POS_STANDARD:
+                        printf(MSG_MOVE_DEFAULT, pos.y + 1, pos.x + 'A');
                         break;
-                    case CHESS_MOVE_THREATENED:
-                        printf(MSG_MOVE_THREATENED, move.from.y + 1, move.from.x + 'A');
+                    case CHESS_POS_THREATENED:
+                        printf(MSG_MOVE_THREATENED, pos.y + 1, pos.x + 'A');
                         break;
-                    case CHESS_MOVE_CAPTURE:
-                        printf(MSG_MOVE_CAPTURES, move.from.y + 1, move.from.x + 'A');
+                    case CHESS_POS_CAPTURE:
+                        printf(MSG_MOVE_CAPTURES, pos.y + 1, pos.x + 'A');
                         break;
-                    case CHESS_MOVE_BOTH:
-                        printf(MSG_MOVE_BOTH, move.from.y + 1, move.from.x + 'A');
+                    case CHESS_POS_BOTH:
+                        printf(MSG_MOVE_BOTH, pos.y + 1, pos.x + 'A');
                         break;
                     default:
                         break;
