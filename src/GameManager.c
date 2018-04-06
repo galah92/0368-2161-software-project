@@ -5,6 +5,8 @@
 #include "ArrayStack.h"
 
 #define LINE_MAX_LENGTH 64
+#define ALPHA INT_MIN
+#define BETA INT_MAX
 
 
 ChessColor colorStrToChessColor(const char *color) {
@@ -322,9 +324,11 @@ int getBoardScore(ChessGame *game) {
 }
 
 // TODO: add pruning
-int minimax(ChessGame *game, int depth, bool isMaximizing, ChessMove *bestMove) {
+int minimax(ChessGame *game, int depth, bool isMaximizing, int alpha, int beta, ChessMove *bestMove) {
     if (depth == 0) return getBoardScore(game);
-    int bestScore = isMaximizing ? INT_MIN : INT_MAX;
+    // int bestScore = isMaximizing ? INT_MIN : INT_MAX;
+    alpha = INT_MIN;
+    beta = INT_MAX;
     int moveScore;
     ChessMove move;
     ChessMove tempMove; // only here as a garbage pointer - need to find a better way
@@ -340,25 +344,36 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, ChessMove *bestMove) 
             while (!ArrayStack_IsEmpty(positions)) {
                 move.to = *(ChessPos *)ArrayStack_Pop(positions);
                 ChessGame_DoMove(gameCopy, move);
-                moveScore = minimax(gameCopy, depth - 1, !isMaximizing, &tempMove);
-                if ((isMaximizing && moveScore > bestScore)
-                    || (!isMaximizing && moveScore < bestScore)) {
-                    memcpy(bestMove, &move, sizeof(ChessMove));
-                    bestScore = moveScore;
+                moveScore = minimax(gameCopy, depth - 1, !isMaximizing, alpha, beta, &tempMove);
+                // if ((isMaximizing && moveScore > bestScore)
+                //     || (!isMaximizing && moveScore < bestScore)) {
+                //     memcpy(bestMove, &move, sizeof(ChessMove));
+                //     bestScore = moveScore;
+                // }
+                if (isMaximizing){
+                    if (moveScore > alpha){
+                        alpha = moveScore;
+                        memcpy(bestMove, &move, sizeof(ChessMove));
+                    }
+                } else if (moveScore < beta) {
+                        alpha = moveScore;
+                        memcpy(bestMove, &move, sizeof(ChessMove));
                 }
                 ChessGame_UndoMove(gameCopy, &move);
             }
             ChessGame_Destroy(gameCopy);
-        }
+            if (beta < alpha)
+                break; // pruning
+            }
     }
     ArrayStack_Destroy(positions);
-    return bestScore;
+    return isMaximizing ? alpha : beta;
 }
 
 GameCommand GameManager_GetAIMove(GameManager *manager) {
     GameCommand command = { .type = GAME_COMMAND_MOVE };
     ChessMove move;
-    minimax(manager->game, manager->game->difficulty, true, &move);
+    minimax(manager->game, manager->game->difficulty, true, ALPHA, BETA, &move);
     command.args[1] = move.from.x + 'A';
     command.args[0] = move.from.y + 1;
     command.args[3] = move.to.x + 'A';
