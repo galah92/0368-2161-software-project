@@ -98,11 +98,12 @@ GameCommandArgsType getCommandArgsType(const GameCommandType commandType) {
 
 int isInt(const char* str) {
 	int i = str[0] == '-' ? 1 : 0;  // case the number is negative
+    if ((i && strlen(str) == 1) || str[0] == '0') return false; //case str == '-' or number start with '0'
 	while (str[i] != '\0' && str[i] != '\n') {
 		if (str[i] < '0' || str[i] > '9') return 0;
 		i++;
 	}
-	return 1;
+	return true;
 }
 
 GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
@@ -110,10 +111,10 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
     if (!this) return command;
     char* input;
     while ((input = fgets(this->input, GAME_COMMAND_MAX_LINE_LENGTH, stdin))){
-        if (!input) return command;
         if (input[0] == '\n') continue; // handle newline (only) input
         else break;
     }
+    if (!input) return command;
     unsigned int lastCharIndex = strlen(this->input) - 1;
     if (this->input[lastCharIndex] == '\n') {
         this->input[lastCharIndex] = '\0';  // trim possible EOL char
