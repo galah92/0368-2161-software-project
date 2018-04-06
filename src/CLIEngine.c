@@ -243,6 +243,8 @@ void handleError(const GameManager *manager) {
     }
 }
 
+
+
 void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand command) {
     (void)this;
     if (!manager) return;
@@ -342,7 +344,7 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
         case GAME_COMMAND_UNDO:
             while (!ArrayStack_IsEmpty(manager->moves)) {
                 move = ArrayStack_Pop(manager->moves);
-                printf(MSG_UNDO_MOVE, "DEBUG",move->from.y + 1 ,move->from.x + 'A', move->to.y + 1 ,move->to.x + 'A'); // TODO: complete with move color
+                printf(MSG_UNDO_MOVE, chessColorToColorStr(move->player), move->to.y + 1 ,move->to.x + 'A', move->from.y + 1 ,move->from.x + 'A');
             }
             ChessGame_BoardToStream(manager->game, stdout);
             break;

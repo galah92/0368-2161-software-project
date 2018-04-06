@@ -232,6 +232,7 @@ bool isKingThreatenedBy(ChessGame *game, ChessColor playerColor) {
 }
 
 void pseudoDoMove(ChessGame *game, ChessMove *move) {
+    move->player = game->turn;
     move->capturedPiece = game->board[move->to.x][move->to.y];
     game->board[move->to.x][move->to.y] = game->board[move->from.x][move->from.y];
     game->board[move->from.x][move->from.y] = CHESS_PIECE_NONE;

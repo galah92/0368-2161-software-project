@@ -86,6 +86,7 @@ typedef struct ChessMove {
     ChessPos from;
     ChessPos to;
     ChessPiece capturedPiece;
+    ChessColor player;
 } ChessMove;
 
 /**
