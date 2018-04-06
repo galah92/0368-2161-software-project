@@ -5,3 +5,4 @@ get_moves <1,B>
 move <1,B> to <3,C>
 get_moves <3,C>
 move <3,C> to <5,D>
+quit
