@@ -332,6 +332,7 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
                         break;
                 }
             }
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             break;
         case GAME_COMMAND_SAVE:
             printf(MSG_GAME_SAVED, command.path);
