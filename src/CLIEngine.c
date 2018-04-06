@@ -100,7 +100,7 @@ int isInt(const char* str) {
 	int i = str[0] == '-' ? 1 : 0;  // case the number is negative
     if ((i && strlen(str) == 1) || str[0] == '0') return false; //case str == '-' or number start with '0'
 	while (str[i] != '\0' && str[i] != '\n') {
-		if (str[i] < '0' || str[i] > '9') return 0;
+		if (str[i] < '0' || str[i] > '9') return false;
 		i++;
 	}
 	return true;
