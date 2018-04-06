@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include <stdio.h>
 #include <SDL.h>
 #include "GUIEngine.h"
@@ -7,6 +6,7 @@
 struct GUIEngine {
     SDL_Window *window;
     SDL_Renderer *renderer;
+    SDL_Event event;
 };
 
 GUIEngine* GUIEngine_Create() {
@@ -17,12 +17,22 @@ GUIEngine* GUIEngine_Create() {
     if (!engine->window) return GUIEngine_Destroy(engine);
     engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_SOFTWARE);
     if (!engine->renderer) return GUIEngine_Destroy(engine);
+
+	SDL_Rect rect = { .x = 250, .y = 250, .w = 100, .h = 100 };
+	SDL_SetRenderDrawColor(engine->renderer, 255, 0, 0, 0);
+	SDL_RenderClear(engine->renderer);
+	SDL_SetRenderDrawColor(engine->renderer, 0, 0, 255, 0);
+	SDL_RenderFillRect(engine->renderer, &rect);
+
+	SDL_RenderPresent(engine->renderer);
+    SDL_Delay(10000); // for debug
+
     return engine;
 }
 
 GUIEngine* GUIEngine_Destroy(GUIEngine *engine) {
     const char *error = SDL_GetError();
-    if (strcmp(error, "") == 0) printf("SDL Error: %s\n", error);
+    if (strcmp(error, "")) printf("SDL Error: %s\n", error);
     if (!engine) return NULL;
     if (!engine->renderer) SDL_DestroyRenderer(engine->renderer);
     if (!engine->window) SDL_DestroyWindow(engine->window);
@@ -32,10 +42,25 @@ GUIEngine* GUIEngine_Destroy(GUIEngine *engine) {
 }
 
 GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
-    GameCommand command = { .type = GAME_COMMAND_INVALID };
+    GameCommand command = { .type = GAME_COMMAND_QUIT };
     if (!engine) return command;
-    sleep(10);
-    command.type = GAME_COMMAND_QUIT;
+    SDL_WaitEvent(&engine->event);
+    switch (engine->event.type) {
+        case SDL_WINDOWEVENT_CLOSE:
+            printf("exit button 1 pressed!\n");
+            break;
+        case SDL_QUIT:
+            printf("exit button 2 pressed!\n");
+            break;
+        case SDL_WINDOWEVENT:
+            if (engine->event.window.event == SDL_WINDOWEVENT_CLOSE) {
+                printf("exit button 3 pressed!\n");
+            }
+            break;
+        default:
+            break;
+        
+    }
     return command;
 }
 
