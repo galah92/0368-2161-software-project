@@ -19,7 +19,7 @@
 #define MSG_MOVE_CAPTURES               "<%d,%c>^\n"
 #define MSG_MOVE_BOTH                   "<%d,%c>*^\n"
 #define MSG_GAME_SAVED                  "Game saved to: %s\n"
-#define MSG_UNDO_MOVE                   "Undo move for %s player: <%c,%c> -> <%c,%c>\n"
+#define MSG_UNDO_MOVE                   "Undo move for %s player: <%d,%c> -> <%d,%c>\n"
 #define MSG_RESTART                     "Restarting...\n"
 #define MSG_AI_MOVE                     "Computer: move %s at <%d,%c> to <%d,%c>\n"
 
@@ -251,7 +251,7 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
         return;
     }
     ChessPos *pos;
-    // ChessPos *move;
+    ChessMove *move;
     switch(command.type) {
         case GAME_COMMAND_GAME_MODE:
             printf(MSG_GAME_MODE, manager->game->mode, "-player");
@@ -341,8 +341,8 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
             break;
         case GAME_COMMAND_UNDO:
             while (!ArrayStack_IsEmpty(manager->moves)) {
-                // move = ArrayStack_Pop(manager->moves);
-                // printf(MSG_UNDO_MOVE, ) // TODO: complete with move color
+                move = ArrayStack_Pop(manager->moves);
+                printf(MSG_UNDO_MOVE, "DEBUG",move->from.y + 1 ,move->from.x + 'A', move->to.y + 1 ,move->to.x + 'A'); // TODO: complete with move color
             }
             ChessGame_BoardToStream(manager->game, stdout);
             break;
