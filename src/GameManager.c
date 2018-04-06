@@ -100,7 +100,7 @@ void handleLoadGame(GameManager *manager, const char *path) {
         fgets(line, LINE_MAX_LENGTH, fp);
         strtok(line, " \n");
         for (int j = 0; j < CHESS_GRID; j++) {
-            manager->game->board[i][j] = *strtok(NULL, " \n");
+            manager->game->board[j][i] = *strtok(NULL, " \n");
         }
     }
     fclose(fp);
@@ -342,7 +342,7 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, ChessMove *bestMove) 
     ChessMove move;
     ChessMove tempMove; // only here as a garbage pointer - need to find a better way
     ChessColor color;
-    ArrayStack *positions;
+    ArrayStack *positions = NULL;
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             move.from = (ChessPos){ .x = i, .y = j };

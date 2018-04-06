@@ -243,7 +243,7 @@ void pseudoUndoMove(ChessGame *game, ChessMove *move) {
 }
 
 bool hasMoves(ChessGame *game) {
-    ArrayStack *possibleMoves;
+    ArrayStack *possibleMoves = NULL;
     ChessPos pos;
     for (int i = 0; i < CHESS_GRID; i ++) {
         for (int j = 0; j < CHESS_GRID; j++) {
@@ -391,6 +391,7 @@ ChessResult ChessGame_UndoMove(ChessGame *game, ChessMove *move) {
 }
 
 ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack) {
+    *stack = ArrayStack_Create(CHESS_MAX_POSSIBLE_MOVES, sizeof(ChessPos));
     if (!game) return CHESS_INVALID_ARGUMENT;
     if (!isValidPositionOnBoard(pos)) return CHESS_INVALID_POSITION;
     if (game->board[pos.x][pos.y] == CHESS_PIECE_NONE) return CHESS_EMPTY_POSITION;
@@ -398,7 +399,6 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
     if (!isPosOfPlayerPiece(game, pos)) {
         game->turn = switchColor(game->turn);
     }
-    *stack = ArrayStack_Create(CHESS_MAX_POSSIBLE_MOVES, sizeof(ChessPos));
     ChessMove move = { .from = pos };
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {

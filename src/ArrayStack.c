@@ -53,12 +53,12 @@ unsigned int ArrayStack_Size(const ArrayStack* stack) {
 }
 
 bool ArrayStack_IsFull(const ArrayStack* stack) {
-    if (!stack) return 0;
+    if (!stack) return false;
     return stack->size == stack->capacity;
 }
 
 bool ArrayStack_IsEmpty(const ArrayStack* stack) {
-    if (!stack) return 0;
+    if (!stack) return false;
     return stack->size == 0;
 }
 
