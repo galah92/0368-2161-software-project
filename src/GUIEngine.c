@@ -1,33 +1,46 @@
+#include <unistd.h>
 #include <stdio.h>
-#include <string.h>
 #include <SDL.h>
 #include "GUIEngine.h"
 
 
 struct GUIEngine {
-    int x;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
 };
 
 
 GUIEngine* GUIEngine_Create() {
-    GUIEngine *this = malloc(sizeof(GUIEngine));
-    if (!this) return NULL;
-    return this;
+    GUIEngine *engine = malloc(sizeof(GUIEngine));
+    if (!engine) return NULL;
+    engine->window = SDL_CreateWindow("Chess",
+                                      SDL_WINDOWPOS_CENTERED,
+                                      SDL_WINDOWPOS_CENTERED,
+                                      800, 600, SDL_WINDOW_OPENGL);
+    if (!engine->window) {
+        printf("SDL Failure.\n");
+        GUIEngine_Destroy(engine);
+        return NULL;
+    }
+    return engine;
 }
 
-void GUIEngine_Destroy(GUIEngine *this) {
-    if (!this) return;
-    free(this);
+void GUIEngine_Destroy(GUIEngine *engine) {
+    if (!engine) return;
+    SDL_DestroyWindow(engine->window);
+    free(engine);
 }
 
-GameCommand GUIEngine_ProcessInput(GUIEngine *this) {
+GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
     GameCommand command = { .type = GAME_COMMAND_INVALID };
-    if (!this) return command;
+    if (!engine) return command;
+    sleep(10);
+    command.type = GAME_COMMAND_QUIT;
     return command;
 }
 
-void GUIEngine_Render(GUIEngine *this, const GameManager *manager, GameCommand command) {
+void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand command) {
     if (!manager) return;
-    printf("%d", this->x);
-    (void) command;
+    (void)engine;
+    (void)command;
 }
