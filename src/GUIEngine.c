@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <SDL.h>
 #include "GUIEngine.h"
 
@@ -19,14 +20,11 @@ GUIEngine* GUIEngine_Create() {
     if (!engine->renderer) return GUIEngine_Destroy(engine);
 
 	SDL_Rect rect = { .x = 250, .y = 250, .w = 100, .h = 100 };
-	SDL_SetRenderDrawColor(engine->renderer, 255, 0, 0, 0);
-	SDL_RenderClear(engine->renderer);
-	SDL_SetRenderDrawColor(engine->renderer, 0, 0, 255, 0);
-	SDL_RenderFillRect(engine->renderer, &rect);
-
-	SDL_RenderPresent(engine->renderer);
-    SDL_Delay(10000); // for debug
-
+    SDL_SetRenderDrawColor(engine->renderer, 255, 0, 0, 0);
+    SDL_RenderClear(engine->renderer);
+    SDL_SetRenderDrawColor(engine->renderer, 0, 0, 255, 0);
+    SDL_RenderFillRect(engine->renderer, &rect);
+    SDL_RenderPresent(engine->renderer);
     return engine;
 }
 
@@ -42,26 +40,25 @@ GUIEngine* GUIEngine_Destroy(GUIEngine *engine) {
 }
 
 GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
-    GameCommand command = { .type = GAME_COMMAND_QUIT };
+    GameCommand command = { .type = GAME_COMMAND_INVALID };
     if (!engine) return command;
-    SDL_WaitEvent(&engine->event);
-    switch (engine->event.type) {
-        case SDL_WINDOWEVENT_CLOSE:
-            printf("exit button 1 pressed!\n");
-            break;
-        case SDL_QUIT:
-            printf("exit button 2 pressed!\n");
-            break;
-        case SDL_WINDOWEVENT:
-            if (engine->event.window.event == SDL_WINDOWEVENT_CLOSE) {
-                printf("exit button 3 pressed!\n");
-            }
-            break;
-        default:
-            break;
-        
+    while (true) {
+        SDL_WaitEvent(&engine->event);
+        switch (engine->event.type) {
+            case SDL_WINDOWEVENT_CLOSE:
+                command.type = GAME_COMMAND_QUIT;
+                return command;
+            case SDL_QUIT:
+                command.type = GAME_COMMAND_QUIT;
+                return command;
+            case SDL_WINDOWEVENT:
+                command.type = GAME_COMMAND_QUIT;
+                return command;
+            default:
+                return command;
+            
+        }
     }
-    return command;
 }
 
 void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand command) {
