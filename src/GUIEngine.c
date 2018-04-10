@@ -3,6 +3,9 @@
 #include <SDL.h>
 #include "GUIEngine.h"
 
+#define SDL_ERROR_STRING    "SDL Error: %s\n"
+#define SRC_BACKGROUND      "./gui/chessboard.bmp"
+
 
 struct GUIEngine {
     SDL_Window *window;
@@ -18,22 +21,20 @@ GUIEngine* GUIEngine_Create() {
     if (!engine->window) return GUIEngine_Destroy(engine);
     engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_SOFTWARE);
     if (!engine->renderer) return GUIEngine_Destroy(engine);
-
-    SDL_Surface* boardSurface = SDL_LoadBMP("./gui/chessboard.bmp");
+    SDL_Surface* boardSurface = SDL_LoadBMP(SRC_BACKGROUND);
 	if (!boardSurface) return GUIEngine_Destroy(engine);
 	SDL_Texture* tex = SDL_CreateTextureFromSurface(engine->renderer, boardSurface);
 	if (!tex) return GUIEngine_Destroy(engine);
 	SDL_FreeSurface(boardSurface);
-    SDL_DestroyTexture(tex);
     SDL_RenderCopy(engine->renderer, tex, NULL, NULL);
+    SDL_DestroyTexture(tex);
     SDL_RenderPresent(engine->renderer);
-
     return engine;
 }
 
 GUIEngine* GUIEngine_Destroy(GUIEngine *engine) {
     const char *error = SDL_GetError();
-    if (strcmp(error, "")) printf("SDL Error: %s\n", error);
+    if (strcmp(error, "")) printf(SDL_ERROR_STRING, error);
     if (!engine) return NULL;
     if (!engine->renderer) SDL_DestroyRenderer(engine->renderer);
     if (!engine->window) SDL_DestroyWindow(engine->window);
