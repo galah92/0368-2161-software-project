@@ -3,13 +3,18 @@
 #include <SDL.h>
 #include <SDL_video.h>
 #include "GUIEngine.h"
-#include "GUIPanes.h"
+#include "GUIUtils.h"
 
 
 #define WINDOW_W            1024
 #define WINDOW_H            768
 #define SDL_ERROR_STRING    "SDL Error: %s\n"
 #define SRC_BACKGROUND      "./gui/chessboard.bmp"
+#define SRC_BUTTON1         "./gui/colors/black.bmp"
+#define SRC_BUTTON2         "./gui/colors/blue.bmp"
+#define SRC_BUTTON3         "./gui/colors/green.bmp"
+#define SRC_BUTTON4         "./gui/colors/grey.bmp"
+#define SRC_BUTTON5         "./gui/colors/yellow.bmp"
 
 
 typedef enum PaneType {
@@ -26,15 +31,13 @@ struct GUIEngine {
     SDL_Event event;
     PaneType paneType;
     PaneType backPaneType;
-    // MainPane mainPane;
-    // SettingsPane settingsPane;
-    // GamePane gamePane;
-    // LoadPane loadPane;
+    Button *tmpBtn;
 };
 
-void renderWindow(GUIEngine *engine) {
+void pseudoRender(GUIEngine *engine) {
     SDL_RenderClear(engine->renderer);
     SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
+    Button_Render(engine->tmpBtn);
     SDL_RenderPresent(engine->renderer);
 }
 
@@ -51,7 +54,11 @@ GUIEngine* GUIEngine_Create() {
 	engine->bgTexture = SDL_CreateTextureFromSurface(engine->renderer, boardSurface);
 	if (!engine->bgTexture) return GUIEngine_Destroy(engine);
 	SDL_FreeSurface(boardSurface);
-    renderWindow(engine);
+
+    SDL_Rect btnPos = { .x = 25, .y = 25, .w = 200, .h = 50 };
+    engine->tmpBtn = Button_Create(engine->renderer, SRC_BUTTON2, btnPos, NULL);
+
+    pseudoRender(engine);
     return engine;
 }
 
@@ -72,6 +79,7 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
     if (!engine) return command;
     while (true) {
         SDL_WaitEvent(&engine->event);
+        Button_HandleEvent(engine->tmpBtn, &engine->event);
         switch (engine->event.type) {
             case SDL_WINDOWEVENT_CLOSE:
             case SDL_QUIT:
@@ -84,12 +92,12 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
                 }
                 break;
         }
-        renderWindow(engine);
+        pseudoRender(engine);
     }
 }
 
 void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand command) {
     if (!manager) return;
     (void)command;
-    renderWindow(engine);
+    pseudoRender(engine);
 }
