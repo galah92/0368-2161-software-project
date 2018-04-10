@@ -145,7 +145,7 @@ bool isValidBishopMove(ChessGame *game, ChessMove move) {
     int endX = startX == move.from.x + 1 ? move.to.x : move.from.x;
     // int endY = startY == move.from.y + 1 ? move.to.y : move.from.y;
     for (int i = startX, j = startY ; i < endX ; i++, j++){
-        if (game->board[j][i] != CHESS_PIECE_NONE) return false;
+        if (game->board[i][j] != CHESS_PIECE_NONE) return false;
     }
     return true;
 }
