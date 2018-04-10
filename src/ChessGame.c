@@ -143,11 +143,9 @@ bool isValidBishopMove(ChessGame *game, ChessMove move) {
     int startX = move.from.x < move.to.x ? move.from.x + 1 : move.to.x + 1;
     int startY = move.from.y < move.to.y ? move.from.y + 1 : move.to.y + 1;
     int endX = startX == move.from.x + 1 ? move.to.x : move.from.x;
-    int endY = startY == move.from.y + 1 ? move.to.y : move.from.y;
-    for (int i = startX; i < endX; i++){
-        for (int j = startY; j < endY; j++){
-            if (game->board[i][j] != CHESS_PIECE_NONE) return false;
-        }
+    // int endY = startY == move.from.y + 1 ? move.to.y : move.from.y;
+    for (int i = startX, j = startY ; i < endX ; i++, j++){
+        if (game->board[j][i] != CHESS_PIECE_NONE) return false;
     }
     return true;
 }
@@ -160,7 +158,7 @@ bool isValidKingMove(ChessGame *game, ChessMove move) {
     (void)game; // TODO: consider remove that argument as it's unused.
     int horDiff = abs(move.from.x - move.to.x);
     int verDiff = abs(move.from.y - move.to.y);
-    return horDiff <= 1 && verDiff <= 1 && ((horDiff > 0) ^ (verDiff > 0));
+    return horDiff <= 1 && verDiff <= 1 && ((horDiff > 0) || (verDiff > 0));
 }
 
 bool isValidPieceMove(ChessGame *game, ChessMove move) {
@@ -260,7 +258,7 @@ bool hasMoves(ChessGame *game) {
 
 ChessPosType getMoveType(ChessGame *game, ChessMove move) {
     pseudoDoMove(game, &move);
-    bool isThreatened = false;
+    bool isThreatened = isPosThreatenedBy(game, move.to, !game->turn);
     pseudoUndoMove(game, &move);
     bool isCapture = game->board[move.to.x][move.to.y] != CHESS_PIECE_NONE;
     if (isThreatened && isCapture) return CHESS_POS_BOTH;
