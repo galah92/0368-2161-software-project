@@ -19,12 +19,15 @@ GUIEngine* GUIEngine_Create() {
     engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_SOFTWARE);
     if (!engine->renderer) return GUIEngine_Destroy(engine);
 
-	SDL_Rect rect = { .x = 250, .y = 250, .w = 100, .h = 100 };
-    SDL_SetRenderDrawColor(engine->renderer, 255, 0, 0, 0);
-    SDL_RenderClear(engine->renderer);
-    SDL_SetRenderDrawColor(engine->renderer, 0, 0, 255, 0);
-    SDL_RenderFillRect(engine->renderer, &rect);
+    SDL_Surface* boardSurface = SDL_LoadBMP("./gui/chessboard.bmp");
+	if (!boardSurface) return GUIEngine_Destroy(engine);
+	SDL_Texture* tex = SDL_CreateTextureFromSurface(engine->renderer, boardSurface);
+	if (!tex) return GUIEngine_Destroy(engine);
+	SDL_FreeSurface(boardSurface);
+    SDL_DestroyTexture(tex);
+    SDL_RenderCopy(engine->renderer, tex, NULL, NULL);
     SDL_RenderPresent(engine->renderer);
+
     return engine;
 }
 
