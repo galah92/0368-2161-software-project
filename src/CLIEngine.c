@@ -300,6 +300,7 @@ void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand c
                 printf(MSG_UNDO_MOVE, ChessColorToString[move->player].string, move->to.y + 1 ,move->to.x + 'A', move->from.y + 1 ,move->from.x + 'A');
             }
             GameManager_BoardToStream(manager, stdout);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             break;
         case GAME_COMMAND_RESET:
             printf(MSG_RESTART);
