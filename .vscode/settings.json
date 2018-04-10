@@ -2,5 +2,8 @@
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
     "editor.detectIndentation": true,
-    "files.defaultLanguage": "c"
+    "files.defaultLanguage": "c",
+    "files.associations": {
+        "sdl_video.h": "c"
+    }
 }
