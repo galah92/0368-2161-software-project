@@ -246,8 +246,8 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             manager->phase = GAME_PHASE_QUIT;
             break;
         case GAME_COMMAND_INVALID:
-            manager->error = GAME_ERROR_INVALID_COMMAND;
         default:
+            manager->error = GAME_ERROR_INVALID_COMMAND;
             break;
     }
 }

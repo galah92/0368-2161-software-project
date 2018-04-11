@@ -138,6 +138,10 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
             break;
         case COMMAND_ARGS_STRING:
             token = strtok(NULL, INPUT_DELIMITERS);  // should be path string
+            if (!token) {
+                command.type = GAME_COMMAND_INVALID;
+                break;
+            }
             strcpy(command.path, token);
             break;  // TODO: consider check for more args and alert somehow
         case COMMAND_ARGS_MOVES:
@@ -194,7 +198,7 @@ static const struct GameErrorToString {
 
 void handleError(const GameManager *manager) {
     printf("%s", GameErrorToString[manager->error].string);
-    if (manager->error >= GAME_ERROR_INVALID_POSITION) {
+    if (manager->error >= GAME_ERROR_INVALID_POSITION || (manager->error == GAME_ERROR_INVALID_COMMAND && manager->phase == GAME_PHASE_RUNNING)) {
         printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
     }
 }
