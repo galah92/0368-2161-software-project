@@ -14,26 +14,26 @@
 #define SDL_ERROR_STRING        "SDL Error: %s\n"
 #define SRC_BACKGROUND          "./gui/chessboard.bmp"
 
-#define SRC_BUTTON_NEW_GAME     "./gui/colors/black.bmp"
-#define SRC_BUTTON_LOAD         "./gui/colors/black.bmp"
-#define SRC_BUTTON_QUIT         "./gui/colors/black.bmp"
+#define SRC_BUTTON_NEW_GAME     "./gui/colors/newgame.bmp"
+#define SRC_BUTTON_LOAD         "./gui/colors/load.bmp"
+#define SRC_BUTTON_QUIT         "./gui/colors/quit.bmp"
 
-#define SRC_BUTTON_BACK         "./gui/colors/blue.bmp"
-#define SRC_BUTTON_GAME_MODE    "./gui/colors/blue.bmp"
-#define SRC_BUTTON_DIFFICULTY   "./gui/colors/blue.bmp"
-#define SRC_BUTTON_USER_COLOR   "./gui/colors/blue.bmp"
-#define SRC_BUTTON_START        "./gui/colors/blue.bmp"
+#define SRC_BUTTON_BACK         "./gui/colors/back.bmp"
+#define SRC_BUTTON_GAME_MODE    "./gui/colors/gamemode.bmp"
+#define SRC_BUTTON_DIFFICULTY   "./gui/colors/difficulty.bmp"
+#define SRC_BUTTON_USER_COLOR   "./gui/colors/usercolor.bmp"
+#define SRC_BUTTON_START        "./gui/colors/start.bmp"
 
-#define SRC_BUTTON_RESTART      "./gui/colors/green.bmp"
-#define SRC_BUTTON_SAVE         "./gui/colors/green.bmp"
-#define SRC_BUTTON_UNDO         "./gui/colors/green.bmp"
-#define SRC_BUTTON_MAIN_MENU    "./gui/colors/green.bmp"
+#define SRC_BUTTON_RESTART      "./gui/colors/restart.bmp"
+#define SRC_BUTTON_SAVE         "./gui/colors/save.bmp"
+#define SRC_BUTTON_UNDO         "./gui/colors/undo.bmp"
+#define SRC_BUTTON_MAIN_MENU    "./gui/colors/mainmenu.bmp"
 
-#define SRC_BUTTON_SLOT1        "./gui/colors/yellow.bmp"
-#define SRC_BUTTON_SLOT2        "./gui/colors/yellow.bmp"
-#define SRC_BUTTON_SLOT3        "./gui/colors/yellow.bmp"
-#define SRC_BUTTON_SLOT4        "./gui/colors/yellow.bmp"
-#define SRC_BUTTON_SLOT5        "./gui/colors/yellow.bmp"
+#define SRC_BUTTON_SLOT1        "./gui/colors/slot01.bmp"
+#define SRC_BUTTON_SLOT2        "./gui/colors/slot02.bmp"
+#define SRC_BUTTON_SLOT3        "./gui/colors/slot03.bmp"
+#define SRC_BUTTON_SLOT4        "./gui/colors/slot04.bmp"
+#define SRC_BUTTON_SLOT5        "./gui/colors/slot05.bmp"
 
 
 typedef enum PaneType {
