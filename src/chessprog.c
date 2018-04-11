@@ -1,14 +1,14 @@
-#include <stdio.h>
+#include <stdbool.h>
 #include "UIManager.h"
 #include "GameManager.h"
 
 
 int main(int argc, const char *argv[]) {
-    int toQuit = 0;
+    bool toQuit = false;
     GameManager *gameManager = GameManager_Create();
-    if (!gameManager) toQuit = 1;
+    if (!gameManager) toQuit = true;
     UIManager *uiManager = UIManager_Create(argc, argv);
-    if (!uiManager) toQuit = 1;
+    if (!uiManager) toQuit = true;
     GameCommand command;
     while (!toQuit) {
         if (gameManager->phase == GAME_PHASE_SETTINGS) {
