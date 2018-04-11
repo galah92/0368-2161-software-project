@@ -29,5 +29,5 @@ int main(int argc, const char *argv[]) {
     }
     UIManager_Destroy(uiManager);
     GameManager_Destroy(gameManager);
-    return false;
+    return 0;
 }
