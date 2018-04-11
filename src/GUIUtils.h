@@ -51,5 +51,4 @@ void Pane_Render(Pane *pane);
 
 void* Pane_HandleEvent(Pane *pane, SDL_Event *event, void *args);
 
-
 #endif
