@@ -1,7 +1,6 @@
 #ifndef ARRAY_STACK_H_
 #define ARRAY_STACK_H_
 
-#include <stdlib.h>
 #include <stddef.h>
 #include <stdbool.h>
 

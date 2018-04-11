@@ -45,7 +45,11 @@ GUIEngine* GUIEngine_Create() {
     GUIEngine *engine = malloc(sizeof(GUIEngine));
     if (!engine) return NULL;
     if (SDL_Init(SDL_INIT_VIDEO) < 0) return GUIEngine_Destroy(engine);
-    engine->window = SDL_CreateWindow("Chess", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_W, WINDOW_H, SDL_WINDOW_OPENGL);
+    engine->window = SDL_CreateWindow("Chess",
+                                      SDL_WINDOWPOS_CENTERED,
+                                      SDL_WINDOWPOS_CENTERED,
+                                      WINDOW_W, WINDOW_H,
+                                      SDL_WINDOW_OPENGL);
     if (!engine->window) return GUIEngine_Destroy(engine);
     engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_SOFTWARE);
     if (!engine->renderer) return GUIEngine_Destroy(engine);

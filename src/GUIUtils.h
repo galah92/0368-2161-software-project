@@ -19,7 +19,10 @@ Widget* Widget_Destroy(Widget *widget);
 
 typedef struct Button Button;
 
-Button* Button_Create(SDL_Renderer *renderer, const char *image, SDL_Rect location, void (*action)());
+Button* Button_Create(SDL_Renderer *renderer,
+                      const char *image,
+                      SDL_Rect location,
+                      void (*action)());
 
 Button* Button_Destroy(Button* button);
 
@@ -29,15 +32,19 @@ void Button_HandleEvent(Button *button, SDL_Event *event);
 
 // Pane widget
 
-// typedef struct Pane Pane;
+typedef struct Pane Pane;
 
-// Widget* Pane_Create(SDL_Renderer *renderer, Widget **buttons, unsigned int numOfButtons, SDL_Rect location, void (*action)());
+Pane* Pane_Create(SDL_Renderer *renderer,
+				  SDL_Rect location,
+				  Button **buttons,
+				  unsigned int numOfButtons,
+				  void (*action)());
 
-// Widget* Pane_Destroy(Widget* widget);
+Pane* Pane_Destroy(Pane* pane);
 
-// void Pane_Render(Widget *widget);
+void Pane_Render(Pane *pane);
 
-// void Pane_HandleEvent(Widget *widget, SDL_Event *event);
+void Pane_HandleEvent(Pane *pane, SDL_Event *event);
 
 typedef struct MainPane {
     Button *newGameBtn;
