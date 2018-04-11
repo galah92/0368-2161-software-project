@@ -228,6 +228,12 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
     switch (command.type) {
         case GAME_COMMAND_MOVE:
             handleMove(manager, command);
+            // check mate 
+            // if (isKingThreatenedBy(manager->game, !manager->game->turn))){
+            //     GameCommand command = {.type = GAME_COMMAND_GET_MOVES,.args={}};
+            //     handleGetMoves(manager, command);
+            //     manager->phase = 
+            // }
             break;
         case GAME_COMMAND_GET_MOVES:
             handleGetMoves(manager, command);

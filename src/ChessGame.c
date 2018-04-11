@@ -140,13 +140,40 @@ bool isValidKnightMove(ChessGame *game, ChessMove move) {
 bool isValidBishopMove(ChessGame *game, ChessMove move) {
     int horAbs = abs(move.from.x - move.to.x);
     int verAbs = abs(move.from.y - move.to.y);
-    if (horAbs != verAbs) return false;
-    int startX = move.from.x < move.to.x ? move.from.x + 1 : move.to.x + 1;
-    int startY = move.from.y < move.to.y ? move.from.y + 1 : move.to.y + 1;
-    int endX = startX == move.from.x + 1 ? move.to.x : move.from.x;
-    // int endY = startY == move.from.y + 1 ? move.to.y : move.from.y;
-    for (int i = startX, j = startY ; i < endX ; i++, j++){
+    if (horAbs != verAbs || !horAbs) return false;
+    if (horAbs == 1 && getPieceColor(game->board[move.to.x][move.to.y]) != game->turn) return true;
+    // int startX = move.from.x < move.to.x ? move.from.x : move.to.x;
+    // int endX   = move.from.x < move.to.x ? move.to.x : move.from.x;
+    // int startY = move.from.y < move.to.y ? move.from.y : move.to.y;
+    // int endY   = move.from.y < move.to.y ? move.to.y : move.from.y;
+    // for (int i = startX, j = startY ; i <= endX ;){
+    //     if (game->board[i][j] != CHESS_PIECE_NONE) return false;
+    //     i += move.from.x < move.to.x ? 1 : -1;
+    //     j += move.from.y < move.to.y ? 1 : -1; 
+    // }
+    bool rightup   = (move.from.x < move.to.x) && (move.from.y < move.to.y);
+    bool leftup    = (move.from.x > move.to.x) && (move.from.y < move.to.y);
+    bool rightdown = (move.from.x < move.to.x) && (move.from.y > move.to.y);
+    bool leftdown  = (move.from.x > move.to.x) && (move.from.y > move.to.y);
+    int startx, starty, endx;
+    if (rightup || rightdown){
+        startx = move.from.x + 1;
+        endx = move.to.x;
+        if (rightup) starty = move.from.y + 1;
+        else starty = move.from.y - 1;
+    } else {
+        startx = move.to.x + 1;
+        endx = move.from.x;
+        if (leftup) starty = move.to.y - 1;
+        else starty = move.to.y + 1;
+    }
+
+    for (int i = startx, j = starty; i < endx;){
         if (game->board[i][j] != CHESS_PIECE_NONE) return false;
+        if (rightup){i++; j++;}
+        if (leftup){i++; j--;}
+        if (rightdown){i++; j--;}
+        if (leftdown){i++; j++;}
     }
     return true;
 }
