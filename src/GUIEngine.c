@@ -50,28 +50,68 @@ struct GUIEngine {
     SDL_Event event;
     PaneType paneType;
     PaneType backPaneType;
-    Pane *mainPane;
-    Pane *settingsPane;
-    Pane *loadPane;
+    Pane *pane;
 };
 
-void pseudoRender(GUIEngine *engine) {
-    SDL_RenderClear(engine->renderer);
-    SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
-    switch (engine->paneType) {
-        case PANE_TYPE_MAIN:
-            Pane_Render(engine->mainPane);
-            break;
-        case PANE_TYPE_SETTINGS:
-            Pane_Render(engine->settingsPane);
-            break;
-        case PANE_TYPE_LOAD:
-            Pane_Render(engine->loadPane);
-            break;
-        default:
-            break;
-    }
-    SDL_RenderPresent(engine->renderer);
+typedef enum GUICommandType {
+    GUI_COMMAND_NONE,
+    GUI_COMMAND_SWITCH_PANE,
+    GUI_COMMAND_GAME_COMMAND,
+} GUICommandType;
+
+typedef struct GUICommand {
+    GUICommandType type;
+    PaneType paneType;
+    GameCommand gameCommand;
+} GUICommand;
+
+void* handleNewGameButton(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->type = GUI_COMMAND_SWITCH_PANE;
+    guiCommand->paneType = PANE_TYPE_SETTINGS;
+    return NULL;
+}
+
+void* handleLoadButton(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->type = GUI_COMMAND_SWITCH_PANE;
+    guiCommand->paneType = PANE_TYPE_LOAD;
+    return NULL;
+}
+
+void* handleQuitButton(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_QUIT;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+
+void* handleBackButton(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->type = GUI_COMMAND_SWITCH_PANE;
+    guiCommand->paneType = PANE_TYPE_MAIN;
+    return NULL;
+}
+
+void* handleStartButton(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_START;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+
+void* handleRestartButton(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_RESET;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+
+void* handleUndoButton(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_UNDO;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
 }
 
 Pane* MainPane_Create(SDL_Renderer *renderer) {
@@ -79,15 +119,15 @@ Pane* MainPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_NEW_GAME,
                       (SDL_Rect){ .x = 25, .y = 25, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleNewGameButton),
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleLoadButton),
         Button_Create(renderer,
                       SRC_BUTTON_QUIT,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleQuitButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
@@ -113,11 +153,11 @@ Pane* SettingsPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_BACK,
                       (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleBackButton),
         Button_Create(renderer,
                       SRC_BUTTON_START,
                       (SDL_Rect){ .x = 25, .y = 325, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleStartButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
@@ -131,7 +171,7 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_BACK,
                       (SDL_Rect){ .x = 25, .y = 25, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleBackButton),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT1,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
@@ -164,6 +204,47 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
                        NULL);
 }
 
+Pane* GamePane_Create(SDL_Renderer *renderer) {
+    Button *buttons[] = {
+        Button_Create(renderer,
+                      SRC_BUTTON_RESTART,
+                      (SDL_Rect){ .x = 25, .y = 25, .w = BUTTON_W, .h = BUTTON_H },
+                      handleRestartButton),
+        Button_Create(renderer,
+                      SRC_BUTTON_SAVE,
+                      (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL),
+        Button_Create(renderer,
+                      SRC_BUTTON_LOAD,
+                      (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
+                      handleLoadButton),
+        Button_Create(renderer,
+                      SRC_BUTTON_UNDO,
+                      (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },
+                      handleUndoButton),
+        Button_Create(renderer,
+                      SRC_BUTTON_MAIN_MENU,
+                      (SDL_Rect){ .x = 25, .y = 325, .w = BUTTON_W, .h = BUTTON_H },
+                      handleBackButton),
+        Button_Create(renderer,
+                      SRC_BUTTON_QUIT,
+                      (SDL_Rect){ .x = 25, .y = 400, .w = BUTTON_W, .h = BUTTON_H },
+                      handleQuitButton),
+    };
+    return Pane_Create(renderer,
+                       (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
+                       buttons,
+                       6,
+                       NULL);
+}
+
+void pseudoRender(GUIEngine *engine) {
+    SDL_RenderClear(engine->renderer);
+    SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
+    Pane_Render(engine->pane);
+    SDL_RenderPresent(engine->renderer);
+}
+
 GUIEngine* GUIEngine_Create() {
     GUIEngine *engine = malloc(sizeof(GUIEngine));
     if (!engine) return NULL;
@@ -182,10 +263,8 @@ GUIEngine* GUIEngine_Create() {
 	engine->bgTexture = SDL_CreateTextureFromSurface(engine->renderer, boardSurface);
 	if (!engine->bgTexture) return GUIEngine_Destroy(engine);
 	SDL_FreeSurface(boardSurface);
-    engine->mainPane = MainPane_Create(engine->renderer);
-    engine->settingsPane = SettingsPane_Create(engine->renderer);
-    engine->loadPane = LoadPane_Create(engine->renderer);
-    engine->paneType = PANE_TYPE_LOAD;
+    engine->paneType = PANE_TYPE_MAIN;
+    engine->pane = MainPane_Create(engine->renderer);
     pseudoRender(engine);
     return engine;
 }
@@ -194,9 +273,7 @@ GUIEngine* GUIEngine_Destroy(GUIEngine *engine) {
     const char *error = SDL_GetError();
     if (strcmp(error, "")) printf(SDL_ERROR_STRING, error);
     if (!engine) return NULL;
-    Pane_Destroy(engine->mainPane);
-    Pane_Destroy(engine->settingsPane);
-    Pane_Destroy(engine->loadPane);
+    Pane_Destroy(engine->pane);
     if (!engine->bgTexture) SDL_DestroyTexture(engine->bgTexture);
     if (!engine->renderer) SDL_DestroyRenderer(engine->renderer);
     if (!engine->window) SDL_DestroyWindow(engine->window);
@@ -219,38 +296,53 @@ bool isExitButtonEvent(SDL_Event *event) {
     return false;
 }
 
-typedef enum GUICommandType {
-    GUI_COMMAND_NONE,
-    GUI_COMMAND_MAIN_PANE,
-    GUI_COMMAND_NEW_GAME_PANE,
-    GUI_COMMAND_LOAD_PANE,
-    GUI_COMMAND_GAME_COMMAND,
-} GUICommandType;
+void updatePane(GUIEngine *engine, PaneType type) {
+    switch (type) {
+        case PANE_TYPE_MAIN:
+            Pane_Destroy(engine->pane);
+            engine->pane = MainPane_Create(engine->renderer);
+            engine->paneType = PANE_TYPE_MAIN;
+            break;
+        case PANE_TYPE_SETTINGS:
+            Pane_Destroy(engine->pane);
+            engine->pane = SettingsPane_Create(engine->renderer);
+            engine->paneType = PANE_TYPE_SETTINGS;
+            break;
+        case PANE_TYPE_LOAD:
+            Pane_Destroy(engine->pane);
+            engine->pane = LoadPane_Create(engine->renderer);
+            engine->paneType = PANE_TYPE_LOAD;
+            break;
+        case PANE_TYPE_GAME:
+            Pane_Destroy(engine->pane);
+            engine->pane = GamePane_Create(engine->renderer);
+            engine->paneType = PANE_TYPE_GAME;
+            break;
+        default:
+            break;
+    }
+}
 
 GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
-    GameCommand command = { .type = GAME_COMMAND_INVALID };
-    if (!engine) return command;
-    // GUICommandType guiCommand = GUI_COMMAND_NONE;
+    GUICommand guiCommand = { .type = GUI_COMMAND_NONE };
+    guiCommand.gameCommand = (GameCommand){ .type = GAME_COMMAND_INVALID };
+    if (!engine) return guiCommand.gameCommand;
     while (true) {
         SDL_WaitEvent(&engine->event);
         if (isExitButtonEvent(&engine->event)) {
-            command.type = GAME_COMMAND_QUIT;
-            return command;
+            guiCommand.gameCommand.type = GAME_COMMAND_QUIT;
+            return guiCommand.gameCommand;
         }
-        switch (engine->paneType) {
-            case PANE_TYPE_MAIN:
-                Pane_HandleEvent(engine->mainPane, &engine->event);
-                break;
-            case PANE_TYPE_SETTINGS:
-                Pane_HandleEvent(engine->settingsPane, &engine->event);
-                break;
-            case PANE_TYPE_LOAD:
-                Pane_HandleEvent(engine->loadPane, &engine->event);
-                break;
+        Pane_HandleEvent(engine->pane, &engine->event, &guiCommand);
+        pseudoRender(engine);
+        switch (guiCommand.type) {
+            case GUI_COMMAND_GAME_COMMAND:
+                return guiCommand.gameCommand;
+            case GUI_COMMAND_SWITCH_PANE:
+                updatePane(engine, guiCommand.paneType);
             default:
                 break;
         }
-        pseudoRender(engine);
     }
 }
 

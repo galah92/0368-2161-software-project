@@ -2,40 +2,17 @@
 #include "GUIUtils.h"
 
 
-struct Widget {
-	void *data;
-	void *renderer;
-	void (*render)(Widget *widget);
-	void (*handleEvent)(Widget *widget, SDL_Event *event);
-	Widget* (*destroy)(Widget *widget);
-};
-
-void Widget_Render(Widget *widget) {
-	if (!widget || !widget->render) return;
-	widget->render(widget);
-}
-
-void Widget_HandleEvent(Widget *widget, SDL_Event *event) {
-	if (!widget || !widget->handleEvent) return;
-	widget->handleEvent(widget, event);
-}
-
-Widget* Widget_Destroy(Widget *widget) {
-	if (!widget) return NULL;
-	return widget->destroy(widget);
-}
-
 struct Button {
 	SDL_Renderer *renderer;
 	SDL_Texture *texture;
 	SDL_Rect location;
-	void (*action)();
+	void* (*action)(void*);
 };
 
 Button* Button_Create(SDL_Renderer *renderer,
 					  const char *image,
 					  SDL_Rect location,
-					  void (*action)()) {
+					  void* (*action)(void*)) {
 	Button *button = malloc(sizeof(Button));
     if (!button) return Button_Destroy(button);
 	SDL_Surface *surface = SDL_LoadBMP(image);
@@ -61,14 +38,64 @@ void Button_Render(Button *button) {
 	SDL_RenderCopy(button->renderer, button->texture, NULL, &button->location);
 }
 
-void Button_HandleEvent(Button *button, SDL_Event *event) {
-	if (!button) return;
+void* Button_HandleEvent(Button *button, SDL_Event *event, void *args) {
+	if (!button) return NULL;
 	if (event->type == SDL_MOUSEBUTTONUP) {
 		SDL_Point point = { .x = event->button.x, .y = event->button.y };
 		if (SDL_PointInRect(&point, &button->location) && button->action) {
-			button->action();
+			return button->action(args);
 		}
 	}
+	return NULL;
+}
+
+struct Tile {
+	SDL_Renderer *renderer;
+	SDL_Texture *texture;
+	SDL_Rect location;
+	void* (*action)();
+};
+
+Tile* Tile_Create(SDL_Renderer *renderer,
+					  const char *image,
+					  SDL_Rect location,
+					  void* (*action)()) {
+	Tile *tile = malloc(sizeof(Tile));
+    if (!tile) return Tile_Destroy(tile);
+	SDL_Surface *surface = SDL_LoadBMP(image);
+    if (!surface) return Tile_Destroy(tile);
+	tile->texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!tile->texture) return Tile_Destroy(tile);
+	SDL_FreeSurface(surface);
+	tile->renderer = renderer;
+	tile->location = location;
+	tile->action = action;
+	return tile;
+}
+
+Tile* Tile_Destroy(Tile* tile) {
+    if (!tile) return NULL;
+	if (tile->texture) SDL_DestroyTexture(tile->texture);
+	free(tile);
+    return NULL;
+}
+
+void Tile_Render(Tile *tile) {
+	if (!tile) return;
+	SDL_RenderCopy(tile->renderer, tile->texture, NULL, &tile->location);
+}
+
+void* Tile_HandleEvent(Tile *tile, SDL_Event *event) {
+	if (!tile) return NULL;
+	if (event->type == SDL_MOUSEBUTTONUP) {
+		SDL_Point point = { .x = event->button.x, .y = event->button.y };
+		if (SDL_PointInRect(&point, &tile->location) && tile->action) {
+			tile->location.x = point.x;
+			tile->location.y = point.y;
+			return tile->action();
+		}
+	}
+	return NULL;
 }
 
 struct Pane {
@@ -76,14 +103,14 @@ struct Pane {
 	SDL_Rect location;
 	Button **buttons;
 	unsigned int numOfButtons;
-	void (*action)();
+	void* (*action)(void*);
 };
 
 Pane* Pane_Create(SDL_Renderer *renderer,
 				  SDL_Rect location,
 				  Button **buttons,
 				  unsigned int numOfButtons,
-				  void (*action)()) {
+				  void* (*action)(void*)) {
 	Pane *pane = malloc(sizeof(Pane));
     if (!pane) return Pane_Destroy(pane);
 	pane->buttons = malloc(sizeof(Button) * numOfButtons);
@@ -112,9 +139,12 @@ void Pane_Render(Pane *pane) {
 	}
 }
 
-void Pane_HandleEvent(Pane *pane, SDL_Event *event) {
-	if (!pane) return;
+void* Pane_HandleEvent(Pane *pane, SDL_Event *event, void *args) {
+	if (!pane) return NULL;
+	void *result;
 	for (unsigned int i = 0; i < pane->numOfButtons; i++) {
-		Button_HandleEvent(pane->buttons[i], event);
+		result = Button_HandleEvent(pane->buttons[i], event, args);
+		if (result) return result;
 	}
+	return NULL;
 }
