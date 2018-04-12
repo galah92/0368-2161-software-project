@@ -288,22 +288,27 @@ GamePlayerType GameManager_GetCurrentPlayerType(GameManager *manager) {
 int getPieceScore(ChessPiece piece) {
     switch (piece) {
         case CHESS_PIECE_WHITE_PAWN:
-        case CHESS_PIECE_BLACK_PAWN:
             return 1;
+        case CHESS_PIECE_BLACK_PAWN:
+            return -1;
         case CHESS_PIECE_WHITE_KNIGHT:
-        case CHESS_PIECE_BLACK_KNIGHT:
         case CHESS_PIECE_WHITE_BISHOP:
-        case CHESS_PIECE_BLACK_BISHOP:
             return 3;
+        case CHESS_PIECE_BLACK_KNIGHT:
+        case CHESS_PIECE_BLACK_BISHOP:
+            return -3;
         case CHESS_PIECE_WHITE_ROOK:
-        case CHESS_PIECE_BLACK_ROOK:
             return 5;
+        case CHESS_PIECE_BLACK_ROOK:
+            return -5;
         case CHESS_PIECE_WHITE_QUEEN:
-        case CHESS_PIECE_BLACK_QUEEN:
             return 9;
+        case CHESS_PIECE_BLACK_QUEEN:
+            return -9;
         case CHESS_PIECE_WHITE_KING:
-        case CHESS_PIECE_BLACK_KING:
             return 100;
+        case CHESS_PIECE_BLACK_KING:
+            return -100;
         case CHESS_PIECE_NONE:
         default:
             return 0;
@@ -329,23 +334,17 @@ int getBoardScore(ChessGame *game) {
             break;
     }
     int score = 0;
-    ChessColor color;
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
-            ChessGame_GetPieceColor(game->board[i][j], &color);
-            if (color != CHESS_PLAYER_COLOR_NONE)
-            score += (color == game->turn ? -1 : 1) * getPieceScore(game->board[i][j]);
+            score += getPieceScore(game->board[i][j]);
         }
     }
     return score;
 }
 
 // TODO: add pruning
-int minimax(ChessGame *game, int depth, bool isMaximizing, int alpha, int beta, ChessMove *bestMove) {
+int minimax(ChessGame *game, int depth, int alpha, int beta, ChessMove *bestMove) {
     if (depth == 0) return getBoardScore(game);
-    // int bestScore = isMaximizing ? INT_MIN : INT_MAX;
-    // alpha = INT_MIN;
-    // beta = INT_MAX;
     int moveScore;
     ChessMove move;
     ChessMove tempMove; // only here as a garbage pointer - need to find a better way
@@ -361,37 +360,28 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, int alpha, int beta, 
             while (!ArrayStack_IsEmpty(positions)) {
                 move.to = *(ChessPos *)ArrayStack_PopLeft(positions);
                 ChessGame_DoMove(gameCopy, move);
-                moveScore = minimax(gameCopy, depth - 1, !isMaximizing, alpha, beta, &tempMove);
-                // if ((isMaximizing && moveScore > bestScore)
-                //     || (!isMaximizing && moveScore < bestScore)) {
-                //     memcpy(bestMove, &move, sizeof(ChessMove));
-                //     bestScore = moveScore;
-                // }
-                if (isMaximizing){
-                    if (moveScore > alpha){
-                        alpha = moveScore;
-                        memcpy(bestMove, &move, sizeof(ChessMove));
-                    }
+                moveScore = minimax(gameCopy, depth - 1, alpha, beta, &tempMove);
+                if (game->turn == CHESS_PLAYER_COLOR_WHITE && moveScore > alpha) {
+                    alpha = moveScore;
+                    memcpy(bestMove, &move, sizeof(ChessMove));
                 } else if (moveScore < beta) {
-                        beta = moveScore;
-                        memcpy(bestMove, &move, sizeof(ChessMove));
+                    beta = moveScore;
+                    memcpy(bestMove, &move, sizeof(ChessMove));
                 }
                 ChessGame_UndoMove(gameCopy, &move);
-                if (beta < alpha)
-                    break; // pruning
+                if (beta < alpha) break; // pruning
             }
-            
             ChessGame_Destroy(gameCopy);
-            }
+        }
     }
     ArrayStack_Destroy(positions);
-    return isMaximizing ? alpha : beta;
+    return game->turn == CHESS_PLAYER_COLOR_WHITE ? alpha : beta;
 }
 
 GameCommand GameManager_GetAIMove(GameManager *manager) {
     GameCommand command = { .type = GAME_COMMAND_MOVE };
     ChessMove move;
-    minimax(manager->game, manager->game->difficulty, true, ALPHA, BETA, &move);
+    minimax(manager->game, manager->game->difficulty, ALPHA, BETA, &move);
     command.args[1] = move.from.x + 'A';
     command.args[0] = move.from.y + 1;
     command.args[3] = move.to.x + 'A';
