@@ -57,6 +57,7 @@ Tile* Tile_Create(SDL_Renderer *renderer,
     if (!surface) return Tile_Destroy(tile);
     tile->texture = SDL_CreateTextureFromSurface(renderer, surface);
     if (!tile->texture) return Tile_Destroy(tile);
+    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 255, 255, 255));
     SDL_FreeSurface(surface);
     tile->renderer = renderer;
     tile->location = location;
@@ -75,6 +76,7 @@ void Tile_SetImage(Tile *tile, const char *image) {
     if (!tile) return;
     SDL_Surface *surface = SDL_LoadBMP(image);
     tile->texture = SDL_CreateTextureFromSurface(tile->renderer, surface);
+    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 255, 255, 255));
     SDL_FreeSurface(surface);
 }
 
@@ -155,7 +157,6 @@ char* pieceToSrcImage(ChessPiece piece) {
 
 void Board_Render(Board *board, const ChessGame *game) {
     if (!board) return;
-    if (game) printf("%c\n", game->board[0][0]);
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             if (game) {

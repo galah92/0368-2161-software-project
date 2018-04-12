@@ -316,6 +316,7 @@ GUIEngine* GUIEngine_Create() {
     if (!engine->window) return GUIEngine_Destroy(engine);
     engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_SOFTWARE);
     if (!engine->renderer) return GUIEngine_Destroy(engine);
+    SDL_SetRenderDrawBlendMode(engine->renderer, SDL_BLENDMODE_BLEND);
     SDL_Surface* boardSurface = SDL_LoadBMP(SRC_BACKGROUND);
     if (!boardSurface) return GUIEngine_Destroy(engine);
     engine->bgTexture = SDL_CreateTextureFromSurface(engine->renderer, boardSurface);
