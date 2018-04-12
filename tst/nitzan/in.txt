@@ -1,0 +1,55 @@
+start
+game_mode
+game_mode 1
+game_mode 2
+difficulty 5
+game_mode 1
+difficulty 5
+difficulty 3
+difficulty 4
+difficulty 2
+difficulty 1
+difficulty 0
+user_color 0
+user_color 1
+user_color 2
+ print_settings
+default
+print_settings
+user_color 0
+start
+move <7,B> to <5,B>
+undo
+undo
+move <7,B> to <5,B>
+get_moves <7,C>
+move <7,C> to <5,C>
+move <7,D> to <6,D>
+move <8,E> to <7,D>
+move <7,D> to <6,E>
+move <6,E> to <5,D>
+move <5,D> to <4,D>
+move <5,D> to <4,C>
+move <4,C> to <4,B>
+move <4,B> to <3,A>
+move <5,C> to <4,C>
+move <4,C> to <3,C>
+move <4,B> to <3,B>
+move <4,B> to <4,C>
+move <4,B> to <4,C>
+move <4,C> to <3,C>
+get_moves <4,C>
+move <4,C> to <5,D>
+get_moves <4,C>
+get_moves <5,D>
+move <5,D> to <4,C>
+get_moves <4,C>
+move <4,C> to <5,C>
+undo
+undo
+undo
+undo
+save ttt
+reset
+print_settings
+quit

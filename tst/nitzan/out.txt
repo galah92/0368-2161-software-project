@@ -1,0 +1,334 @@
+ Chess
+-------
+Specify game settings or type 'start' to begin a game with the current settings:
+Wrong game mode
+Game mode is set to 1-player
+Game mode is set to 2-player
+ERROR: invalid command
+Game mode is set to 1-player
+Difficulty level is set to expert
+Difficulty level is set to moderate
+Difficulty level is set to hard
+Difficulty level is set to easy
+Difficulty level is set to amateur
+Wrong difficulty level. The value should be between 1 to 5
+User color is set to black
+User color is set to white
+Wrong user color. The value should be 0 or 1
+SETTINGS:
+GAME_MODE: 1-player
+DIFFICULTY: amateur
+USER_COLOR: white
+All settings reset to default
+SETTINGS:
+GAME_MODE: 1-player
+DIFFICULTY: easy
+USER_COLOR: white
+User color is set to black
+Computer: move knight at <1,B> to <3,C>
+8| R N B Q K B N R |
+7| M M M M M M M M |
+6| _ _ _ _ _ _ _ _ |
+5| _ _ _ _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ n _ _ _ _ _ |
+2| m m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Computer: move knight at <3,C> to <5,B>
+8| R N B Q K B N R |
+7| M _ M M M M M M |
+6| _ _ _ _ _ _ _ _ |
+5| _ n _ _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Undo move for white player: <5,B> -> <3,C>
+Undo move for black player: <5,B> -> <7,B>
+8| R N B Q K B N R |
+7| M M M M M M M M |
+6| _ _ _ _ _ _ _ _ |
+5| _ _ _ _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ n _ _ _ _ _ |
+2| m m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Undo move for white player: <3,C> -> <1,B>
+8| R N B Q K B N R |
+7| M M M M M M M M |
+6| _ _ _ _ _ _ _ _ |
+5| _ _ _ _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| r n b q k b n r |
+  -----------------
+   A B C D E F G H
+Computer: move knight at <1,B> to <3,C>
+8| R N B Q K B N R |
+7| M M M M M M M M |
+6| _ _ _ _ _ _ _ _ |
+5| _ _ _ _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ n _ _ _ _ _ |
+2| m m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Computer: move knight at <3,C> to <5,B>
+8| R N B Q K B N R |
+7| M _ M M M M M M |
+6| _ _ _ _ _ _ _ _ |
+5| _ n _ _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+<6,C>
+<5,C>
+Enter your move (black player):
+Computer: move rook at <1,A> to <1,B>
+8| R N B Q K B N R |
+7| M _ _ M M M M M |
+6| _ _ _ _ _ _ _ _ |
+5| _ n M _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| _ r b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Computer: move rook at <1,B> to <1,A>
+8| R N B Q K B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n M _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Computer: move rook at <1,A> to <1,B>
+8| R N B Q _ B N R |
+7| M _ _ K M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n M _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| _ r b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Computer: move rook at <1,B> to <1,A>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M K _ _ _ |
+5| _ n M _ _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Computer: move rook at <1,A> to <1,B>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n M K _ _ _ _ |
+4| _ _ _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| m m m m m m m m |
+1| _ r b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Illegal move: king will be threatened
+Enter your move (black player):
+Computer: move pawn at <2,A> to <4,A>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n M _ _ _ _ _ |
+4| m _ K _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| _ m m m m m m m |
+1| _ r b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Computer: move rook at <1,B> to <1,A>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n M _ _ _ _ _ |
+4| m K _ _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| _ m m m m m m m |
+1| r _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Illegal move: king will be threatened
+Enter your move (black player):
+Computer: move rook at <1,A> to <2,A>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n _ _ _ _ _ _ |
+4| m K M _ _ _ _ _ |
+3| _ _ _ _ _ _ _ _ |
+2| r m m m m m m m |
+1| _ _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Computer: move pawn at <2,B> to <3,C>
+Check: black king is threatened
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n _ _ _ _ _ _ |
+4| m K _ _ _ _ _ _ |
+3| _ _ m _ _ _ _ _ |
+2| r _ m m m m m m |
+1| _ _ b q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Illegal move: king is still threatened
+Enter your move (black player):
+Computer: move bishop at <1,C> to <2,B>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n _ _ _ _ _ _ |
+4| m _ K _ _ _ _ _ |
+3| _ _ m _ _ _ _ _ |
+2| r b m m m m m m |
+1| _ _ _ q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+The specified position does not contain your piece
+Enter your move (black player):
+Illegal move: king will be threatened
+Enter your move (black player):
+<5,D>
+<5,C>
+Enter your move (black player):
+Computer: move queen at <1,D> to <1,C>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n _ K _ _ _ _ |
+4| m _ _ _ _ _ _ _ |
+3| _ _ m _ _ _ _ _ |
+2| r b m m m m m m |
+1| _ _ q _ k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+The specified position does not contain a player piece
+Enter your move (black player):
+<6,E>
+<5,E>
+<4,E>
+<6,C>
+<5,C>
+<4,C>
+Enter your move (black player):
+Computer: move queen at <1,C> to <1,D>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n _ _ _ _ _ _ |
+4| m _ K _ _ _ _ _ |
+3| _ _ m _ _ _ _ _ |
+2| r b m m m m m m |
+1| _ _ _ q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+<5,D>
+<5,C>
+Enter your move (black player):
+Computer: move queen at <1,D> to <1,C>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n K _ _ _ _ _ |
+4| m _ _ _ _ _ _ _ |
+3| _ _ m _ _ _ _ _ |
+2| r b m m m m m m |
+1| _ _ q _ k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Undo move for white player: <1,C> -> <1,D>
+Undo move for black player: <5,C> -> <4,C>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n _ _ _ _ _ _ |
+4| m _ K _ _ _ _ _ |
+3| _ _ m _ _ _ _ _ |
+2| r b m m m m m m |
+1| _ _ _ q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Undo move for white player: <1,D> -> <1,C>
+Undo move for black player: <4,C> -> <5,D>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n _ K _ _ _ _ |
+4| m _ _ _ _ _ _ _ |
+3| _ _ m _ _ _ _ _ |
+2| r b m m m m m m |
+1| _ _ q _ k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Undo move for white player: <1,C> -> <1,D>
+Undo move for black player: <5,D> -> <4,C>
+8| R N B Q _ B N R |
+7| M _ _ _ M M M M |
+6| _ _ _ M _ _ _ _ |
+5| _ n _ _ _ _ _ _ |
+4| m _ K _ _ _ _ _ |
+3| _ _ m _ _ _ _ _ |
+2| r b m m m m m m |
+1| _ _ _ q k b n r |
+  -----------------
+   A B C D E F G H
+Enter your move (black player):
+Empty history, no move to undo
+Enter your move (black player):
+Game saved to: ttt
+Enter your move (black player):
+Restarting...
+Specify game settings or type 'start' to begin a game with the current settings:
+SETTINGS:
+GAME_MODE: 1-player
+DIFFICULTY: easy
+USER_COLOR: black
+Exiting...
