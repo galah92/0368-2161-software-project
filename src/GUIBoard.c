@@ -55,9 +55,9 @@ Tile* Tile_Create(SDL_Renderer *renderer,
     if (!tile) return Tile_Destroy(tile);
     SDL_Surface *surface = SDL_LoadBMP(image);
     if (!surface) return Tile_Destroy(tile);
+    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 255, 255, 255));
     tile->texture = SDL_CreateTextureFromSurface(renderer, surface);
     if (!tile->texture) return Tile_Destroy(tile);
-    SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 255, 255, 255));
     SDL_FreeSurface(surface);
     tile->renderer = renderer;
     tile->location = location;
@@ -75,8 +75,8 @@ Tile* Tile_Destroy(Tile* tile) {
 void Tile_SetImage(Tile *tile, const char *image) {
     if (!tile) return;
     SDL_Surface *surface = SDL_LoadBMP(image);
-    tile->texture = SDL_CreateTextureFromSurface(tile->renderer, surface);
     SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 255, 255, 255));
+    tile->texture = SDL_CreateTextureFromSurface(tile->renderer, surface);
     SDL_FreeSurface(surface);
 }
 
