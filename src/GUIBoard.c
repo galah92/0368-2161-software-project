@@ -18,9 +18,9 @@
 #define SRC_PIECE_BLACK_QUEEN   "./gui/pieces/QUEEN_B.bmp"
 #define SRC_PIECE_BLACK_KING    "./gui/pieces/KING_B.bmp"
 #define BOARD_X                 (279)
-#define BOARD_Y                 (30)
-#define BOARD_S                 (710)
-#define TILE_S                  (BOARD_S / CHESS_GRID)
+#define BOARD_Y                 (27)
+#define BOARD_S                 (711)
+#define TILE_S                  (89)
 
 
 // Tile widget
