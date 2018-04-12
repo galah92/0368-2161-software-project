@@ -28,11 +28,18 @@ void CLIEngine_Destroy(CLIEngine *engine);
 GameCommand CLIEngine_ProcessInput(CLIEngine *engine);
 
 /**
+ * Output to CLI an error if one exists.
+ * @param   engine      the instance to use
+ * @param   gameState   the gameState to output
+ */
+void CLIEngine_RenderError(const GameManager *manager);
+
+/**
  * Output to CLI the current game state.
  * @param   engine      the instance to use
  * @param   gameState   the gameState to output
  */
-void CLIEngine_Render(CLIEngine *engine, const GameManager *manager, GameCommand command);
+void CLIEngine_Render(const GameManager *manager, GameCommand command);
 
 
 #endif

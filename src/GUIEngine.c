@@ -72,7 +72,7 @@ void* handleNewGameButton(void *args) {
     return NULL;
 }
 
-void* handleLoadButton(void *args) {
+void* handleLoadPaneButton(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
     guiCommand->type = GUI_COMMAND_SWITCH_PANE;
     guiCommand->paneType = PANE_TYPE_LOAD;
@@ -107,6 +107,14 @@ void* handleRestartButton(void *args) {
     return NULL;
 }
 
+void* handleLoadButton(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
+    strcpy(guiCommand->gameCommand.path, "slot1.save");
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+
 void* handleUndoButton(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
     guiCommand->gameCommand.type = GAME_COMMAND_UNDO;
@@ -123,7 +131,7 @@ Pane* MainPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
-                      handleLoadButton),
+                      handleLoadPaneButton),
         Button_Create(renderer,
                       SRC_BUTTON_QUIT,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
@@ -195,7 +203,7 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 475, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleLoadButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
@@ -217,7 +225,7 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
-                      handleLoadButton),
+                      handleLoadPaneButton),
         Button_Create(renderer,
                       SRC_BUTTON_UNDO,
                       (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },

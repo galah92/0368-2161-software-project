@@ -196,20 +196,16 @@ static const struct GameErrorToString {
     { GAME_ERROR_EMPTY_HISTORY, "Empty history, no move to undo\n" },
 };
 
-void handleError(const GameManager *manager) {
+void CLIEngine_RenderError(const GameManager *manager) {
+    if (!manager) return;
     printf("%s", GameErrorToString[manager->error].string);
     if (manager->error >= GAME_ERROR_INVALID_POSITION || (manager->error == GAME_ERROR_INVALID_COMMAND && manager->phase == GAME_PHASE_RUNNING)) {
         printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
     }
 }
 
-void CLIEngine_Render(CLIEngine *this, const GameManager *manager, GameCommand command) {
-    (void)this;
-    if (!manager) return;
-    if (manager->error != GAME_ERROR_NONE) {
-        handleError(manager);
-        return;
-    }
+void CLIEngine_Render(const GameManager *manager, GameCommand command) {
+    if (!manager || manager->error != GAME_ERROR_NONE) return;
     ChessPos *pos;
     ChessMove *move;
     switch(command.type) {

@@ -51,9 +51,10 @@ GameCommand UIManager_ProcessInput(UIManager *uiManager) {
 
 void UIManager_Render(UIManager *uiManager, const GameManager *manager, GameCommand command) {
     if (!uiManager) return;
+    CLIEngine_RenderError(manager);
     if (uiManager->type == UI_TYPE_GUI) {
         GUIEngine_Render(uiManager->guiEngine, manager, command);
     } else {
-        CLIEngine_Render(uiManager->cliEngine, manager, command);
+        CLIEngine_Render(manager, command);
     }
 }
