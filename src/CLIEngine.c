@@ -224,6 +224,7 @@ void CLIEngine_Render(const GameManager *manager, GameCommand command) {
     }
     ChessPos *pos;
     ChessMove *move;
+    bool isAIMove;
     switch(command.type) {
         case GAME_COMMAND_GAME_MODE:
             printf(MSG_GAME_MODE, manager->game->mode, "-player");
@@ -310,14 +311,16 @@ void CLIEngine_Render(const GameManager *manager, GameCommand command) {
             break;
         case GAME_COMMAND_SAVE:
             printf(MSG_GAME_SAVED, command.path);
+            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             break;
         case GAME_COMMAND_UNDO:
+            isAIMove = ArrayStack_Size(manager->moves) == 1;
             while (!ArrayStack_IsEmpty(manager->moves)) {
                 move = ArrayStack_Pop(manager->moves);
                 printf(MSG_UNDO_MOVE, ChessColorToString[move->player].string, move->to.y + 1 ,move->to.x + 'A', move->from.y + 1 ,move->from.x + 'A');
             }
             GameManager_BoardToStream(manager, stdout);
-            printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+            if (!isAIMove) printf(MSG_MAKE_MOVE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
             break;
         case GAME_COMMAND_RESET:
             printf(MSG_RESTART);

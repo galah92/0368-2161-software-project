@@ -215,12 +215,10 @@ void handleUndoMove(GameManager *manager) {
         manager->error = GAME_ERROR_EMPTY_HISTORY;
         return;
     }
-    if (manager->game->mode == CHESS_MODE_1_PLAYER) {
-        res = ChessGame_UndoMove(manager->game, &secondUndoneMove);
-        if (res != CHESS_EMPTY_HISTORY) {
-            ArrayStack_Push(manager->moves, &secondUndoneMove);
+    res = ChessGame_UndoMove(manager->game, &secondUndoneMove);
+    if (res != CHESS_EMPTY_HISTORY) {
+        ArrayStack_Push(manager->moves, &secondUndoneMove);
         }
-    }
     ArrayStack_Push(manager->moves, &firstUndoneMove);
 }
 
