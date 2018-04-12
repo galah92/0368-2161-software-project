@@ -5,6 +5,7 @@
 #include <SDL_video.h>
 #include "GUIEngine.h"
 #include "GUIUtils.h"
+#include "GUIBoard.h"
 
 
 #define WINDOW_W                1024
@@ -52,6 +53,7 @@ struct GUIEngine {
     PaneType paneType;
     PaneType backPaneType;
     Pane *pane;
+    Board *board;
 };
 
 typedef enum GUICommandType {
@@ -157,6 +159,14 @@ void* handleSlot5Button(void *args) {
 void* handleUndoButton(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
     guiCommand->gameCommand.type = GAME_COMMAND_UNDO;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+
+void *handleBoardEvent(BoardEventArgs *event, void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_MOVE;
+    memcpy(guiCommand->gameCommand.args, event->move, sizeof(int) * GUI_BOARD_MOVE_ARGS);
     guiCommand->type = GUI_COMMAND_GAME_COMMAND;
     return NULL;
 }
@@ -289,6 +299,7 @@ void pseudoRender(GUIEngine *engine) {
     SDL_RenderClear(engine->renderer);
     SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
     Pane_Render(engine->pane);
+    Board_Render(engine->board);
     SDL_RenderPresent(engine->renderer);
 }
 
@@ -312,6 +323,7 @@ GUIEngine* GUIEngine_Create() {
 	SDL_FreeSurface(boardSurface);
     engine->paneType = PANE_TYPE_MAIN;
     engine->pane = MainPane_Create(engine->renderer);
+    engine->board = Board_Create(engine->renderer, handleBoardEvent);
     pseudoRender(engine);
     return engine;
 }
@@ -381,6 +393,7 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
             return guiCommand.gameCommand;
         }
         Pane_HandleEvent(engine->pane, &engine->event, &guiCommand);
+        Board_HandleEvent(engine->board, &engine->event, &guiCommand);
         pseudoRender(engine);
         switch (guiCommand.type) {
             case GUI_COMMAND_GAME_COMMAND:

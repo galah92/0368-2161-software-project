@@ -1,13 +1,16 @@
 #ifndef GUI_BOARD_H_
 #define GUI_BOARD_H_
 
+#define GUI_BOARD_MOVE_ARGS   4
+
+
+typedef struct BoardEventArgs {
+    int move[GUI_BOARD_MOVE_ARGS];
+} BoardEventArgs;
 
 typedef struct Board Board;
 
-Board* Board_Create(SDL_Renderer *renderer,
-                      const char *image,
-                      SDL_Rect location,
-                      void* (*action)(void*));
+Board* Board_Create(SDL_Renderer *renderer, void* (*action)(BoardEventArgs*, void*));
 
 Board* Board_Destroy(Board* board);
 

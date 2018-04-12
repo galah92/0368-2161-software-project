@@ -51,55 +51,6 @@ void* Button_HandleEvent(Button *button, SDL_Event *event, void *args) {
 	return NULL;
 }
 
-struct Tile {
-	SDL_Renderer *renderer;
-	SDL_Texture *texture;
-	SDL_Rect location;
-	void* (*action)();
-};
-
-Tile* Tile_Create(SDL_Renderer *renderer,
-					  const char *image,
-					  SDL_Rect location,
-					  void* (*action)()) {
-	Tile *tile = malloc(sizeof(Tile));
-    if (!tile) return Tile_Destroy(tile);
-	SDL_Surface *surface = SDL_LoadBMP(image);
-    if (!surface) return Tile_Destroy(tile);
-	tile->texture = SDL_CreateTextureFromSurface(renderer, surface);
-    if (!tile->texture) return Tile_Destroy(tile);
-	SDL_FreeSurface(surface);
-	tile->renderer = renderer;
-	tile->location = location;
-	tile->action = action;
-	return tile;
-}
-
-Tile* Tile_Destroy(Tile* tile) {
-    if (!tile) return NULL;
-	if (tile->texture) SDL_DestroyTexture(tile->texture);
-	free(tile);
-    return NULL;
-}
-
-void Tile_Render(Tile *tile) {
-	if (!tile) return;
-	SDL_RenderCopy(tile->renderer, tile->texture, NULL, &tile->location);
-}
-
-void* Tile_HandleEvent(Tile *tile, SDL_Event *event) {
-	if (!tile) return NULL;
-	if (event->type == SDL_MOUSEBUTTONUP) {
-		SDL_Point point = { .x = event->button.x, .y = event->button.y };
-		if (SDL_PointInRect(&point, &tile->location) && tile->action) {
-			tile->location.x = point.x;
-			tile->location.y = point.y;
-			return tile->action();
-		}
-	}
-	return NULL;
-}
-
 struct Pane {
 	SDL_Renderer *renderer;
 	SDL_Rect location;
