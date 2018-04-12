@@ -330,9 +330,9 @@ GUIEngine* GUIEngine_Create() {
 }
 
 GUIEngine* GUIEngine_Destroy(GUIEngine *engine) {
+    if (!engine) return NULL;
     const char *error = SDL_GetError();
     if (strcmp(error, "")) printf(SDL_ERROR_STRING, error);
-    if (!engine) return NULL;
     Pane_Destroy(engine->pane);
     if (!engine->bgTexture) SDL_DestroyTexture(engine->bgTexture);
     if (!engine->renderer) SDL_DestroyRenderer(engine->renderer);

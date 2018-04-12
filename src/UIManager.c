@@ -21,10 +21,12 @@ UIManager* UIManager_Create(int argc, const char *argv[]) {
         uiManager->type = UI_TYPE_GUI;
         uiManager->guiEngine = GUIEngine_Create();
         if (!uiManager->guiEngine) return UIManager_Destroy(uiManager);
+        uiManager->cliEngine = NULL;
     } else {
         uiManager->type = UI_TYPE_CLI;
         uiManager->cliEngine = CLIEngine_Create();  // we need CLI anyway
         if (!uiManager->cliEngine) return UIManager_Destroy(uiManager);
+        uiManager->guiEngine = NULL;
     }
     return uiManager;
 }

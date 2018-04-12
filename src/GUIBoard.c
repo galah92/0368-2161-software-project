@@ -160,9 +160,9 @@ char* pieceToSrcImage(ChessPiece piece) {
 void Board_Render(Board *board, const ChessGame *game) {
     if (!board) return;
     for (int i = 0; i < CHESS_GRID; i++) {
-        for (int j = 0; j < CHESS_GRID; j++) {
+        for (int j = CHESS_GRID - 1; j >= 0; j--) {
             if (game) {
-                Tile_SetImage(board->tiles[i][j], pieceToSrcImage(game->board[i][j]));
+                Tile_SetImage(board->tiles[i][j], pieceToSrcImage(game->board[i][CHESS_GRID - 1 - j]));
             }
             Tile_Render(board->tiles[i][j]);
         }
@@ -181,14 +181,15 @@ void* Board_HandleEvent(Board *board, SDL_Event *event, void *args) {
         int y = CHESS_GRID - (event->button.y - BOARD_Y) / TILE_S;
         if (!isInBoardPerimiter(event->button.x, event->button.y)) return NULL;
         if (board->hasFromPos) {
-            board->eventArgs.move[2] = x;
-            board->eventArgs.move[3] = y;
+            board->eventArgs.move[2] = y;
+            board->eventArgs.move[3] = x + 'A' - 1;
+            board->hasFromPos = !board->hasFromPos;
             if (board->action) return board->action(&board->eventArgs, args);
         } else {
-            board->eventArgs.move[0] = x;
-            board->eventArgs.move[1] = y;
+            board->eventArgs.move[0] = y;
+            board->eventArgs.move[1] = x + 'A' - 1;
+            board->hasFromPos = !board->hasFromPos;
         }
-        board->hasFromPos = !board->hasFromPos;
     }
     return NULL;
 }
