@@ -58,6 +58,7 @@ typedef enum GUICommandType {
     GUI_COMMAND_NONE,
     GUI_COMMAND_SWITCH_PANE,
     GUI_COMMAND_GAME_COMMAND,
+    GUI_COMMAND_BOTH,
 } GUICommandType;
 
 typedef struct GUICommand {
@@ -89,8 +90,9 @@ void* handleQuitButton(void *args) {
 
 void* handleBackButton(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
-    guiCommand->type = GUI_COMMAND_SWITCH_PANE;
+    guiCommand->gameCommand.type = GAME_COMMAND_RESET;
     guiCommand->paneType = PANE_TYPE_MAIN;
+    guiCommand->type = GUI_COMMAND_BOTH;
     return NULL;
 }
 
@@ -112,6 +114,42 @@ void* handleLoadButton(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
     guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
     strcpy(guiCommand->gameCommand.path, "slot1.save");
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+
+void* handleSlot1Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
+    strcpy(guiCommand->gameCommand.path, "slot1.save");
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+void* handleSlot2Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
+    strcpy(guiCommand->gameCommand.path, "slot2.save");
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+void* handleSlot3Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
+    strcpy(guiCommand->gameCommand.path, "slot3.save");
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+void* handleSlot4Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
+    strcpy(guiCommand->gameCommand.path, "slot4.save");
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+void* handleSlot5Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
+    strcpy(guiCommand->gameCommand.path, "slot5.save");
     guiCommand->type = GUI_COMMAND_GAME_COMMAND;
     return NULL;
 }
@@ -184,23 +222,23 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_SLOT1,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleSlot1Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT2,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleSlot2Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT3,
                       (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleSlot3Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT4,
                       (SDL_Rect){ .x = 25, .y = 325, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleSlot4Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT5,
                       (SDL_Rect){ .x = 25, .y = 400, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL),
+                      handleSlot5Button),
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 475, .w = BUTTON_W, .h = BUTTON_H },
@@ -349,6 +387,9 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
                 return guiCommand.gameCommand;
             case GUI_COMMAND_SWITCH_PANE:
                 updatePane(engine, guiCommand.paneType);
+            case GUI_COMMAND_BOTH:
+                updatePane(engine, guiCommand.paneType);
+                return guiCommand.gameCommand;
             default:
                 break;
         }
@@ -357,6 +398,43 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
 
 void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand command) {
     if (!manager) return;
-    (void)command;
+    switch (manager->error) {
+        case GAME_ERROR_NONE:
+            break;
+        case GAME_ERROR_INVALID_COMMAND:
+        case GAME_ERROR_INVALID_GAME_MODE:
+        case GAME_ERROR_INVALID_DIFF_LEVEL:
+        case GAME_ERROR_INVALID_USER_COLOR:
+        case GAME_ERROR_INVALID_FILE:
+        case GAME_ERROR_INVALID_POSITION:
+        case GAME_ERROR_EMPTY_POSITION:
+        case GAME_ERROR_INVALID_MOVE:
+        case GAME_ERROR_INVALID_MOVE_KING_IS_T:
+        case GAME_ERROR_INVALID_MOVE_KING_WILL_T:
+        case GAME_ERROR_FILE_ALLOC:
+        case GAME_ERROR_EMPTY_HISTORY:
+            return;
+    }
+    switch (command.type) {
+	    case GAME_COMMAND_GAME_MODE:
+	    case GAME_COMMAND_DIFFICULTY:
+	    case GAME_COMMAND_USER_COLOR:
+        case GAME_COMMAND_LOAD_GAME:
+            updatePane(engine, PANE_TYPE_GAME);
+            break;
+        case GAME_COMMAND_DEFAULT_SETTINGS:
+        case GAME_COMMAND_PRINT_SETTINGS:
+        case GAME_COMMAND_START:
+            updatePane(engine, PANE_TYPE_GAME);
+            break;
+        case GAME_COMMAND_MOVE:
+        case GAME_COMMAND_GET_MOVES:
+        case GAME_COMMAND_SAVE:
+        case GAME_COMMAND_UNDO:
+        case GAME_COMMAND_RESET:
+        case GAME_COMMAND_QUIT:
+        case GAME_COMMAND_INVALID:
+            break;
+    }
     pseudoRender(engine);
 }
