@@ -312,13 +312,6 @@ int getPieceScore(ChessPiece piece) {
             return 0;
     }
 }
-bool isBetterMoveForMinimax(ChessMove move, ChessMove bestmove){
-    if      (move.from.x > bestmove.from.x) return false;
-    else if (move.from.y > bestmove.from.y) return false;
-    else if (move.to.x > bestmove.to.x) return false;
-    else if (move.to.y > bestmove.to.y) return false;
-    return true;
-}
 
 int getBoardScore(ChessGame *game) {
     ChessStatus status;
@@ -340,7 +333,6 @@ int getBoardScore(ChessGame *game) {
     return score;
 }
 
-// TODO: add pruning
 int minimax(ChessGame *game, int depth, int alpha, int beta, ChessMove *bestMove) {
     if (depth == 0) return getBoardScore(game);
     int moveScore;
