@@ -1,6 +1,7 @@
 #ifndef CLI_ENGINE_H_
 #define CLI_ENGINE_H_
 
+#include <stdbool.h>
 #include "GameManager.h"
 
 
@@ -32,7 +33,7 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *engine);
  * @param   engine      the instance to use
  * @param   gameState   the gameState to output
  */
-void CLIEngine_RenderError(const GameManager *manager);
+void CLIEngine_RenderError(const GameManager *manager, bool toRenderEnterMove);
 
 /**
  * Output to CLI the current game state.
