@@ -3,7 +3,7 @@
 #include <string.h>
 #include "ChessGame.h"
 
-#define CHESS_HISTORY_SIZE 3
+#define CHESS_HISTORY_SIZE 6
 #define CHESS_MAX_POSSIBLE_MOVES 27 // 7 * 3 + 6 for a queen piece
 
 /**
