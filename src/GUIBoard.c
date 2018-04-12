@@ -139,7 +139,6 @@ Board* Board_Destroy(Board* board) {
 
 char* pieceToSrcImage(ChessPiece piece) {
     switch (piece) {
-        case CHESS_PIECE_NONE: return SRC_PIECE_NONE;
         case CHESS_PIECE_WHITE_PAWN: return SRC_PIECE_WHITE_PAWN;
         case CHESS_PIECE_WHITE_ROOK: return SRC_PIECE_WHITE_ROOK;
         case CHESS_PIECE_WHITE_KNIGHT: return SRC_PIECE_WHITE_KNIGHT;
@@ -152,6 +151,9 @@ char* pieceToSrcImage(ChessPiece piece) {
         case CHESS_PIECE_BLACK_BISHOP: return SRC_PIECE_BLACK_BISHOP;
         case CHESS_PIECE_BLACK_QUEEN: return SRC_PIECE_BLACK_QUEEN;
         case CHESS_PIECE_BLACK_KING: return SRC_PIECE_BLACK_KING;
+        case CHESS_PIECE_NONE:
+        default:
+            return SRC_PIECE_NONE;
     }
 }
 
