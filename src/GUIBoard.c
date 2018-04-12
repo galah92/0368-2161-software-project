@@ -3,7 +3,6 @@
 #include <SDL_video.h>
 #include "GUIBoard.h"
 #include "GUIUtils.h"
-#include "GameManager.h"
 
 #define SRC_PIECE_NONE          "./gui/pieces/NONE.bmp"
 #define SRC_PIECE_WHITE_PAWN    "./gui/pieces/PAWN_W.bmp"
@@ -42,6 +41,8 @@ Tile* Tile_Create(SDL_Renderer *renderer,
 
 Tile* Tile_Destroy(Tile* tile);
 
+void Tile_SetImage(Tile *tile, const char *image);
+
 void Tile_Render(Tile *tile);
 
 void* Tile_HandleEvent(Tile *tile, SDL_Event *event);
@@ -68,6 +69,13 @@ Tile* Tile_Destroy(Tile* tile) {
     if (tile->texture) SDL_DestroyTexture(tile->texture);
     free(tile);
     return NULL;
+}
+
+void Tile_SetImage(Tile *tile, const char *image) {
+    if (!tile) return;
+    SDL_Surface *surface = SDL_LoadBMP(image);
+    tile->texture = SDL_CreateTextureFromSurface(tile->renderer, surface);
+    SDL_FreeSurface(surface);
 }
 
 void Tile_Render(Tile *tile) {
@@ -105,7 +113,7 @@ Board* Board_Create(SDL_Renderer *renderer, void* (*action)(BoardEventArgs*, voi
             rect.x = BOARD_X + i * TILE_S;
             rect.y = BOARD_Y + j * TILE_S;
             board->tiles[i][j] = Tile_Create(renderer,
-                                             SRC_PIECE_WHITE_QUEEN,
+                                             SRC_PIECE_NONE,
                                              rect,
                                              NULL);
         }
@@ -127,10 +135,32 @@ Board* Board_Destroy(Board* board) {
     return NULL;
 }
 
-void Board_Render(Board *board) {
+char* pieceToSrcImage(ChessPiece piece) {
+    switch (piece) {
+        case CHESS_PIECE_NONE: return SRC_PIECE_NONE;
+        case CHESS_PIECE_WHITE_PAWN: return SRC_PIECE_WHITE_PAWN;
+        case CHESS_PIECE_WHITE_ROOK: return SRC_PIECE_WHITE_ROOK;
+        case CHESS_PIECE_WHITE_KNIGHT: return SRC_PIECE_WHITE_KNIGHT;
+        case CHESS_PIECE_WHITE_BISHOP: return SRC_PIECE_WHITE_BISHOP;
+        case CHESS_PIECE_WHITE_QUEEN: return SRC_PIECE_WHITE_QUEEN;
+        case CHESS_PIECE_WHITE_KING: return SRC_PIECE_WHITE_KING;
+        case CHESS_PIECE_BLACK_PAWN: return SRC_PIECE_BLACK_PAWN;
+        case CHESS_PIECE_BLACK_ROOK: return SRC_PIECE_BLACK_ROOK;
+        case CHESS_PIECE_BLACK_KNIGHT: return SRC_PIECE_BLACK_KNIGHT;
+        case CHESS_PIECE_BLACK_BISHOP: return SRC_PIECE_BLACK_BISHOP;
+        case CHESS_PIECE_BLACK_QUEEN: return SRC_PIECE_BLACK_QUEEN;
+        case CHESS_PIECE_BLACK_KING: return SRC_PIECE_BLACK_KING;
+    }
+}
+
+void Board_Render(Board *board, const ChessGame *game) {
     if (!board) return;
+    if (game) printf("%c\n", game->board[0][0]);
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
+            if (game) {
+                Tile_SetImage(board->tiles[i][j], pieceToSrcImage(game->board[i][j]));
+            }
             Tile_Render(board->tiles[i][j]);
         }
     }
@@ -143,7 +173,6 @@ bool isInBoardPerimiter(int x, int y) {
 
 void* Board_HandleEvent(Board *board, SDL_Event *event, void *args) {
     if (!board) return NULL;
-    (void)args;
     if (event->type == SDL_MOUSEBUTTONUP) {
         int x = (event->button.x - BOARD_X) / TILE_S + 1;
         int y = CHESS_GRID - (event->button.y - BOARD_Y) / TILE_S;

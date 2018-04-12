@@ -295,11 +295,11 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
                        NULL);
 }
 
-void pseudoRender(GUIEngine *engine) {
+void pseudoRender(GUIEngine *engine, const ChessGame *game) {
     SDL_RenderClear(engine->renderer);
     SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
     Pane_Render(engine->pane);
-    Board_Render(engine->board);
+    Board_Render(engine->board, game);
     SDL_RenderPresent(engine->renderer);
 }
 
@@ -317,14 +317,14 @@ GUIEngine* GUIEngine_Create() {
     engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_SOFTWARE);
     if (!engine->renderer) return GUIEngine_Destroy(engine);
     SDL_Surface* boardSurface = SDL_LoadBMP(SRC_BACKGROUND);
-	if (!boardSurface) return GUIEngine_Destroy(engine);
-	engine->bgTexture = SDL_CreateTextureFromSurface(engine->renderer, boardSurface);
-	if (!engine->bgTexture) return GUIEngine_Destroy(engine);
-	SDL_FreeSurface(boardSurface);
+    if (!boardSurface) return GUIEngine_Destroy(engine);
+    engine->bgTexture = SDL_CreateTextureFromSurface(engine->renderer, boardSurface);
+    if (!engine->bgTexture) return GUIEngine_Destroy(engine);
+    SDL_FreeSurface(boardSurface);
     engine->paneType = PANE_TYPE_MAIN;
     engine->pane = MainPane_Create(engine->renderer);
     engine->board = Board_Create(engine->renderer, handleBoardEvent);
-    pseudoRender(engine);
+    pseudoRender(engine, NULL);
     return engine;
 }
 
@@ -394,12 +394,13 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
         }
         Pane_HandleEvent(engine->pane, &engine->event, &guiCommand);
         Board_HandleEvent(engine->board, &engine->event, &guiCommand);
-        pseudoRender(engine);
+        pseudoRender(engine, NULL);
         switch (guiCommand.type) {
             case GUI_COMMAND_GAME_COMMAND:
                 return guiCommand.gameCommand;
             case GUI_COMMAND_SWITCH_PANE:
                 updatePane(engine, guiCommand.paneType);
+                break;
             case GUI_COMMAND_BOTH:
                 updatePane(engine, guiCommand.paneType);
                 return guiCommand.gameCommand;
@@ -429,9 +430,9 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
             return;
     }
     switch (command.type) {
-	    case GAME_COMMAND_GAME_MODE:
-	    case GAME_COMMAND_DIFFICULTY:
-	    case GAME_COMMAND_USER_COLOR:
+        case GAME_COMMAND_GAME_MODE:
+        case GAME_COMMAND_DIFFICULTY:
+        case GAME_COMMAND_USER_COLOR:
         case GAME_COMMAND_LOAD_GAME:
             updatePane(engine, PANE_TYPE_GAME);
             break;
@@ -449,5 +450,5 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
         case GAME_COMMAND_INVALID:
             break;
     }
-    pseudoRender(engine);
+    pseudoRender(engine, manager->game);
 }

@@ -1,6 +1,8 @@
 #ifndef GUI_BOARD_H_
 #define GUI_BOARD_H_
 
+#include "ChessGame.h"
+
 #define GUI_BOARD_MOVE_ARGS   4
 
 
@@ -14,7 +16,7 @@ Board* Board_Create(SDL_Renderer *renderer, void* (*action)(BoardEventArgs*, voi
 
 Board* Board_Destroy(Board* board);
 
-void Board_Render(Board *board);
+void Board_Render(Board *board, const ChessGame *game);
 
 void* Board_HandleEvent(Board *board, SDL_Event *event, void *args);
 
