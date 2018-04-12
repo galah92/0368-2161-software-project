@@ -25,7 +25,7 @@ int main(int argc, const char *argv[]) {
         }
         GameManager_ProcessCommand(gameManager, command);
         UIManager_Render(uiManager, gameManager, command);
-        toQuit = command.type == GAME_COMMAND_QUIT;
+        toQuit = command.type == GAME_COMMAND_QUIT || gameManager->phase == GAME_PHASE_QUIT;
     }
     UIManager_Destroy(uiManager);
     GameManager_Destroy(gameManager);

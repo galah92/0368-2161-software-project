@@ -229,11 +229,12 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
         case GAME_COMMAND_MOVE:
             handleMove(manager, command);
             // check mate 
-            // if (isKingThreatenedBy(manager->game, !manager->game->turn))){
-            //     GameCommand command = {.type = GAME_COMMAND_GET_MOVES,.args={}};
-            //     handleGetMoves(manager, command);
-            //     manager->phase = 
-            // }
+            ChessStatus status;
+            ChessGame_GetGameStatus(manager->game, &status);
+            manager->status = (GameStatus) status;
+            if (manager->status == GAME_STATUS_CHECKMATE || manager->status == GAME_STATUS_DRAW){
+                manager->phase = GAME_PHASE_QUIT;
+            }
             break;
         case GAME_COMMAND_GET_MOVES:
             handleGetMoves(manager, command);
@@ -308,6 +309,13 @@ int getPieceScore(ChessPiece piece) {
             return 0;
     }
 }
+bool isBetterMoveForMinimax(ChessMove move, ChessMove bestmove){
+    if      (move.from.x > bestmove.from.x) return false;
+    else if (move.from.y > bestmove.from.y) return false;
+    else if (move.to.x > bestmove.to.x) return false;
+    else if (move.to.y > bestmove.to.y) return false;
+    return true;
+}
 
 int getBoardScore(ChessGame *game) {
     ChessStatus status;
@@ -325,8 +333,8 @@ int getBoardScore(ChessGame *game) {
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = 0; j < CHESS_GRID; j++) {
             ChessGame_GetPieceColor(game->board[i][j], &color);
-            if (color == game->turn)
-            score += (color == game->turn ? 1 : -1) * getPieceScore(game->board[i][j]);
+            if (color != CHESS_PLAYER_COLOR_NONE)
+            score += (color == game->turn ? -1 : 1) * getPieceScore(game->board[i][j]);
         }
     }
     return score;
@@ -336,8 +344,8 @@ int getBoardScore(ChessGame *game) {
 int minimax(ChessGame *game, int depth, bool isMaximizing, int alpha, int beta, ChessMove *bestMove) {
     if (depth == 0) return getBoardScore(game);
     // int bestScore = isMaximizing ? INT_MIN : INT_MAX;
-    alpha = INT_MIN;
-    beta = INT_MAX;
+    // alpha = INT_MIN;
+    // beta = INT_MAX;
     int moveScore;
     ChessMove move;
     ChessMove tempMove; // only here as a garbage pointer - need to find a better way
@@ -363,16 +371,23 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, int alpha, int beta, 
                     if (moveScore > alpha){
                         alpha = moveScore;
                         memcpy(bestMove, &move, sizeof(ChessMove));
-                    }
-                } else if (moveScore < beta) {
+                    } else if (moveScore == alpha && isBetterMoveForMinimax(move, *bestMove)) { // for deterministic minimax
                         alpha = moveScore;
                         memcpy(bestMove, &move, sizeof(ChessMove));
+                    }
+                } else if (moveScore < beta) {
+                        beta = moveScore;
+                        memcpy(bestMove, &move, sizeof(ChessMove));
+                } else if (moveScore == beta && isBetterMoveForMinimax(move, *bestMove)) {
+                    beta = moveScore;
+                    memcpy(bestMove, &move, sizeof(ChessMove));
                 }
                 ChessGame_UndoMove(gameCopy, &move);
+                if (beta < alpha)
+                    break; // pruning
             }
+            
             ChessGame_Destroy(gameCopy);
-            if (beta < alpha)
-                break; // pruning
             }
     }
     ArrayStack_Destroy(positions);

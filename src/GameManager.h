@@ -51,6 +51,13 @@ typedef enum GameError {
     GAME_ERROR_EMPTY_HISTORY,
 } GameError;
 
+typedef enum GameStatus {
+    GAME_STATUS_RUNNING,
+    GAME_STATUS_CHECK,
+    GAME_STATUS_CHECKMATE,
+    GAME_STATUS_DRAW,
+} GameStatus;
+
 typedef enum GamePhase {
     GAME_PHASE_SETTINGS,
     GAME_PHASE_RUNNING,
@@ -74,6 +81,7 @@ typedef struct GameManager {
     GamePhase phase;
     GameError error;
     ArrayStack *moves;
+    GameStatus status;
 } GameManager;
 
 GameManager* GameManager_Create();

@@ -272,8 +272,11 @@ void pseudoUndoMove(ChessGame *game, ChessMove *move) {
 bool hasMoves(ChessGame *game) {
     ArrayStack *possibleMoves = NULL;
     ChessPos pos;
+    ChessColor color;
     for (int i = 0; i < CHESS_GRID; i ++) {
         for (int j = 0; j < CHESS_GRID; j++) {
+            ChessGame_GetPieceColor(game->board[i][j], &color);
+            if (color != game->turn) continue;
             pos = (ChessPos){ .x = i, .y = j };
             ChessResult res = ChessGame_GetMoves(game, pos, &possibleMoves);
             bool areThereMoves = !ArrayStack_IsEmpty(possibleMoves);
@@ -396,7 +399,7 @@ ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor) {
 
 ChessResult ChessGame_GetGameStatus(ChessGame *game, ChessStatus *status) {
     if (!game) return CHESS_INVALID_ARGUMENT;
-    if (isKingThreatenedBy(game, game->turn)) {
+    if (isKingThreatenedBy(game, !game->turn)) {
         *status = hasMoves(game) ? CHESS_STATUS_CHECK : CHESS_STATUS_CHECKMATE;
     } else {
         *status = hasMoves(game) ? CHESS_STATUS_RUNNING : CHESS_STATUS_DRAW;
