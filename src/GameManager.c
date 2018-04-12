@@ -359,7 +359,7 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, int alpha, int beta, 
             ChessGame *gameCopy = ChessGame_Copy(game);
             ChessGame_GetMoves(gameCopy, move.from, &positions);
             while (!ArrayStack_IsEmpty(positions)) {
-                move.to = *(ChessPos *)ArrayStack_Pop(positions);
+                move.to = *(ChessPos *)ArrayStack_PopLeft(positions);
                 ChessGame_DoMove(gameCopy, move);
                 moveScore = minimax(gameCopy, depth - 1, !isMaximizing, alpha, beta, &tempMove);
                 // if ((isMaximizing && moveScore > bestScore)

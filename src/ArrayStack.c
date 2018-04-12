@@ -78,3 +78,11 @@ void* ArrayStack_Pop(ArrayStack* stack) {
     unsigned int offset = (stack->start + stack->size) % stack->capacity;
     return stack->array + offset * stack->dataSize;
 }
+
+void* ArrayStack_PopLeft(ArrayStack* stack) {
+    if (!stack || ArrayStack_IsEmpty(stack)) return NULL;
+    stack->size--;
+    void *startElement = stack->array + stack->start * stack->dataSize;
+    stack->start = (stack->start + 1) % stack->capacity;
+    return startElement;
+}

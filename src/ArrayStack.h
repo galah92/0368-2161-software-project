@@ -71,13 +71,22 @@ bool ArrayStack_IsEmpty(const ArrayStack* stack);
 void ArrayStack_Push(ArrayStack* stack, void *data);
 
 /**
- * Pop the top-most element of the fiven ArrayStack instance.
+ * Pop the top-most element of the given ArrayStack instance.
  * No transfer of ownership - returned pointer should be memcpy().
  * @param   stack       ArrayStack instance
  * @return  NULL if stack == NULL or stack is empty
  *          top-most element otherwise
  */
 void* ArrayStack_Pop(ArrayStack* stack);
+
+/**
+ * Pop the button-most element of the given ArrayStack instance.
+ * No transfer of ownership - returned pointer should be memcpy().
+ * @param   stack       ArrayStack instance
+ * @return  NULL if stack == NULL or stack is empty
+ *          top-most element otherwise
+ */
+void* ArrayStack_PopLeft(ArrayStack* stack);
 
 
 #endif

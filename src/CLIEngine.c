@@ -287,7 +287,7 @@ void CLIEngine_Render(const GameManager *manager, GameCommand command) {
             break;
         case GAME_COMMAND_GET_MOVES:
             while (!ArrayStack_IsEmpty(manager->moves)) {
-                pos = ArrayStack_Pop(manager->moves);
+                pos = ArrayStack_PopLeft(manager->moves);
                 switch (pos->type) {
                     case CHESS_POS_STANDARD:
                         printf(MSG_MOVE_DEFAULT, pos->y + 1, pos->x + 'A');
