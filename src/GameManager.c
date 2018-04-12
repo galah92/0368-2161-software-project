@@ -371,16 +371,10 @@ int minimax(ChessGame *game, int depth, bool isMaximizing, int alpha, int beta, 
                     if (moveScore > alpha){
                         alpha = moveScore;
                         memcpy(bestMove, &move, sizeof(ChessMove));
-                    } else if (moveScore == alpha && isBetterMoveForMinimax(move, *bestMove)) { // for deterministic minimax
-                        alpha = moveScore;
-                        memcpy(bestMove, &move, sizeof(ChessMove));
                     }
                 } else if (moveScore < beta) {
                         beta = moveScore;
                         memcpy(bestMove, &move, sizeof(ChessMove));
-                } else if (moveScore == beta && isBetterMoveForMinimax(move, *bestMove)) {
-                    beta = moveScore;
-                    memcpy(bestMove, &move, sizeof(ChessMove));
                 }
                 ChessGame_UndoMove(gameCopy, &move);
                 if (beta < alpha)

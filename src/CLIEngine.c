@@ -208,6 +208,19 @@ void CLIEngine_RenderError(const GameManager *manager, bool toRenderEnterMove) {
 
 void CLIEngine_Render(const GameManager *manager, GameCommand command) {
     if (!manager || manager->error != GAME_ERROR_NONE) return;
+    switch(manager->status){
+        case GAME_STATUS_CHECKMATE:
+            printf(MSG_CHECKMATE, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "black" : "white");
+            return;
+        case GAME_STATUS_CHECK:
+            printf(MSG_CHECK, manager->game->turn == CHESS_PLAYER_COLOR_WHITE ? "white" : "black");
+            break;
+        case GAME_STATUS_DRAW:
+            printf(MSG_DRAW);
+            return;
+        default:
+            break;
+    }
     ChessPos *pos;
     ChessMove *move;
     switch(command.type) {
