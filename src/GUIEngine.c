@@ -423,6 +423,7 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
         case GAME_ERROR_INVALID_FILE:
         case GAME_ERROR_INVALID_POSITION:
         case GAME_ERROR_EMPTY_POSITION:
+        case GAME_ERROR_NOT_CONTAIN_PLAYER_PIECE:
         case GAME_ERROR_INVALID_MOVE:
         case GAME_ERROR_INVALID_MOVE_KING_IS_T:
         case GAME_ERROR_INVALID_MOVE_KING_WILL_T:
