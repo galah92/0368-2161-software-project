@@ -364,7 +364,7 @@ int minimax(ChessGame *game, int depth, int alpha, int beta, ChessMove *bestMove
                 if (game->turn == CHESS_PLAYER_COLOR_WHITE && moveScore > alpha) {
                     alpha = moveScore;
                     memcpy(bestMove, &move, sizeof(ChessMove));
-                } else if (moveScore < beta) {
+                } else if (game->turn == CHESS_PLAYER_COLOR_BLACK && moveScore < beta) {
                     beta = moveScore;
                     memcpy(bestMove, &move, sizeof(ChessMove));
                 }

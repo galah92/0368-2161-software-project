@@ -99,7 +99,7 @@ GameCommandArgsType getCommandArgsType(const GameCommandType commandType) {
 
 int isInt(const char* str) {
 	int i = str[0] == '-' ? 1 : 0;  // case the number is negative
-    if ((i && strlen(str) == 1) || str[0] == '0') return false; //case str == '-' or number start with '0'
+    if ((i && strlen(str) == 1) || (strlen(str) > 1 && str[0] == '0')) return false; //case str == '-' or number start with '0'
 	while (str[i] != '\0' && str[i] != '\n') {
 		if (str[i] < '0' || str[i] > '9') return false;
 		i++;
