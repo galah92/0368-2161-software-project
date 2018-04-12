@@ -19,7 +19,7 @@ Board* Board_Create(SDL_Renderer *renderer, void* (*action)(BoardEventArgs*, voi
 
 Board* Board_Destroy(Board* board);
 
-void Board_Render(Board *board, const GameManager *manager);
+void Board_Render(Board *board, const GameManager *manager, GameCommandType commType);
 
 void* Board_HandleEvent(Board *board, SDL_Event *event, void *args);
 

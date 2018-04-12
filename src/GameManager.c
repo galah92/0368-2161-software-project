@@ -230,7 +230,8 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             ChessStatus status;
             ChessGame_GetGameStatus(manager->game, &status);
             manager->status = (GameStatus) status;
-            if (manager->status == GAME_STATUS_CHECKMATE || manager->status == GAME_STATUS_DRAW){
+            if (manager->status == GAME_STATUS_CHECKMATE ||
+                manager->status == GAME_STATUS_DRAW) {
                 manager->phase = GAME_PHASE_QUIT;
             }
             break;
@@ -280,7 +281,9 @@ void GameManager_Destroy(GameManager *manager) {
 GamePlayerType GameManager_GetCurrentPlayerType(GameManager *manager) {
     bool isOtherPlayer = manager->game->turn != manager->game->userColor;
     bool is1PlayerMode = manager->game->mode == CHESS_MODE_1_PLAYER;
-    return is1PlayerMode & isOtherPlayer ? GAME_PLAYER_TYPE_AI : GAME_PLAYER_TYPE_HUMAN;
+    return is1PlayerMode & isOtherPlayer
+           ? GAME_PLAYER_TYPE_AI
+           : GAME_PLAYER_TYPE_HUMAN;
 }
 
 int getPieceScore(ChessPiece piece) {

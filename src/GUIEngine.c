@@ -300,11 +300,11 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
                        NULL);
 }
 
-void pseudoRender(GUIEngine *engine, const GameManager *manager) {
+void pseudoRender(GUIEngine *engine, const GameManager *manager, GameCommandType commType) {
     SDL_RenderClear(engine->renderer);
     SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
     Pane_Render(engine->pane);
-    Board_Render(engine->board, manager);
+    Board_Render(engine->board, manager, commType);
     SDL_RenderPresent(engine->renderer);
 }
 
@@ -330,7 +330,7 @@ GUIEngine* GUIEngine_Create() {
     engine->paneType = PANE_TYPE_MAIN;
     engine->pane = MainPane_Create(engine->renderer);
     engine->board = Board_Create(engine->renderer, handleBoardEvent);
-    pseudoRender(engine, NULL);
+    pseudoRender(engine, NULL, GAME_COMMAND_INVALID);
     return engine;
 }
 
@@ -400,7 +400,7 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
         }
         Pane_HandleEvent(engine->pane, &engine->event, &guiCommand);
         Board_HandleEvent(engine->board, &engine->event, &guiCommand);
-        pseudoRender(engine, NULL);
+        pseudoRender(engine, NULL, GAME_COMMAND_INVALID);
         switch (guiCommand.type) {
             case GUI_COMMAND_GAME_COMMAND:
                 return guiCommand.gameCommand;
@@ -457,5 +457,5 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
         case GAME_COMMAND_INVALID:
             break;
     }
-    pseudoRender(engine, manager);
+    pseudoRender(engine, manager, command.type);
 }

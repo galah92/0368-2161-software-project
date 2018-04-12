@@ -3,6 +3,7 @@
 #include <SDL_video.h>
 #include "GUIBoard.h"
 #include "GUIUtils.h"
+#include "ArrayStack.h"
 
 #define SRC_PIECE_NONE          "./gui/pieces/NONE.bmp"
 #define SRC_PIECE_WHITE_PAWN    "./gui/pieces/PAWN_W.bmp"
@@ -157,12 +158,39 @@ char* pieceToSrcImage(ChessPiece piece) {
     }
 }
 
-void Board_Render(Board *board, const GameManager *manager) {
+void Board_Render(Board *board, const GameManager *manager, GameCommandType commType) {
     if (!board) return;
+    if (commType == GAME_COMMAND_GET_MOVES) {
+        ChessPos *pos;
+        SDL_Rect rect = { .w=TILE_S, .h=TILE_S };
+        while (!ArrayStack_IsEmpty(manager->moves)) {
+            pos = ArrayStack_PopLeft(manager->moves);
+            rect.x = BOARD_X + (pos->y + 1) * TILE_S;
+            rect.y = BOARD_Y + (pos->x + 1) * TILE_S;
+            switch (pos->type) {
+                case CHESS_POS_STANDARD:
+                    SDL_SetRenderDrawColor(board->renderer, 255, 255, 255, 255);
+                    break;
+                case CHESS_POS_THREATENED:
+                    SDL_SetRenderDrawColor(board->renderer, 128, 0, 0, 255);
+                    break;
+                case CHESS_POS_CAPTURE:
+                    SDL_SetRenderDrawColor(board->renderer, 0, 128, 0, 255);
+                    break;
+                case CHESS_POS_BOTH:
+                    SDL_SetRenderDrawColor(board->renderer, 0, 0, 128, 255);
+                    break;
+                default:
+                    break;
+            }
+            SDL_RenderFillRect(board->renderer, &rect);
+        }
+    }
     for (int i = 0; i < CHESS_GRID; i++) {
-        for (int j = CHESS_GRID - 1; j >= 0; j--) {
+        for (int j = 0; j < CHESS_GRID; j++) {
             if (manager) {
-                Tile_SetImage(board->tiles[i][j], pieceToSrcImage(manager->game->board[i][CHESS_GRID - 1 - j]));
+                Tile_SetImage(board->tiles[i][j],
+                              pieceToSrcImage(manager->game->board[i][CHESS_GRID - 1 - j]));
             }
             Tile_Render(board->tiles[i][j]);
         }
