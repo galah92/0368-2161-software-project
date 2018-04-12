@@ -179,6 +179,12 @@ void* Board_HandleEvent(Board *board, SDL_Event *event, void *args) {
     if (event->type == SDL_MOUSEBUTTONUP) {
         int x = (event->button.x - BOARD_X) / TILE_S + 1;
         int y = CHESS_GRID - (event->button.y - BOARD_Y) / TILE_S;
+        if (event->button.button == SDL_BUTTON_RIGHT) {
+            board->eventArgs.isRightClick = true;
+            board->eventArgs.move[0] = y;
+            board->eventArgs.move[1] = x + 'A' - 1;
+        }
+        board->eventArgs.isRightClick = false;
         if (!isInBoardPerimiter(event->button.x, event->button.y)) return NULL;
         if (board->hasFromPos) {
             board->eventArgs.move[2] = y;

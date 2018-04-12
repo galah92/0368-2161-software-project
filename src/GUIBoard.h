@@ -1,6 +1,7 @@
 #ifndef GUI_BOARD_H_
 #define GUI_BOARD_H_
 
+#include <stdbool.h>
 #include "ChessGame.h"
 
 #define GUI_BOARD_MOVE_ARGS   4
@@ -8,6 +9,7 @@
 
 typedef struct BoardEventArgs {
     int move[GUI_BOARD_MOVE_ARGS];
+    bool isRightClick;
 } BoardEventArgs;
 
 typedef struct Board Board;

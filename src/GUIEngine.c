@@ -165,8 +165,13 @@ void* handleUndoButton(void *args) {
 
 void *handleBoardEvent(BoardEventArgs *event, void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
-    guiCommand->gameCommand.type = GAME_COMMAND_MOVE;
-    memcpy(guiCommand->gameCommand.args, event->move, sizeof(int) * GUI_BOARD_MOVE_ARGS);
+    if (event->isRightClick) {
+        guiCommand->gameCommand.type = GAME_COMMAND_GET_MOVES;
+        memcpy(guiCommand->gameCommand.args, event->move, sizeof(int) * 2);
+    } else {
+        guiCommand->gameCommand.type = GAME_COMMAND_MOVE;
+        memcpy(guiCommand->gameCommand.args, event->move, sizeof(int) * GUI_BOARD_MOVE_ARGS);
+    }
     guiCommand->type = GUI_COMMAND_GAME_COMMAND;
     return NULL;
 }
