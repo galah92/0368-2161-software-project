@@ -186,7 +186,7 @@ void handleGetMoves(GameManager *manager, GameCommand command) {
             manager->error = GAME_ERROR_INVALID_POSITION;
             break;
         case CHESS_EMPTY_POSITION:
-            manager->error = GAME_ERROR_EMPTY_POSITION;
+            manager->error = GAME_ERROR_NOT_CONTAIN_PLAYER_PIECE;
         case CHESS_SUCCESS:
         default:
             break;
