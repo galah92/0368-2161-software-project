@@ -300,11 +300,11 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
                        NULL);
 }
 
-void pseudoRender(GUIEngine *engine, const ChessGame *game) {
+void pseudoRender(GUIEngine *engine, const GameManager *manager) {
     SDL_RenderClear(engine->renderer);
     SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
     Pane_Render(engine->pane);
-    Board_Render(engine->board, game);
+    Board_Render(engine->board, manager);
     SDL_RenderPresent(engine->renderer);
 }
 
@@ -457,5 +457,5 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
         case GAME_COMMAND_INVALID:
             break;
     }
-    pseudoRender(engine, manager->game);
+    pseudoRender(engine, manager);
 }

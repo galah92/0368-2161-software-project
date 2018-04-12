@@ -157,12 +157,12 @@ char* pieceToSrcImage(ChessPiece piece) {
     }
 }
 
-void Board_Render(Board *board, const ChessGame *game) {
+void Board_Render(Board *board, const GameManager *manager) {
     if (!board) return;
     for (int i = 0; i < CHESS_GRID; i++) {
         for (int j = CHESS_GRID - 1; j >= 0; j--) {
-            if (game) {
-                Tile_SetImage(board->tiles[i][j], pieceToSrcImage(game->board[i][CHESS_GRID - 1 - j]));
+            if (manager) {
+                Tile_SetImage(board->tiles[i][j], pieceToSrcImage(manager->game->board[i][CHESS_GRID - 1 - j]));
             }
             Tile_Render(board->tiles[i][j]);
         }
