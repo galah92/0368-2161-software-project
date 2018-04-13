@@ -160,13 +160,13 @@ char* pieceToSrcImage(ChessPiece piece) {
 
 void Board_Render(Board *board, const GameManager *manager, GameCommandType commType) {
     if (!board) return;
-    if (commType == GAME_COMMAND_GET_MOVES) {
+    if (commType == GAME_COMMAND_GET_MOVES) {        
         ChessPos *pos;
         SDL_Rect rect = { .w=TILE_S, .h=TILE_S };
         while (!ArrayStack_IsEmpty(manager->moves)) {
             pos = ArrayStack_PopLeft(manager->moves);
-            rect.x = BOARD_X + (pos->y + 1) * TILE_S;
-            rect.y = BOARD_Y + (pos->x + 1) * TILE_S;
+            rect.x = BOARD_X + (pos->x + 1) * TILE_S;
+            rect.y = BOARD_Y + (pos->y + 1) * TILE_S;
             switch (pos->type) {
                 case CHESS_POS_STANDARD:
                     SDL_SetRenderDrawColor(board->renderer, 255, 255, 255, 255);
@@ -211,6 +211,7 @@ void* Board_HandleEvent(Board *board, SDL_Event *event, void *args) {
             board->eventArgs.isRightClick = true;
             board->eventArgs.move[0] = y;
             board->eventArgs.move[1] = x + 'A' - 1;
+            if (board->action) return board->action(&board->eventArgs, args);
         }
         board->eventArgs.isRightClick = false;
         if (!isInBoardPerimiter(event->button.x, event->button.y)) return NULL;
