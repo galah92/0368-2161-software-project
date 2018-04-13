@@ -306,11 +306,16 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
                       (SDL_Rect){ .x = 25, .y = 475, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
                       handleLoadButton),
+        Button_Create(renderer,
+                      SRC_BUTTON_SAVE,
+                      (SDL_Rect){ .x = 25, .y = 550, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
+                      handleSaveButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
-                       7,
+                       8,
                        NULL, NULL);
 }
 
@@ -330,7 +335,7 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
                       SRC_BUTTON_SAVE,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
-                      handleSaveButton),
+                      handleLoadPaneButton),
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
