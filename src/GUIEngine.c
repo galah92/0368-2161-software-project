@@ -108,21 +108,31 @@ void* onClickSaveButton(void *args) {
     return NULL;
 }
 
-// void onPreRenderSlot1Button(Button *button, const void *args) {
-//     Button_SetToggled(button, *(unsigned int*)args == 1);
-// }
-// void onPreRenderSlot2Button(Button *button, const void *args) {
-//     Button_SetToggled(button, *(unsigned int*)args == 2);
-// }
-// void onPreRenderSlot3Button(Button *button, const void *args) {
-//     Button_SetToggled(button, *(unsigned int*)args == 3);
-// }
-// void onPreRenderSlot4Button(Button *button, const void *args) {
-//     Button_SetToggled(button, *(unsigned int*)args == 4);
-// }
-// void onPreRenderSlot5Button(Button *button, const void *args) {
-//     Button_SetToggled(button, *(unsigned int*)args == 5);
-// }
+void onPreRenderSlot1Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->slot == 1);
+}
+
+void onPreRenderSlot2Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->slot == 2);
+}
+
+void onPreRenderSlot3Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->slot == 3);
+}
+
+void onPreRenderSlot4Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->slot == 4);
+}
+
+void onPreRenderSlot5Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->slot == 5);
+}
+
 void* onClickSlot1Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SET_SLOT;
@@ -323,27 +333,27 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_SLOT1,
                       (SDL_Rect){ .x = 25, .y = 100, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot1Button,
                       onClickSlot1Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT2,
                       (SDL_Rect){ .x = 135, .y = 100, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot2Button,
                       onClickSlot2Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT3,
                       (SDL_Rect){ .x = 25, .y = 175, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot3Button,
                       onClickSlot3Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT4,
                       (SDL_Rect){ .x = 135, .y = 175, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot4Button,
                       onClickSlot4Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT5,
                       (SDL_Rect){ .x = 80, .y = 250, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot5Button,
                       onClickSlot5Button),
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
