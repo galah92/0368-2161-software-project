@@ -39,6 +39,16 @@
 #define SRC_BUTTON_SLOT4        "./gui/colors/slot04.bmp"
 #define SRC_BUTTON_SLOT5        "./gui/colors/slot05.bmp"
 
+#define SRC_BUTTON_AMATEUR      "./gui/colors/amateur.bmp"
+#define SRC_BUTTON_EASY         "./gui/colors/easy.bmp"
+#define SRC_BUTTON_MODERATE     "./gui/colors/moderate.bmp"
+#define SRC_BUTTON_HARD         "./gui/colors/hard.bmp"
+#define SRC_BUTTON_EXPERT       "./gui/colors/expert.bmp"
+
+#define SRC_BUTTON_1_PLAYER     "./gui/colors/1playermode.bmp"
+#define SRC_BUTTON_2_PLAYER     "./gui/colors/2playermode.bmp"
+
+
 
 typedef enum PaneType {
     PANE_TYPE_MAIN,
@@ -189,6 +199,62 @@ void* handleSlot5Button(void *args) {
     return NULL;
 }
 
+void onPreRenderDifficulty1Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == 1);
+}
+void onPreRenderDifficulty2Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == 2);
+}
+void onPreRenderDifficulty3Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == 3);
+}
+void onPreRenderDifficulty4Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == 4);
+}
+void onPreRenderDifficulty5Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == 5);
+}
+void* handleDifficulty1Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_DIFFICULTY;
+    guiCommand->gameCommand.args[0] = 1;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+void* handleDifficulty2Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_DIFFICULTY;
+    guiCommand->gameCommand.args[0] = 2;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+void* handleDifficulty3Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_DIFFICULTY;
+    guiCommand->gameCommand.args[0] = 3;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+void* handleDifficulty4Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_DIFFICULTY;
+    guiCommand->gameCommand.args[0] = 4;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+void* handleDifficulty5Button(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_DIFFICULTY;
+    guiCommand->gameCommand.args[0] = 5;
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+
 void* handleUndoButton(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
     guiCommand->gameCommand.type = GAME_COMMAND_UNDO;
@@ -242,30 +308,65 @@ Pane* SettingsPane_Create(SDL_Renderer *renderer) {
                       NULL,
                       NULL),
         Button_Create(renderer,
-                      SRC_BUTTON_DIFFICULTY,
-                      (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
+                      SRC_BUTTON_1_PLAYER,
+                      (SDL_Rect){ .x = 25, .y = 100, .w = 90, .h = BUTTON_H },
                       NULL,
-                      NULL),
+                      handleNewGameButton),
         Button_Create(renderer,
-                      SRC_BUTTON_USER_COLOR,
+                      SRC_BUTTON_2_PLAYER,
+                      (SDL_Rect){ .x = 135, .y = 100, .w = 90, .h = BUTTON_H },
+                      NULL,
+                      handleNewGameButton),
+        Button_Create(renderer,
+                      SRC_BUTTON_DIFFICULTY,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
                       NULL),
         Button_Create(renderer,
+                      SRC_BUTTON_AMATEUR,
+                      (SDL_Rect){ .x = 25, .y = 250, .w = 90, .h = BUTTON_H },
+                      NULL,
+                      handleDifficulty1Button),
+        Button_Create(renderer,
+                      SRC_BUTTON_EASY,
+                      (SDL_Rect){ .x = 135, .y = 250, .w = 90, .h = BUTTON_H },
+                      NULL,
+                      handleDifficulty2Button),
+        Button_Create(renderer,
+                      SRC_BUTTON_MODERATE,
+                      (SDL_Rect){ .x = 25, .y = 325, .w = 90, .h = BUTTON_H },
+                      NULL,
+                      handleDifficulty3Button),
+        Button_Create(renderer,
+                      SRC_BUTTON_HARD,
+                      (SDL_Rect){ .x = 135, .y = 325, .w = 90, .h = BUTTON_H },
+                      NULL,
+                      handleDifficulty4Button),
+        Button_Create(renderer,
+                      SRC_BUTTON_EXPERT,
+                      (SDL_Rect){ .x = 80, .y = 400, .w = 90, .h = BUTTON_H },
+                      NULL,
+                      handleDifficulty5Button),              
+        Button_Create(renderer,
+                      SRC_BUTTON_USER_COLOR,
+                      (SDL_Rect){ .x = 25, .y = 475, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
+                      NULL),
+        Button_Create(renderer,
                       SRC_BUTTON_BACK,
-                      (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 25, .y = 550, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
                       handleBackButton),
         Button_Create(renderer,
                       SRC_BUTTON_START,
-                      (SDL_Rect){ .x = 25, .y = 325, .w = BUTTON_W, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 25, .y = 625, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
                       handleStartButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
-                       5,
+                       12,
                        NULL, NULL);
 }
 
@@ -489,9 +590,6 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
 void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand command) {
     if (!manager || manager->error != GAME_ERROR_NONE) return;
     switch (command.type) {
-        case GAME_COMMAND_GAME_MODE:
-        case GAME_COMMAND_DIFFICULTY:
-        case GAME_COMMAND_USER_COLOR:
         case GAME_COMMAND_LOAD_AND_START:
             updatePane(engine, PANE_TYPE_GAME);
             break;
@@ -500,6 +598,9 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
         case GAME_COMMAND_START:
             updatePane(engine, PANE_TYPE_GAME);
             break;
+        case GAME_COMMAND_GAME_MODE:
+        case GAME_COMMAND_DIFFICULTY:
+        case GAME_COMMAND_USER_COLOR:
         case GAME_COMMAND_MOVE:
         case GAME_COMMAND_GET_MOVES:
         case GAME_COMMAND_SAVE:
