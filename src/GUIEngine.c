@@ -129,7 +129,7 @@ char* slotToPath(unsigned int slot) {
 
 void* handleLoadButton(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
-    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
+    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_AND_START;
     strcpy(guiCommand->gameCommand.path, slotToPath(guiCommand->slot));
     guiCommand->type = GUI_COMMAND_GAME_COMMAND;
     return NULL;
@@ -457,6 +457,7 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
             return guiCommand.gameCommand;
         }
         if (engine->event.type != SDL_MOUSEBUTTONUP) continue;
+        guiCommand.slot = engine->slot;
         Pane_HandleEvent(engine->pane, &engine->event, &guiCommand);
         Board_HandleEvent(engine->board, &engine->event, &guiCommand);
         switch (guiCommand.type) {
@@ -486,7 +487,7 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
         case GAME_COMMAND_GAME_MODE:
         case GAME_COMMAND_DIFFICULTY:
         case GAME_COMMAND_USER_COLOR:
-        case GAME_COMMAND_LOAD_GAME:
+        case GAME_COMMAND_LOAD_AND_START:
             updatePane(engine, PANE_TYPE_GAME);
             break;
         case GAME_COMMAND_DEFAULT_SETTINGS:

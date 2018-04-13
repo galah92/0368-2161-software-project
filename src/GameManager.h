@@ -27,6 +27,7 @@ typedef enum GameCommandType {
     GAME_COMMAND_RESTART,
     // shared commands
     GAME_COMMAND_QUIT,
+    GAME_COMMAND_LOAD_AND_START,
     GAME_COMMAND_INVALID,
 } GameCommandType;
 
