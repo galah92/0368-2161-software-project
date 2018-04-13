@@ -47,6 +47,9 @@
 #define SRC_BUTTON_1_PLAYER     "./gui/colors/1playermode.bmp"
 #define SRC_BUTTON_2_PLAYER     "./gui/colors/2playermode.bmp"
 
+#define SRC_BUTTON_USER_COLOR_WHITE     "./gui/colors/white.bmp"
+#define SRC_BUTTON_USER_COLOR_BLACK     "./gui/colors/black.bmp"
+
 
 struct GUIEngine {
     SDL_Window *window;
@@ -223,6 +226,18 @@ void onClickDifficulty5Button(void *args) {
     command->args[0] = CHESS_DIFFICULTY_EXPERT;
 }
 
+void onClickUserColorWhiteButton(void *args) {
+    GameCommand *command = (GameCommand*)args;
+    command->type = GAME_COMMAND_USER_COLOR;
+    command->args[0] = 1;
+}
+
+void onClickUserColorBlackButton(void *args) {
+    GameCommand *command = (GameCommand*)args;
+    command->type = GAME_COMMAND_USER_COLOR;
+    command->args[0] = 0;
+}
+
 void onPreRenderUndoButton(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
     Button_SetEnabled(button, !ArrayStack_IsEmpty(manager->game->history));
@@ -292,64 +307,74 @@ Pane* SettingsPane_Create(SDL_Renderer *renderer) {
                       NULL),
         Button_Create(renderer,
                       SRC_BUTTON_1_PLAYER,
-                      (SDL_Rect){ .x = 25, .y = 100, .w = 90, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 25, .y = 80, .w = 90, .h = BUTTON_H },
                       onPreRenderGameMode1Button,
                       onClickGameMode1Button),
         Button_Create(renderer,
                       SRC_BUTTON_2_PLAYER,
-                      (SDL_Rect){ .x = 135, .y = 100, .w = 90, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 135, .y = 80, .w = 90, .h = BUTTON_H },
                       onPreRenderGameMode2Button,
                       onClickGameMode2Button),
         Button_Create(renderer,
                       SRC_BUTTON_DIFFICULTY,
-                      (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 25, .y = 150, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
                       NULL),
         Button_Create(renderer,
                       SRC_BUTTON_AMATEUR,
-                      (SDL_Rect){ .x = 25, .y = 250, .w = 90, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 25, .y = 205, .w = 90, .h = BUTTON_H },
                       onPreRenderDifficulty1Button,
                       onClickDifficulty1Button),
         Button_Create(renderer,
                       SRC_BUTTON_EASY,
-                      (SDL_Rect){ .x = 135, .y = 250, .w = 90, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 135, .y = 205, .w = 90, .h = BUTTON_H },
                       onPreRenderDifficulty2Button,
                       onClickDifficulty2Button),
         Button_Create(renderer,
                       SRC_BUTTON_MODERATE,
-                      (SDL_Rect){ .x = 25, .y = 325, .w = 90, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 25, .y = 260, .w = 90, .h = BUTTON_H },
                       onPreRenderDifficulty3Button,
                       onClickDifficulty3Button),
         Button_Create(renderer,
                       SRC_BUTTON_HARD,
-                      (SDL_Rect){ .x = 135, .y = 325, .w = 90, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 135, .y = 260, .w = 90, .h = BUTTON_H },
                       onPreRenderDifficulty4Button,
                       onClickDifficulty4Button),
         Button_Create(renderer,
                       SRC_BUTTON_EXPERT,
-                      (SDL_Rect){ .x = 80, .y = 400, .w = 90, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 80, .y = 315, .w = 90, .h = BUTTON_H },
                       onPreRenderDifficulty5Button,
                       onClickDifficulty5Button),              
         Button_Create(renderer,
                       SRC_BUTTON_USER_COLOR,
-                      (SDL_Rect){ .x = 25, .y = 475, .w = BUTTON_W, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 25, .y = 385, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
                       NULL),
         Button_Create(renderer,
+                      SRC_BUTTON_USER_COLOR_WHITE,
+                      (SDL_Rect){ .x = 25, .y = 440, .w = 90, .h = BUTTON_H },
+                      NULL,
+                      onClickUserColorWhiteButton),
+        Button_Create(renderer,
+                      SRC_BUTTON_USER_COLOR_BLACK,
+                      (SDL_Rect){ .x = 135, .y = 440, .w = 90, .h = BUTTON_H },
+                      NULL,
+                      onClickUserColorBlackButton),
+        Button_Create(renderer,
                       SRC_BUTTON_BACK,
-                      (SDL_Rect){ .x = 25, .y = 550, .w = BUTTON_W, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 25, .y = 510, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
                       onClickBackButton),
         Button_Create(renderer,
                       SRC_BUTTON_START,
-                      (SDL_Rect){ .x = 25, .y = 625, .w = BUTTON_W, .h = BUTTON_H },
+                      (SDL_Rect){ .x = 25, .y = 580, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
                       onClickStartButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
-                       12);
+                       14);
 }
 
 Pane* LoadPane_Create(SDL_Renderer *renderer) {
