@@ -55,11 +55,13 @@ struct GUIEngine {
     PaneType paneType;
     Pane *pane;
     Board *board;
+    unsigned int slot;
 };
 
 typedef enum GUICommandType {
     GUI_COMMAND_NONE,
     GUI_COMMAND_SWITCH_PANE,
+    GUI_COMMAND_SET_SLOT,
     GUI_COMMAND_GAME_COMMAND,
     GUI_COMMAND_BOTH,
 } GUICommandType;
@@ -68,6 +70,7 @@ typedef struct GUICommand {
     GUICommandType type;
     PaneType paneType;
     GameCommand gameCommand;
+    unsigned int slot;
 } GUICommand;
 
 void* handleNewGameButton(void *args) {
@@ -113,47 +116,61 @@ void* handleRestartButton(void *args) {
     return NULL;
 }
 
+char* slotToPath(unsigned int slot) {
+    switch (slot) {
+        case 1: return ".slot1.save";
+        case 2: return ".slot2.save";
+        case 3: return ".slot3.save";
+        case 4: return ".slot4.save";
+        case 5: return ".slot5.save";
+        default: return ".slot1.save"; // shouldn't happen
+    }
+}
+
 void* handleLoadButton(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
     guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
-    strcpy(guiCommand->gameCommand.path, "slot1.save");
+    strcpy(guiCommand->gameCommand.path, slotToPath(guiCommand->slot));
+    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    return NULL;
+}
+
+void* handleSaveButton(void *args) {
+    GUICommand *guiCommand = (GUICommand*)args;
+    guiCommand->gameCommand.type = GAME_COMMAND_SAVE;
+    strcpy(guiCommand->gameCommand.path, slotToPath(guiCommand->slot));
     guiCommand->type = GUI_COMMAND_GAME_COMMAND;
     return NULL;
 }
 
 void* handleSlot1Button(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
-    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
-    strcpy(guiCommand->gameCommand.path, "slot1.save");
-    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    guiCommand->type = GUI_COMMAND_SET_SLOT;
+    guiCommand->slot = 1;
     return NULL;
 }
 void* handleSlot2Button(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
-    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
-    strcpy(guiCommand->gameCommand.path, "slot2.save");
-    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    guiCommand->type = GUI_COMMAND_SET_SLOT;
+    guiCommand->slot = 2;
     return NULL;
 }
 void* handleSlot3Button(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
-    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
-    strcpy(guiCommand->gameCommand.path, "slot3.save");
-    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    guiCommand->type = GUI_COMMAND_SET_SLOT;
+    guiCommand->slot = 3;
     return NULL;
 }
 void* handleSlot4Button(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
-    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
-    strcpy(guiCommand->gameCommand.path, "slot4.save");
-    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    guiCommand->type = GUI_COMMAND_SET_SLOT;
+    guiCommand->slot = 4;
     return NULL;
 }
 void* handleSlot5Button(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
-    guiCommand->gameCommand.type = GAME_COMMAND_LOAD_GAME;
-    strcpy(guiCommand->gameCommand.path, "slot5.save");
-    guiCommand->type = GUI_COMMAND_GAME_COMMAND;
+    guiCommand->type = GUI_COMMAND_SET_SLOT;
+    guiCommand->slot = 5;
     return NULL;
 }
 
@@ -298,7 +315,7 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
                       SRC_BUTTON_SAVE,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
-                      NULL),
+                      handleSaveButton),
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
@@ -357,6 +374,7 @@ GUIEngine* GUIEngine_Create() {
     engine->paneType = PANE_TYPE_MAIN;
     engine->pane = MainPane_Create(engine->renderer);
     engine->board = Board_Create(engine->renderer, handleBoardEvent);
+    engine->slot = 1;
     pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
     return engine;
 }
