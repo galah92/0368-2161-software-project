@@ -143,7 +143,7 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *this) {
                 break;
             }
             strcpy(command.path, token);
-            break;  // TODO: consider check for more args and alert somehow
+            break;
         case COMMAND_ARGS_MOVES:
             token = strtok(NULL, INPUT_DELIMITERS);
             if (!token || strlen(token) != 5 || token[0] != '<' ||

@@ -131,7 +131,7 @@ bool isValidRookMove(ChessGame *game, ChessMove move) {
 }
 
 bool isValidKnightMove(ChessGame *game, ChessMove move) {
-    (void)game; // TODO: consider remove that argument as it's unused.
+    (void)game; // here for completness of isValidPieceMove()
     int horDiff = abs(move.from.x - move.to.x);
     int verDiff = abs(move.from.y - move.to.y);
     return (verDiff == 2 && horDiff == 1) ^ (horDiff == 2 && verDiff == 1);
@@ -183,7 +183,7 @@ bool isValidQueenMove(ChessGame *game, ChessMove move) {
 }
 
 bool isValidKingMove(ChessGame *game, ChessMove move) {
-    (void)game; // TODO: consider remove that argument as it's unused.
+    (void)game; // here for completness of isValidPieceMove()
     int horDiff = abs(move.from.x - move.to.x);
     int verDiff = abs(move.from.y - move.to.y);
     return horDiff <= 1 && verDiff <= 1 && ((horDiff > 0) || (verDiff > 0));
