@@ -393,15 +393,16 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
         }
         Pane_HandleEvent(engine->pane, &engine->event, &guiCommand);
         Board_HandleEvent(engine->board, &engine->event, &guiCommand);
-        pseudoRender(engine, NULL, GAME_COMMAND_INVALID);
         switch (guiCommand.type) {
             case GUI_COMMAND_GAME_COMMAND:
                 return guiCommand.gameCommand;
             case GUI_COMMAND_SWITCH_PANE:
                 updatePane(engine, guiCommand.paneType);
+                pseudoRender(engine, NULL, GAME_COMMAND_INVALID);
                 break;
             case GUI_COMMAND_BOTH:
                 updatePane(engine, guiCommand.paneType);
+                pseudoRender(engine, NULL, GAME_COMMAND_INVALID);
                 return guiCommand.gameCommand;
             default:
                 break;
