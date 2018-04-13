@@ -9,6 +9,7 @@ struct Button {
 	SDL_Texture *texture;
 	SDL_Rect location;
 	bool isEnabled;
+	bool isToggled;
 	void (*OnPreRender)(Button *button, const void *args);
 	void* (*OnClick)(void*);
 };
@@ -28,6 +29,7 @@ Button* Button_Create(SDL_Renderer *renderer,
 	button->renderer = renderer;
 	button->location = location;
 	button->isEnabled = true;
+	button->isToggled = false;
 	button->OnPreRender = OnPreRender;
 	button->OnClick = OnClick;
 	return button;
@@ -40,9 +42,14 @@ Button* Button_Destroy(Button* button) {
     return NULL;
 }
 
-void Button_SetEnabled(Button* button, bool toEnable) {
+void Button_SetEnabled(Button* button, bool isEnabled) {
 	if (!button) return;
-	button->isEnabled = toEnable;
+	button->isEnabled = isEnabled;
+}
+
+void Button_SetToggled(Button* button, bool isToggled) {
+	if (!button) return;
+	button->isToggled = isToggled;
 }
 
 void Button_Render(Button *button, const void *args) {
@@ -51,7 +58,10 @@ void Button_Render(Button *button, const void *args) {
 	SDL_RenderCopy(button->renderer, button->texture, NULL, &button->location);
 	if (!button->isEnabled) {
 		SDL_SetRenderDrawColor(button->renderer, 255, 255, 255, 128);
-		SDL_RenderFillRect(button->renderer, &button->location);		
+		SDL_RenderFillRect(button->renderer, &button->location);
+	} else if (button->isToggled) {
+		SDL_SetRenderDrawColor(button->renderer, 0, 255, 0, 64);
+		SDL_RenderFillRect(button->renderer, &button->location);
 	}
 }
 

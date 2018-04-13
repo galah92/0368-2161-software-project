@@ -18,7 +18,9 @@ Button* Button_Create(SDL_Renderer *renderer,
 
 Button* Button_Destroy(Button* button);
 
-void Button_SetEnabled(Button* button, bool toEnable);
+void Button_SetEnabled(Button* button, bool isEnabled);
+
+void Button_SetToggled(Button* button, bool isToggled);
 
 void Button_Render(Button *button, const void *args);
 
