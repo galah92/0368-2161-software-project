@@ -28,7 +28,12 @@ typedef enum GameCommandType {
     // shared commands
     GAME_COMMAND_QUIT,
     GAME_COMMAND_LOAD_AND_START,
+    GAME_COMMAND_SAVE_FROM_SLOT,
     GAME_COMMAND_INVALID,
+    // GUI commands
+    GAME_COMMAND_SET_PANE,
+    GAME_COMMAND_BACK_PANE,
+    GAME_COMMAND_SET_SLOT,
 } GameCommandType;
 
 
@@ -80,6 +85,13 @@ typedef enum GamePlayerType {
     GAME_PLAYER_TYPE_AI
 } GamePlayerType;
 
+typedef enum GamePaneType {
+    GAME_PANE_TYPE_MAIN,
+    GAME_PANE_TYPE_SETTINGS,
+    GAME_PANE_TYPE_GAME,
+    GAME_PANE_TYPE_LOAD,
+} GamePaneType;
+
 typedef struct GameManager {
     ChessGame *game;
     GamePhase phase;
@@ -87,6 +99,9 @@ typedef struct GameManager {
     ArrayStack *moves;
     GameStatus status;
     bool isSaved;
+    unsigned int slot;
+    GamePaneType paneType;
+    GamePaneType lastPaneType;
 } GameManager;
 
 GameManager* GameManager_Create();

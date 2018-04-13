@@ -287,6 +287,8 @@ GameManager* GameManager_Create() {
     manager->error = GAME_ERROR_NONE;
     manager->moves = NULL;
     manager->isSaved = false;
+    manager->paneType = GAME_PANE_TYPE_MAIN;
+    manager->slot = 1;
     return manager;
 }
 
@@ -400,12 +402,49 @@ GameCommand GameManager_GetAIMove(GameManager *manager) {
     return command;
 }
 
+char* slotToPath(unsigned int slot) {
+    switch (slot) {
+        case 1: return ".slot1.save";
+        case 2: return ".slot2.save";
+        case 3: return ".slot3.save";
+        case 4: return ".slot4.save";
+        case 5: return ".slot5.save";
+        default: return ".slot1.save"; // shouldn't happen
+    }
+}
+
+void processGUICommand(GameManager *manager, GameCommand command) {
+    if (command.type == GAME_COMMAND_SET_PANE) {
+        manager->lastPaneType = manager->paneType;
+        manager->paneType = command.args[0];
+    } else if (command.type == GAME_COMMAND_BACK_PANE) {
+        manager->paneType = manager->lastPaneType;
+    } else if (command.type == GAME_COMMAND_SET_SLOT) {
+        manager->slot = command.args[0];
+    } else if (command.type == GAME_COMMAND_LOAD_AND_START) {
+        handleLoadGame(manager, slotToPath(manager->slot));
+        manager->lastPaneType = manager->paneType;
+        manager->paneType = GAME_PANE_TYPE_GAME;
+        if (manager->error != GAME_ERROR_INVALID_FILE) {
+            manager->phase = GAME_PHASE_RUNNING;
+        }
+    } else if (command.type == GAME_COMMAND_SAVE_FROM_SLOT) {
+        handleSaveGame(manager, slotToPath(manager->slot));
+    } else if (command.type == GAME_COMMAND_START) {
+        manager->lastPaneType = manager->paneType;
+        manager->paneType = GAME_PANE_TYPE_GAME;
+    }
+}
+
 void GameManager_ProcessCommand(GameManager *manager, GameCommand command) {
     manager->error = GAME_ERROR_NONE;
-    if (manager->phase == GAME_PHASE_SETTINGS) {
-        processSettingsCommand(manager, command);
-    } else if (manager->phase == GAME_PHASE_RUNNING) {
-        processRunningCommand(manager, command);
+    processGUICommand(manager, command);
+    if (command.type <= GAME_COMMAND_INVALID || command.type == GAME_COMMAND_START) {
+        if (manager->phase == GAME_PHASE_SETTINGS) {
+            processSettingsCommand(manager, command);
+        } else if (manager->phase == GAME_PHASE_RUNNING) {
+            processRunningCommand(manager, command);
+        }
     }
 }
 
