@@ -226,16 +226,26 @@ void onClickDifficulty5Button(void *args) {
     command->args[0] = CHESS_DIFFICULTY_EXPERT;
 }
 
+void onPreRenderUserColorWhiteButton(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->userColor == CHESS_PLAYER_COLOR_WHITE);
+}
+
+void onPreRenderUserColorBlackButton(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->userColor == CHESS_PLAYER_COLOR_BLACK);
+}
+
 void onClickUserColorWhiteButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_USER_COLOR;
-    command->args[0] = 1;
+    command->args[0] = CHESS_PLAYER_COLOR_WHITE;
 }
 
 void onClickUserColorBlackButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_USER_COLOR;
-    command->args[0] = 0;
+    command->args[0] = CHESS_PLAYER_COLOR_BLACK;
 }
 
 void onPreRenderUndoButton(Button *button, const void *args) {
@@ -353,12 +363,12 @@ Pane* SettingsPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_USER_COLOR_WHITE,
                       (SDL_Rect){ .x = 25, .y = 440, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderUserColorWhiteButton,
                       onClickUserColorWhiteButton),
         Button_Create(renderer,
                       SRC_BUTTON_USER_COLOR_BLACK,
                       (SDL_Rect){ .x = 135, .y = 440, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderUserColorBlackButton,
                       onClickUserColorBlackButton),
         Button_Create(renderer,
                       SRC_BUTTON_BACK,
