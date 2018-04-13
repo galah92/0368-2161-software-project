@@ -6,6 +6,7 @@
 #include "GUIEngine.h"
 #include "GUIUtils.h"
 #include "GUIBoard.h"
+#include "ChessGame.h"
 
 
 #define WINDOW_W                1024
@@ -162,7 +163,7 @@ void* handleUndoButton(void *args) {
     return NULL;
 }
 
-void *handleBoardEvent(BoardEventArgs *event, void *args) {
+void* handleBoardEvent(BoardEventArgs *event, void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
     if (event->isRightClick) {
         guiCommand->gameCommand.type = GAME_COMMAND_GET_MOVES;
@@ -180,21 +181,24 @@ Pane* MainPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_NEW_GAME,
                       (SDL_Rect){ .x = 25, .y = 25, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleNewGameButton),
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleLoadPaneButton),
         Button_Create(renderer,
                       SRC_BUTTON_QUIT,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleQuitButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
                        3,
-                       NULL);
+                       NULL, NULL);
 }
 
 Pane* SettingsPane_Create(SDL_Renderer *renderer) {
@@ -202,29 +206,34 @@ Pane* SettingsPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_GAME_MODE,
                       (SDL_Rect){ .x = 25, .y = 25, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       NULL),
         Button_Create(renderer,
                       SRC_BUTTON_DIFFICULTY,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       NULL),
         Button_Create(renderer,
                       SRC_BUTTON_USER_COLOR,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       NULL),
         Button_Create(renderer,
                       SRC_BUTTON_BACK,
                       (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleBackButton),
         Button_Create(renderer,
                       SRC_BUTTON_START,
                       (SDL_Rect){ .x = 25, .y = 325, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleStartButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
                        5,
-                       NULL);
+                       NULL, NULL);
 }
 
 Pane* LoadPane_Create(SDL_Renderer *renderer) {
@@ -232,37 +241,49 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_BACK,
                       (SDL_Rect){ .x = 25, .y = 25, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleBackButton),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT1,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleSlot1Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT2,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleSlot2Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT3,
                       (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleSlot3Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT4,
                       (SDL_Rect){ .x = 25, .y = 325, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleSlot4Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT5,
                       (SDL_Rect){ .x = 25, .y = 400, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleSlot5Button),
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 475, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleLoadButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
                        7,
-                       NULL);
+                       NULL, NULL);
+}
+
+void onPreRenderUndoButton(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    (void)manager;
 }
 
 Pane* GamePane_Create(SDL_Renderer *renderer) {
@@ -270,40 +291,46 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_RESTART,
                       (SDL_Rect){ .x = 25, .y = 25, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleRestartButton),
         Button_Create(renderer,
                       SRC_BUTTON_SAVE,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       NULL),
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleLoadPaneButton),
         Button_Create(renderer,
                       SRC_BUTTON_UNDO,
                       (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },
+                      onPreRenderUndoButton,
                       handleUndoButton),
         Button_Create(renderer,
                       SRC_BUTTON_MAIN_MENU,
                       (SDL_Rect){ .x = 25, .y = 325, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleBackButton),
         Button_Create(renderer,
                       SRC_BUTTON_QUIT,
                       (SDL_Rect){ .x = 25, .y = 400, .w = BUTTON_W, .h = BUTTON_H },
+                      NULL,
                       handleQuitButton),
     };
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
                        6,
-                       NULL);
+                       NULL, NULL);
 }
 
-void pseudoRender(GUIEngine *engine, const GameManager *manager, GameCommandType commType) {
+void pseudoRender(GUIEngine *engine, const GameManager *manager, GameCommand command) {
     SDL_RenderClear(engine->renderer);
     SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
-    Pane_Render(engine->pane);
-    Board_Render(engine->board, manager, commType);
+    Pane_Render(engine->pane, manager);
+    Board_Render(engine->board, manager, command.type);
     SDL_RenderPresent(engine->renderer);
 }
 
@@ -329,7 +356,7 @@ GUIEngine* GUIEngine_Create() {
     engine->paneType = PANE_TYPE_MAIN;
     engine->pane = MainPane_Create(engine->renderer);
     engine->board = Board_Create(engine->renderer, handleBoardEvent);
-    pseudoRender(engine, NULL, GAME_COMMAND_INVALID);
+    pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
     return engine;
 }
 
@@ -391,6 +418,7 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
             guiCommand.gameCommand.type = GAME_COMMAND_QUIT;
             return guiCommand.gameCommand;
         }
+        if (engine->event.type != SDL_MOUSEBUTTONUP) continue;
         Pane_HandleEvent(engine->pane, &engine->event, &guiCommand);
         Board_HandleEvent(engine->board, &engine->event, &guiCommand);
         switch (guiCommand.type) {
@@ -398,11 +426,11 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
                 return guiCommand.gameCommand;
             case GUI_COMMAND_SWITCH_PANE:
                 updatePane(engine, guiCommand.paneType);
-                pseudoRender(engine, NULL, GAME_COMMAND_INVALID);
+                pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
                 break;
             case GUI_COMMAND_BOTH:
                 updatePane(engine, guiCommand.paneType);
-                pseudoRender(engine, NULL, GAME_COMMAND_INVALID);
+                pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
                 return guiCommand.gameCommand;
             default:
                 break;
@@ -411,25 +439,7 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
 }
 
 void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand command) {
-    if (!manager) return;
-    switch (manager->error) {
-        case GAME_ERROR_NONE:
-            break;
-        case GAME_ERROR_INVALID_COMMAND:
-        case GAME_ERROR_INVALID_GAME_MODE:
-        case GAME_ERROR_INVALID_DIFF_LEVEL:
-        case GAME_ERROR_INVALID_USER_COLOR:
-        case GAME_ERROR_INVALID_FILE:
-        case GAME_ERROR_INVALID_POSITION:
-        case GAME_ERROR_EMPTY_POSITION:
-        case GAME_ERROR_NOT_CONTAIN_PLAYER_PIECE:
-        case GAME_ERROR_INVALID_MOVE:
-        case GAME_ERROR_INVALID_MOVE_KING_IS_T:
-        case GAME_ERROR_INVALID_MOVE_KING_WILL_T:
-        case GAME_ERROR_FILE_ALLOC:
-        case GAME_ERROR_EMPTY_HISTORY:
-            return;
-    }
+    if (!manager || manager->error != GAME_ERROR_NONE) return;
     switch (command.type) {
         case GAME_COMMAND_GAME_MODE:
         case GAME_COMMAND_DIFFICULTY:
@@ -453,5 +463,5 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
         default:
             break;
     }
-    pseudoRender(engine, manager, command.type);
+    pseudoRender(engine, manager, command);
 }
