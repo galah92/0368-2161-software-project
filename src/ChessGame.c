@@ -334,7 +334,7 @@ ChessGame* ChessGame_Create() {
     if (!game) return NULL;
     game->turn = CHESS_PLAYER_COLOR_WHITE;
     ChessGame_SetDefaultSettings(game);
-    initChessBoard(game);
+    // initChessBoard(game);
     game->history = ArrayStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
     if (!game->history) ChessGame_Destroy(game);
     return game;

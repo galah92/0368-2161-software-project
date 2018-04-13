@@ -201,5 +201,6 @@ ChessResult ChessGame_GetMoves(ChessGame *game, ChessPos pos, ArrayStack **stack
 
 ChessResult ChessGame_GetPieceColor(ChessPiece piece, ChessColor *color);
 
+void initChessBoard(ChessGame *game);
 
 #endif

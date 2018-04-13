@@ -139,6 +139,7 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
             // done in CLIEngine
             break;
         case GAME_COMMAND_START:
+            initChessBoard(manager->game);
             manager->phase = GAME_PHASE_RUNNING;
             break;
         case GAME_COMMAND_QUIT:
