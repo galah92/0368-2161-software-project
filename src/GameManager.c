@@ -170,7 +170,7 @@ void handleMove(GameManager *manager, GameCommand command) {
             break;
         case CHESS_SUCCESS:
             manager->isSaved = false;
-            manager->gameHasHistory = ArrayStack_Size(manager->moves);
+            manager->gameHasHistory = true;
         default:
             break;
     }
