@@ -8,6 +8,7 @@ struct Button {
 	SDL_Renderer *renderer;
 	SDL_Texture *texture;
 	SDL_Rect location;
+	bool isEnabled;
 	void* (*action)(void*);
 };
 
@@ -24,6 +25,7 @@ Button* Button_Create(SDL_Renderer *renderer,
 	SDL_FreeSurface(surface);
 	button->renderer = renderer;
 	button->location = location;
+	button->isEnabled = true;
 	button->action = action;
 	return button;
 }
@@ -35,13 +37,22 @@ Button* Button_Destroy(Button* button) {
     return NULL;
 }
 
+void Button_SetEnabled(Button* button, bool toEnable) {
+	if (!button) return;
+	button->isEnabled = toEnable;
+}
+
 void Button_Render(Button *button) {
 	if (!button) return;
 	SDL_RenderCopy(button->renderer, button->texture, NULL, &button->location);
+	if (!button->isEnabled) {
+		SDL_SetRenderDrawColor(button->renderer, 255, 255, 255, 128);
+		SDL_RenderFillRect(button->renderer, &button->location);		
+	}
 }
 
 void* Button_HandleEvent(Button *button, SDL_Event *event, void *args) {
-	if (!button) return NULL;
+	if (!button || !button->isEnabled) return NULL;
 	if (event->type == SDL_MOUSEBUTTONUP) {
 		SDL_Point point = { .x = event->button.x, .y = event->button.y };
 		if (SDL_PointInRect(&point, &button->location) && button->action) {

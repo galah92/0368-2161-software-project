@@ -1,6 +1,7 @@
 #ifndef GUI_UTILS_H_
 #define GUI_UTILS_H_
 
+#include <stdbool.h>
 #include <SDL.h>
 #include <SDL_video.h>
 
@@ -15,6 +16,8 @@ Button* Button_Create(SDL_Renderer *renderer,
                       void* (*action)(void*));
 
 Button* Button_Destroy(Button* button);
+
+void Button_SetEnabled(Button* button, bool toEnable);
 
 void Button_Render(Button *button);
 
