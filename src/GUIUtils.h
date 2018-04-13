@@ -14,7 +14,7 @@ Button* Button_Create(SDL_Renderer *renderer,
                       const char *image,
                       SDL_Rect location,
 					  void (*OnPreRender)(Button *button, const void *args),
-                      void* (*OnClick)(void*));
+                      void (*OnClick)(void*));
 
 Button* Button_Destroy(Button* button);
 
@@ -24,7 +24,7 @@ void Button_SetToggled(Button* button, bool isToggled);
 
 void Button_Render(Button *button, const void *args);
 
-void* Button_HandleEvent(Button *button, SDL_Event *event, void *args);
+void Button_HandleEvent(Button *button, SDL_Event *event, void *args);
 
 // Pane widget - used as a buttons container
 
@@ -33,14 +33,12 @@ typedef struct Pane Pane;
 Pane* Pane_Create(SDL_Renderer *renderer,
 				  SDL_Rect location,
 				  Button **buttons,
-				  unsigned int numOfButtons,
-				  void (*OnPreRender)(Pane *pane, const void *args),
-				  void* (*OnClick)(void*));
+				  unsigned int numOfButtons);
 
 Pane* Pane_Destroy(Pane* pane);
 
 void Pane_Render(Pane *pane, const void *args);
 
-void* Pane_HandleEvent(Pane *pane, SDL_Event *event, void *args);
+void Pane_HandleEvent(Pane *pane, SDL_Event *event, void *args);
 
 #endif

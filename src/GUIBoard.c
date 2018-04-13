@@ -104,10 +104,10 @@ struct Board {
     Tile *tiles[CHESS_GRID][CHESS_GRID];
     BoardEventArgs eventArgs;
     bool hasFromPos;
-    void* (*action)(BoardEventArgs*, void*);
+    void (*action)(BoardEventArgs*, void*);
 };
 
-Board* Board_Create(SDL_Renderer *renderer, void* (*action)(BoardEventArgs*, void*)) {
+Board* Board_Create(SDL_Renderer *renderer, void (*action)(BoardEventArgs*, void*)) {
     Board *board = malloc(sizeof(Board));
     if (!board) return Board_Destroy(board);
     SDL_Rect rect = { .w = TILE_S, .h = TILE_S };
@@ -211,7 +211,9 @@ void* Board_HandleEvent(Board *board, SDL_Event *event, void *args) {
             board->eventArgs.isRightClick = true;
             board->eventArgs.move[0] = y;
             board->eventArgs.move[1] = x + 'A' - 1;
-            if (board->action) return board->action(&board->eventArgs, args);
+            if (board->action) {
+                board->action(&board->eventArgs, args);   
+            }
         }
         board->eventArgs.isRightClick = false;
         if (!isInBoardPerimiter(event->button.x, event->button.y)) return NULL;
@@ -219,7 +221,9 @@ void* Board_HandleEvent(Board *board, SDL_Event *event, void *args) {
             board->eventArgs.move[2] = y;
             board->eventArgs.move[3] = x + 'A' - 1;
             board->hasFromPos = !board->hasFromPos;
-            if (board->action) return board->action(&board->eventArgs, args);
+            if (board->action) {
+                board->action(&board->eventArgs, args);   
+            }
         } else {
             board->eventArgs.move[0] = y;
             board->eventArgs.move[1] = x + 'A' - 1;

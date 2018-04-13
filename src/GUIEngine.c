@@ -58,54 +58,46 @@ struct GUIEngine {
     Board *board;
 };
 
-void* onClickNewGameButton(void *args) {
+void onClickNewGameButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SET_PANE;
     command->args[0] = GAME_PANE_TYPE_SETTINGS;
-    return NULL;
 }
 
-void* onClickLoadPaneButton(void *args) {
+void onClickLoadPaneButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SET_PANE;
     command->args[0] = GAME_PANE_TYPE_LOAD;
-    return NULL;
 }
 
-void* onClickQuitButton(void *args) {
+void onClickQuitButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_QUIT;
-    return NULL;
 }
 
-void* onClickBackButton(void *args) {
+void onClickBackButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_BACK_PANE;
-    return NULL;
 }
 
-void* onClickStartButton(void *args) {
+void onClickStartButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_START;
-    return NULL;
 }
 
-void* onClickRestartButton(void *args) {
+void onClickRestartButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_RESTART;
-    return NULL;
 }
 
-void* onClickLoadButton(void *args) {
+void onClickLoadButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_LOAD_AND_START;
-    return NULL;
 }
 
-void* onClickSaveButton(void *args) {
+void onClickSaveButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SAVE_FROM_SLOT;
-    return NULL;
 }
 
 void onPreRenderSlot1Button(Button *button, const void *args) {
@@ -133,35 +125,30 @@ void onPreRenderSlot5Button(Button *button, const void *args) {
     Button_SetToggled(button, manager->slot == 5);
 }
 
-void* onClickSlot1Button(void *args) {
+void onClickSlot1Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SET_SLOT;
     command->args[0] = 1;
-    return NULL;
 }
-void* onClickSlot2Button(void *args) {
+void onClickSlot2Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SET_SLOT;
     command->args[0] = 2;
-    return NULL;
 }
-void* onClickSlot3Button(void *args) {
+void onClickSlot3Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SET_SLOT;
     command->args[0] = 3;
-    return NULL;
 }
-void* onClickSlot4Button(void *args) {
+void onClickSlot4Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SET_SLOT;
     command->args[0] = 4;
-    return NULL;
 }
-void* onClickSlot5Button(void *args) {
+void onClickSlot5Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SET_SLOT;
     command->args[0] = 5;
-    return NULL;
 }
 
 void onPreRenderGameMode1Button(Button *button, const void *args) {
@@ -172,17 +159,15 @@ void onPreRenderGameMode2Button(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
     Button_SetToggled(button, manager->game->mode == CHESS_MODE_2_PLAYER);
 }
-void* onClickGameMode1Button(void *args) {
+void onClickGameMode1Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_GAME_MODE;
     command->args[0] = CHESS_MODE_1_PLAYER;
-    return NULL;
 }
-void* onClickGameMode2Button(void *args) {
+void onClickGameMode2Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_GAME_MODE;
     command->args[0] = CHESS_MODE_2_PLAYER;
-    return NULL;
 }
 
 void onPreRenderDifficulty1Button(Button *button, const void *args) {
@@ -206,48 +191,41 @@ void onPreRenderDifficulty5Button(Button *button, const void *args) {
     Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_EXPERT);
 }
 
-void* onClickDifficulty1Button(void *args) {
+void onClickDifficulty1Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
     command->args[0] = CHESS_DIFFICULTY_AMATEUR;
-    return NULL;
 }
-void* onClickDifficulty2Button(void *args) {
+void onClickDifficulty2Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
     command->args[0] = CHESS_DIFFICULTY_EASY;
-    return NULL;
 }
-void* onClickDifficulty3Button(void *args) {
+void onClickDifficulty3Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
     command->args[0] = CHESS_DIFFICULTY_MODERATE;
-    return NULL;
 }
-void* onClickDifficulty4Button(void *args) {
+void onClickDifficulty4Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
     command->args[0] = CHESS_DIFFICULTY_HARD;
-    return NULL;
 }
-void* onClickDifficulty5Button(void *args) {
+void onClickDifficulty5Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
     command->args[0] = CHESS_DIFFICULTY_EXPERT;
-    return NULL;
 }
 
-void* onClickUndoButton(void *args) {
+void onClickUndoButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_UNDO;
-    return NULL;
 }
 
-void* onClickBoardEvent(BoardEventArgs *event, void *args) {
+void onClickBoardEvent(BoardEventArgs *event, void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = event->isRightClick ? GAME_COMMAND_GET_MOVES : GAME_COMMAND_MOVE;
     memcpy(command->args, event->move, sizeof(int) * GUI_BOARD_MOVE_ARGS);
-    return NULL;
 }
 
 Pane* MainPane_Create(SDL_Renderer *renderer) {
@@ -271,8 +249,7 @@ Pane* MainPane_Create(SDL_Renderer *renderer) {
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
-                       3,
-                       NULL, NULL);
+                       3);
 }
 
 Pane* SettingsPane_Create(SDL_Renderer *renderer) {
@@ -341,8 +318,7 @@ Pane* SettingsPane_Create(SDL_Renderer *renderer) {
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
-                       12,
-                       NULL, NULL);
+                       12);
 }
 
 Pane* LoadPane_Create(SDL_Renderer *renderer) {
@@ -391,8 +367,7 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
-                       8,
-                       NULL, NULL);
+                       8);
 }
 
 void onPreRenderUndoButton(Button *button, const void *args) {
@@ -436,8 +411,7 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
     return Pane_Create(renderer,
                        (SDL_Rect){ .x = 0, .y = 0, .w = WINDOW_W, .h = WINDOW_H },
                        buttons,
-                       6,
-                       NULL, NULL);
+                       6);
 }
 
 void pseudoRender(GUIEngine *engine, const GameManager *manager, GameCommand command) {

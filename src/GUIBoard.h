@@ -15,7 +15,7 @@ typedef struct BoardEventArgs {
 
 typedef struct Board Board;
 
-Board* Board_Create(SDL_Renderer *renderer, void* (*action)(BoardEventArgs*, void*));
+Board* Board_Create(SDL_Renderer *renderer, void (*action)(BoardEventArgs*, void*));
 
 Board* Board_Destroy(Board* board);
 

@@ -11,14 +11,14 @@ struct Button {
 	bool isEnabled;
 	bool isToggled;
 	void (*OnPreRender)(Button *button, const void *args);
-	void* (*OnClick)(void*);
+	void (*OnClick)(void*);
 };
 
 Button* Button_Create(SDL_Renderer *renderer,
 					  const char *image,
 					  SDL_Rect location,
 					  void (*OnPreRender)(Button *button, const void *args),
-					  void* (*OnClick)(void*)) {
+					  void (*OnClick)(void*)) {
 	Button *button = malloc(sizeof(Button));
     if (!button) return Button_Destroy(button);
 	SDL_Surface *surface = SDL_LoadBMP(image);
@@ -65,15 +65,14 @@ void Button_Render(Button *button, const void *args) {
 	}
 }
 
-void* Button_HandleEvent(Button *button, SDL_Event *event, void *args) {
-	if (!button || !button->isEnabled) return NULL;
+void Button_HandleEvent(Button *button, SDL_Event *event, void *args) {
+	if (!button || !button->isEnabled) return;
 	if (event->type == SDL_MOUSEBUTTONUP) {
 		SDL_Point point = { .x = event->button.x, .y = event->button.y };
 		if (SDL_PointInRect(&point, &button->location) && button->OnClick) {
-			return button->OnClick(args);
+			button->OnClick(args);
 		}
 	}
-	return NULL;
 }
 
 struct Pane {
@@ -81,16 +80,12 @@ struct Pane {
 	SDL_Rect location;
 	Button **buttons;
 	unsigned int numOfButtons;
-	void (*OnPreRender)(Pane *pane, const void *args);
-	void* (*OnClick)(void*);
 };
 
 Pane* Pane_Create(SDL_Renderer *renderer,
 				  SDL_Rect location,
 				  Button **buttons,
-				  unsigned int numOfButtons,
-				  void (*OnPreRender)(Pane *pane, const void *args),
-				  void* (*OnClick)(void*)) {
+				  unsigned int numOfButtons) {
 	Pane *pane = malloc(sizeof(Pane));
     if (!pane) return Pane_Destroy(pane);
 	pane->buttons = malloc(sizeof(Button) * numOfButtons);
@@ -99,8 +94,6 @@ Pane* Pane_Create(SDL_Renderer *renderer,
 	pane->renderer = renderer;
 	pane->location = location;
 	pane->numOfButtons = numOfButtons;
-	pane->OnPreRender = OnPreRender;
-	pane->OnClick = OnClick;
 	return pane;
 }
 
@@ -115,17 +108,14 @@ Pane* Pane_Destroy(Pane* pane) {
 
 void Pane_Render(Pane *pane, const void *args) {
 	if (!pane) return;
-	if (pane->OnPreRender) pane->OnPreRender(pane, args);
 	for (unsigned int i = 0; i < pane->numOfButtons; i++) {
 		Button_Render(pane->buttons[i], args);
 	}
 }
 
-void* Pane_HandleEvent(Pane *pane, SDL_Event *event, void *args) {
-	if (!pane) return NULL;
+void Pane_HandleEvent(Pane *pane, SDL_Event *event, void *args) {
+	if (!pane) return;
 	for (unsigned int i = 0; i < pane->numOfButtons; i++) {
-		void *result = Button_HandleEvent(pane->buttons[i], event, args);
-		if (result) return result;
+		Button_HandleEvent(pane->buttons[i], event, args);
 	}
-	return NULL;
 }
