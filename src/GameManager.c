@@ -170,7 +170,6 @@ void handleMove(GameManager *manager, GameCommand command) {
             break;
         case CHESS_SUCCESS:
             manager->isSaved = false;
-            manager->gameHasHistory = true;
         default:
             break;
     }
@@ -223,7 +222,6 @@ void handleUndoMove(GameManager *manager) {
         ArrayStack_Push(manager->moves, &secondUndoneMove);
         }
     ArrayStack_Push(manager->moves, &firstUndoneMove);
-    manager->gameHasHistory = ArrayStack_Size(manager->moves);
 }
 
 void processRunningCommand(GameManager *manager, GameCommand command) {
@@ -277,7 +275,6 @@ GameManager* GameManager_Create() {
     manager->error = GAME_ERROR_NONE;
     manager->moves = NULL;
     manager->isSaved = false;
-    manager->gameHasHistory = false;
     return manager;
 }
 

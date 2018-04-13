@@ -86,7 +86,6 @@ typedef struct GameManager {
     ArrayStack *moves;
     GameStatus status;
     bool isSaved;
-    bool gameHasHistory;
 } GameManager;
 
 GameManager* GameManager_Create();
