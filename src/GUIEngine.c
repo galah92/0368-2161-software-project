@@ -7,6 +7,7 @@
 #include "GUIUtils.h"
 #include "GUIBoard.h"
 #include "ChessGame.h"
+#include "ArrayStack.h"
 
 
 #define WINDOW_W                1024
@@ -283,7 +284,7 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
 
 void onPreRenderUndoButton(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
-    Button_SetEnabled(button, true);
+    Button_SetEnabled(button, !ArrayStack_IsEmpty(manager->game->history));
 }
 
 Pane* GamePane_Create(SDL_Renderer *renderer) {
