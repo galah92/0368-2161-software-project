@@ -248,6 +248,9 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             ChessGame_ResetGame(manager->game);
             manager->phase = GAME_PHASE_SETTINGS;
             break;
+        case GAME_COMMAND_RESTART:
+            ChessGame_ResetGame(manager->game);
+            break;
         case GAME_COMMAND_QUIT:
             manager->phase = GAME_PHASE_QUIT;
             break;

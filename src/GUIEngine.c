@@ -106,7 +106,7 @@ void* handleStartButton(void *args) {
 
 void* handleRestartButton(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
-    guiCommand->gameCommand.type = GAME_COMMAND_RESET;
+    guiCommand->gameCommand.type = GAME_COMMAND_RESTART;
     guiCommand->type = GUI_COMMAND_GAME_COMMAND;
     return NULL;
 }
@@ -446,8 +446,10 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
         case GAME_COMMAND_SAVE:
         case GAME_COMMAND_UNDO:
         case GAME_COMMAND_RESET:
+        case GAME_COMMAND_RESTART:
         case GAME_COMMAND_QUIT:
         case GAME_COMMAND_INVALID:
+        default:
             break;
     }
     pseudoRender(engine, manager, command.type);

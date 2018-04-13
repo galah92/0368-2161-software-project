@@ -190,7 +190,7 @@ void Board_Render(Board *board, const GameManager *manager, GameCommandType comm
         for (int j = 0; j < CHESS_GRID; j++) {
             if (manager) {
                 Tile_SetImage(board->tiles[i][j],
-                              pieceToSrcImage(manager->game->board[i][CHESS_GRID - 1 - j]));
+                            pieceToSrcImage(manager->game->board[i][CHESS_GRID - 1 - j]));
             }
             Tile_Render(board->tiles[i][j]);
         }
