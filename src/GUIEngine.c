@@ -6,7 +6,6 @@
 #include "GUIEngine.h"
 #include "GUIUtils.h"
 #include "GUIBoard.h"
-#include "ChessGame.h"
 #include "ArrayStack.h"
 
 
@@ -504,43 +503,10 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
         Board_HandleEvent(engine->board, &engine->event, &command);
     }
     return command;
-    // GUICommand guiCommand = { .type = GUI_COMMAND_NONE };
-    // guiCommand.gameCommand = (GameCommand){ .type = GAME_COMMAND_INVALID };
-    // if (!engine) return guiCommand.gameCommand;
-    // while (true) {
-    //     SDL_WaitEvent(&engine->event);
-    //     if (isExitButtonEvent(&engine->event)) {
-    //         guiCommand.gameCommand.type = GAME_COMMAND_QUIT;
-    //         return guiCommand.gameCommand;
-    //     }
-    //     if (engine->event.type != SDL_MOUSEBUTTONUP) continue;
-    //     guiCommand.slot = engine->slot;
-    //     Pane_HandleEvent(engine->pane, &engine->event, &guiCommand);
-    //     Board_HandleEvent(engine->board, &engine->event, &guiCommand);
-    //     switch (guiCommand.type) {
-    //         case GUI_COMMAND_GAME_COMMAND:
-    //             return guiCommand.gameCommand;
-    //         case GUI_COMMAND_SWITCH_PANE:
-    //             updatePane(engine, guiCommand.paneType);
-    //             pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
-    //             break;
-    //         case GUI_COMMAND_SET_SLOT:
-    //             engine->slot = guiCommand.slot;
-    //             pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
-    //             break;
-    //         case GUI_COMMAND_BOTH:
-    //             updatePane(engine, guiCommand.paneType);
-    //             pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
-    //             return guiCommand.gameCommand;
-    //         default:
-    //             break;
-    //     }
-    // }
 }
 
 void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand command) {
     if (!manager || manager->error != GAME_ERROR_NONE) return;
-    printf("%d, %d\n", command.type == GAME_COMMAND_SET_PANE, manager->paneType == GAME_PANE_TYPE_SETTINGS);
     switch (command.type) {
         case GAME_COMMAND_LOAD_AND_START:
         case GAME_COMMAND_START:
@@ -548,22 +514,12 @@ void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand
         case GAME_COMMAND_BACK_PANE:
             updatePane(engine, manager->paneType);
             break;
-        case GAME_COMMAND_DEFAULT_SETTINGS:
-        case GAME_COMMAND_PRINT_SETTINGS:
-        case GAME_COMMAND_GAME_MODE:
-        case GAME_COMMAND_DIFFICULTY:
-        case GAME_COMMAND_USER_COLOR:
-        case GAME_COMMAND_MOVE:
-        case GAME_COMMAND_GET_MOVES:
-        case GAME_COMMAND_SAVE:
-        case GAME_COMMAND_UNDO:
-        case GAME_COMMAND_RESET:
-        case GAME_COMMAND_RESTART:
-        case GAME_COMMAND_QUIT:
-        case GAME_COMMAND_INVALID:        
-        case GAME_COMMAND_SET_SLOT:
         default:
             break;
     }
-    pseudoRender(engine, manager, command);
+    SDL_RenderClear(engine->renderer);
+    SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
+    Pane_Render(engine->pane, manager);
+    Board_Render(engine->board, manager, command.type);
+    SDL_RenderPresent(engine->renderer);
 }
