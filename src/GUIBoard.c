@@ -165,8 +165,8 @@ void Board_Render(Board *board, const GameManager *manager, GameCommandType comm
         SDL_Rect rect = { .w=TILE_S, .h=TILE_S };
         while (!ArrayStack_IsEmpty(manager->moves)) {
             pos = ArrayStack_PopLeft(manager->moves);
-            rect.x = BOARD_X + pos->x * TILE_S;
-            rect.y = BOARD_Y + (CHESS_GRID - 1 - pos->y) * TILE_S;
+            rect.x = BOARD_X - 2 + pos->x * TILE_S;
+            rect.y = BOARD_Y + 2 + (CHESS_GRID - 1 - pos->y) * TILE_S;
             switch (pos->type) {
                 case CHESS_POS_STANDARD:
                     SDL_SetRenderDrawColor(board->renderer, 255, 255, 255, 128);
