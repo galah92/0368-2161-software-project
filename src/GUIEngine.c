@@ -283,7 +283,7 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
 
 void onPreRenderUndoButton(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
-    (void)manager;
+    Button_SetEnabled(button, true);
 }
 
 Pane* GamePane_Create(SDL_Renderer *renderer) {

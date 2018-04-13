@@ -24,7 +24,7 @@ void Button_Render(Button *button, const void *args);
 
 void* Button_HandleEvent(Button *button, SDL_Event *event, void *args);
 
-// Pane widget
+// Pane widget - used as a buttons container
 
 typedef struct Pane Pane;
 
@@ -33,7 +33,7 @@ Pane* Pane_Create(SDL_Renderer *renderer,
 				  Button **buttons,
 				  unsigned int numOfButtons,
 				  void (*OnPreRender)(Pane *pane, const void *args),
-				  void* (*action)(void*));
+				  void* (*OnClick)(void*));
 
 Pane* Pane_Destroy(Pane* pane);
 

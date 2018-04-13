@@ -72,7 +72,7 @@ struct Pane {
 	Button **buttons;
 	unsigned int numOfButtons;
 	void (*OnPreRender)(Pane *pane, const void *args);
-	void* (*action)(void*);
+	void* (*OnClick)(void*);
 };
 
 Pane* Pane_Create(SDL_Renderer *renderer,
@@ -80,7 +80,7 @@ Pane* Pane_Create(SDL_Renderer *renderer,
 				  Button **buttons,
 				  unsigned int numOfButtons,
 				  void (*OnPreRender)(Pane *pane, const void *args),
-				  void* (*action)(void*)) {
+				  void* (*OnClick)(void*)) {
 	Pane *pane = malloc(sizeof(Pane));
     if (!pane) return Pane_Destroy(pane);
 	pane->buttons = malloc(sizeof(Button) * numOfButtons);
@@ -90,7 +90,7 @@ Pane* Pane_Create(SDL_Renderer *renderer,
 	pane->location = location;
 	pane->numOfButtons = numOfButtons;
 	pane->OnPreRender = OnPreRender;
-	pane->action = action;
+	pane->OnClick = OnClick;
 	return pane;
 }
 
