@@ -164,54 +164,76 @@ void* onClickSlot5Button(void *args) {
     return NULL;
 }
 
-// void onPreRenderDifficulty1Button(Button *button, const void *args) {
-//     GameManager *manager = (GameManager*)args;
-//     Button_SetToggled(button, manager->game->difficulty == 1);
-// }
-// void onPreRenderDifficulty2Button(Button *button, const void *args) {
-//     GameManager *manager = (GameManager*)args;
-//     Button_SetToggled(button, manager->game->difficulty == 2);
-// }
-// void onPreRenderDifficulty3Button(Button *button, const void *args) {
-//     GameManager *manager = (GameManager*)args;
-//     Button_SetToggled(button, manager->game->difficulty == 3);
-// }
-// void onPreRenderDifficulty4Button(Button *button, const void *args) {
-//     GameManager *manager = (GameManager*)args;
-//     Button_SetToggled(button, manager->game->difficulty == 4);
-// }
-// void onPreRenderDifficulty5Button(Button *button, const void *args) {
-//     GameManager *manager = (GameManager*)args;
-//     Button_SetToggled(button, manager->game->difficulty == 5);
-// }
+void onPreRenderGameMode1Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->mode == CHESS_MODE_1_PLAYER);
+}
+void onPreRenderGameMode2Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->mode == CHESS_MODE_2_PLAYER);
+}
+void* onClickGameMode1Button(void *args) {
+    GameCommand *command = (GameCommand*)args;
+    command->type = GAME_COMMAND_GAME_MODE;
+    command->args[0] = CHESS_MODE_1_PLAYER;
+    return NULL;
+}
+void* onClickGameMode2Button(void *args) {
+    GameCommand *command = (GameCommand*)args;
+    command->type = GAME_COMMAND_GAME_MODE;
+    command->args[0] = CHESS_MODE_2_PLAYER;
+    return NULL;
+}
+
+void onPreRenderDifficulty1Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_AMATEUR);
+}
+void onPreRenderDifficulty2Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_EASY);
+}
+void onPreRenderDifficulty3Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_MODERATE);
+}
+void onPreRenderDifficulty4Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_HARD);
+}
+void onPreRenderDifficulty5Button(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_EXPERT);
+}
+
 void* onClickDifficulty1Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
-    command->args[0] = 1;
+    command->args[0] = CHESS_DIFFICULTY_AMATEUR;
     return NULL;
 }
 void* onClickDifficulty2Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
-    command->args[0] = 2;
+    command->args[0] = CHESS_DIFFICULTY_EASY;
     return NULL;
 }
 void* onClickDifficulty3Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
-    command->args[0] = 3;
+    command->args[0] = CHESS_DIFFICULTY_MODERATE;
     return NULL;
 }
 void* onClickDifficulty4Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
-    command->args[0] = 4;
+    command->args[0] = CHESS_DIFFICULTY_HARD;
     return NULL;
 }
 void* onClickDifficulty5Button(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_DIFFICULTY;
-    command->args[0] = 5;
+    command->args[0] = CHESS_DIFFICULTY_EXPERT;
     return NULL;
 }
 
@@ -263,13 +285,13 @@ Pane* SettingsPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_1_PLAYER,
                       (SDL_Rect){ .x = 25, .y = 100, .w = 90, .h = BUTTON_H },
-                      NULL,
-                      onClickNewGameButton),
+                      onPreRenderGameMode1Button,
+                      onClickGameMode1Button),
         Button_Create(renderer,
                       SRC_BUTTON_2_PLAYER,
                       (SDL_Rect){ .x = 135, .y = 100, .w = 90, .h = BUTTON_H },
-                      NULL,
-                      onClickNewGameButton),
+                      onPreRenderGameMode2Button,
+                      onClickGameMode2Button),
         Button_Create(renderer,
                       SRC_BUTTON_DIFFICULTY,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
@@ -278,27 +300,27 @@ Pane* SettingsPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_AMATEUR,
                       (SDL_Rect){ .x = 25, .y = 250, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderDifficulty1Button,
                       onClickDifficulty1Button),
         Button_Create(renderer,
                       SRC_BUTTON_EASY,
                       (SDL_Rect){ .x = 135, .y = 250, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderDifficulty2Button,
                       onClickDifficulty2Button),
         Button_Create(renderer,
                       SRC_BUTTON_MODERATE,
                       (SDL_Rect){ .x = 25, .y = 325, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderDifficulty3Button,
                       onClickDifficulty3Button),
         Button_Create(renderer,
                       SRC_BUTTON_HARD,
                       (SDL_Rect){ .x = 135, .y = 325, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderDifficulty4Button,
                       onClickDifficulty4Button),
         Button_Create(renderer,
                       SRC_BUTTON_EXPERT,
                       (SDL_Rect){ .x = 80, .y = 400, .w = 90, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderDifficulty5Button,
                       onClickDifficulty5Button),              
         Button_Create(renderer,
                       SRC_BUTTON_USER_COLOR,
