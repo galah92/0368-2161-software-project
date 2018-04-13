@@ -1,4 +1,3 @@
-#include <stdbool.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
@@ -170,6 +169,7 @@ void handleMove(GameManager *manager, GameCommand command) {
             manager->error = GAME_ERROR_INVALID_MOVE_KING_WILL_T;
             break;
         case CHESS_SUCCESS:
+            manager->isSaved = false;
         default:
             break;
     }
@@ -204,6 +204,7 @@ void handleSaveGame(GameManager *manager, const char *path) {
     GameManager_SettingsToStream(manager, fp);
     GameManager_BoardToStream(manager, fp);
     fclose(fp);
+    manager->isSaved = true;
 }
 
 void handleUndoMove(GameManager *manager) {
@@ -215,6 +216,7 @@ void handleUndoMove(GameManager *manager) {
         manager->error = GAME_ERROR_EMPTY_HISTORY;
         return;
     }
+    manager->isSaved = false;
     res = ChessGame_UndoMove(manager->game, &secondUndoneMove);
     if (res != CHESS_EMPTY_HISTORY) {
         ArrayStack_Push(manager->moves, &secondUndoneMove);
@@ -272,6 +274,7 @@ GameManager* GameManager_Create() {
     manager->phase = GAME_PHASE_SETTINGS;
     manager->error = GAME_ERROR_NONE;
     manager->moves = NULL;
+    manager->isSaved = false;
     return manager;
 }
 

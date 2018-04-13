@@ -1,6 +1,7 @@
 #ifndef GAME_MANAGER_H_
 #define GAME_MANAGER_H_
 
+#include <stdbool.h>
 #include <stdio.h>
 #include "ChessGame.h"
 
@@ -84,6 +85,7 @@ typedef struct GameManager {
     GameError error;
     ArrayStack *moves;
     GameStatus status;
+    bool isSaved;
 } GameManager;
 
 GameManager* GameManager_Create();
