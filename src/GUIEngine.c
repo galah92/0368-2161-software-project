@@ -51,7 +51,6 @@ struct GUIEngine {
     SDL_Texture *bgTexture;
     SDL_Event event;
     PaneType paneType;
-    PaneType backPaneType;
     Pane *pane;
     Board *board;
 };
@@ -350,7 +349,7 @@ GUIEngine* GUIEngine_Destroy(GUIEngine *engine) {
 bool isExitButtonEvent(SDL_Event *event) {
     switch (event->type) {
         case SDL_WINDOWEVENT_CLOSE:
-        case SDL_QUIT:;
+        case SDL_QUIT:
             return true;
         case SDL_WINDOWEVENT:
             if (event->window.event == SDL_WINDOWEVENT_CLOSE) {
@@ -362,26 +361,20 @@ bool isExitButtonEvent(SDL_Event *event) {
 }
 
 void updatePane(GUIEngine *engine, PaneType type) {
+    Pane_Destroy(engine->pane);
+    engine->paneType = type;
     switch (type) {
         case PANE_TYPE_MAIN:
-            Pane_Destroy(engine->pane);
             engine->pane = MainPane_Create(engine->renderer);
-            engine->paneType = PANE_TYPE_MAIN;
             break;
         case PANE_TYPE_SETTINGS:
-            Pane_Destroy(engine->pane);
             engine->pane = SettingsPane_Create(engine->renderer);
-            engine->paneType = PANE_TYPE_SETTINGS;
             break;
         case PANE_TYPE_LOAD:
-            Pane_Destroy(engine->pane);
             engine->pane = LoadPane_Create(engine->renderer);
-            engine->paneType = PANE_TYPE_LOAD;
             break;
         case PANE_TYPE_GAME:
-            Pane_Destroy(engine->pane);
             engine->pane = GamePane_Create(engine->renderer);
-            engine->paneType = PANE_TYPE_GAME;
             break;
         default:
             break;
