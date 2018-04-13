@@ -80,6 +80,12 @@ void onClickBackButton(void *args) {
     command->type = GAME_COMMAND_BACK_PANE;
 }
 
+void onClickMainPaneButton(void *args) {
+    GameCommand *command = (GameCommand*)args;
+    command->type = GAME_COMMAND_SET_PANE;
+    command->args[0] = GAME_PANE_TYPE_MAIN;
+}
+
 void onClickStartButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_START;
@@ -217,6 +223,11 @@ void onClickDifficulty5Button(void *args) {
     command->args[0] = CHESS_DIFFICULTY_EXPERT;
 }
 
+void onPreRenderUndoButton(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetEnabled(button, !ArrayStack_IsEmpty(manager->game->history));
+}
+
 void onClickUndoButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_UNDO;
@@ -226,6 +237,26 @@ void onClickBoardEvent(BoardEventArgs *event, void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = event->isRightClick ? GAME_COMMAND_GET_MOVES : GAME_COMMAND_MOVE;
     memcpy(command->args, event->move, sizeof(int) * GUI_BOARD_MOVE_ARGS);
+}
+
+int validateQuitBeforeSave() {
+    SDL_MessageBoxButtonData buttons[] = {
+        {                                       0, 0, "no" },
+        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" },
+        { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" },
+    };
+    SDL_MessageBoxData messageboxdata = {
+        SDL_MESSAGEBOX_INFORMATION,
+        NULL,
+        "Game not saved",
+        "Would you like to save the gave before exiting?",
+        SDL_arraysize(buttons),
+        buttons,
+        NULL,
+    };
+    int buttonid;
+    SDL_ShowMessageBox(&messageboxdata, &buttonid);
+    return buttonid;
 }
 
 Pane* MainPane_Create(SDL_Renderer *renderer) {
@@ -370,11 +401,6 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
                        8);
 }
 
-void onPreRenderUndoButton(Button *button, const void *args) {
-    GameManager *manager = (GameManager*)args;
-    Button_SetEnabled(button, !ArrayStack_IsEmpty(manager->game->history));
-}
-
 Pane* GamePane_Create(SDL_Renderer *renderer) {
     Button *buttons[] = {
         Button_Create(renderer,
@@ -401,7 +427,7 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
                       SRC_BUTTON_MAIN_MENU,
                       (SDL_Rect){ .x = 25, .y = 325, .w = BUTTON_W, .h = BUTTON_H },
                       NULL,
-                      onClickBackButton),
+                      onClickMainPaneButton),
         Button_Create(renderer,
                       SRC_BUTTON_QUIT,
                       (SDL_Rect){ .x = 25, .y = 400, .w = BUTTON_W, .h = BUTTON_H },
