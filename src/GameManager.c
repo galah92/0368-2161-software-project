@@ -126,6 +126,10 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
         case GAME_COMMAND_LOAD_GAME:
             handleLoadGame(manager, command.path);
             break;
+        // case GAME_COMMAND_LOAD_AND_START:
+        //     handleLoadGame(manager, command.path);
+        //     manager->phase = GAME_PHASE_RUNNING;
+        //     break;
         case GAME_COMMAND_DEFAULT_SETTINGS:
             ChessGame_SetDefaultSettings(manager->game);
             break;

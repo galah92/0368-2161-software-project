@@ -143,6 +143,21 @@ void* handleSaveButton(void *args) {
     return NULL;
 }
 
+void onPreRenderSlot1Button(Button *button, const void *args) {
+    Button_SetToggled(button, *(unsigned int*)args == 1);
+}
+void onPreRenderSlot2Button(Button *button, const void *args) {
+    Button_SetToggled(button, *(unsigned int*)args == 2);
+}
+void onPreRenderSlot3Button(Button *button, const void *args) {
+    Button_SetToggled(button, *(unsigned int*)args == 3);
+}
+void onPreRenderSlot4Button(Button *button, const void *args) {
+    Button_SetToggled(button, *(unsigned int*)args == 4);
+}
+void onPreRenderSlot5Button(Button *button, const void *args) {
+    Button_SetToggled(button, *(unsigned int*)args == 5);
+}
 void* handleSlot1Button(void *args) {
     GUICommand *guiCommand = (GUICommand*)args;
     guiCommand->type = GUI_COMMAND_SET_SLOT;
@@ -264,27 +279,27 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_SLOT1,
                       (SDL_Rect){ .x = 25, .y = 100, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot1Button,
                       handleSlot1Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT2,
                       (SDL_Rect){ .x = 25, .y = 175, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot2Button,
                       handleSlot2Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT3,
                       (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot3Button,
                       handleSlot3Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT4,
                       (SDL_Rect){ .x = 25, .y = 325, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot4Button,
                       handleSlot4Button),
         Button_Create(renderer,
                       SRC_BUTTON_SLOT5,
                       (SDL_Rect){ .x = 25, .y = 400, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSlot5Button,
                       handleSlot5Button),
         Button_Create(renderer,
                       SRC_BUTTON_LOAD,
@@ -347,7 +362,11 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
 void pseudoRender(GUIEngine *engine, const GameManager *manager, GameCommand command) {
     SDL_RenderClear(engine->renderer);
     SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
-    Pane_Render(engine->pane, manager);
+    if (engine->paneType == PANE_TYPE_LOAD) {
+        Pane_Render(engine->pane, &engine->slot);
+    } else {
+        Pane_Render(engine->pane, manager);
+    }
     Board_Render(engine->board, manager, command.type);
     SDL_RenderPresent(engine->renderer);
 }
@@ -445,6 +464,10 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
                 return guiCommand.gameCommand;
             case GUI_COMMAND_SWITCH_PANE:
                 updatePane(engine, guiCommand.paneType);
+                pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
+                break;
+            case GUI_COMMAND_SET_SLOT:
+                engine->slot = guiCommand.slot;
                 pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
                 break;
             case GUI_COMMAND_BOTH:
