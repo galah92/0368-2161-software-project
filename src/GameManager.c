@@ -278,12 +278,9 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
 
 GameManager* GameManager_Create() {
     GameManager *manager = malloc(sizeof(GameManager));
-    if (!manager) return NULL;
+    if (!manager) return GameManager_Destroy(manager);
     manager->game = ChessGame_Create();
-    if (!manager->game) {
-        GameManager_Destroy(manager);
-        return NULL;
-    }
+    if (!manager->game) return GameManager_Destroy(manager);
     manager->phase = GAME_PHASE_SETTINGS;
     manager->error = GAME_ERROR_NONE;
     manager->moves = NULL;
@@ -293,13 +290,16 @@ GameManager* GameManager_Create() {
     return manager;
 }
 
-void GameManager_Destroy(GameManager *manager) {
-    ChessGame_Destroy(manager->game);
-    ArrayStack_Destroy(manager->moves);
+GameManager* GameManager_Destroy(GameManager *manager) {
+    if (!manager) return NULL;
+    if (manager->game) ChessGame_Destroy(manager->game);
+    if (manager->moves) ArrayStack_Destroy(manager->moves);
     free(manager);
+    return NULL;
 }
 
 GamePlayerType GameManager_GetCurrentPlayerType(GameManager *manager) {
+    if (!manager) return -1;
     bool isOtherPlayer = manager->game->turn != manager->game->userColor;
     bool is1PlayerMode = manager->game->mode == CHESS_MODE_1_PLAYER;
     return is1PlayerMode & isOtherPlayer

@@ -74,12 +74,6 @@ typedef enum GamePhase {
     GAME_PHASE_QUIT,
 } GamePhase;
 
-typedef struct GameState {
-    ChessGame *game;
-    GamePhase state;
-    GameError error;
-} GameState;
-
 typedef enum GamePlayerType {
     GAME_PLAYER_TYPE_HUMAN,
     GAME_PLAYER_TYPE_AI
@@ -98,37 +92,62 @@ typedef struct GameManager {
     GameError error;
     ArrayStack *moves;
     GameStatus status;
+    // GUI-related fields
     bool isSaved;
     unsigned int slot;
     GamePaneType paneType;
     GamePaneType lastPaneType;
 } GameManager;
 
+/**
+ * Create new GameManager instance.
+ * @return  NULL if malloc failed
+ *          GameManager* instance otherwise
+ */
 GameManager* GameManager_Create();
 
-void GameManager_Destroy(GameManager *manager);
+/**
+ * Free all resources for a given GameManager instance.
+ * @param   manager     the instance to destroy
+ * @return  NULL
+ */
+GameManager* GameManager_Destroy(GameManager *manager);
 
+/**
+ * Retrieve a given GameManager instance's current player type
+ * @param   manager     the instance to work on
+ * @return  -1          if manager == NULL
+ *          GamePlayerType otherwise
+ */
 GamePlayerType GameManager_GetCurrentPlayerType(GameManager *manager);
 
+/**
+ * Calculate an AI move using the minimax algorithm (with pruning),
+ * according to the given GameManager's difficulty.
+ * @param   manager     the instance to work on
+ * @return  an AI DO_MOVE command
+ */
 GameCommand GameManager_GetAIMove(GameManager *manager);
 
+/**
+ * Update a GameManger instance according to a given command.
+ * @param   manager     the instance to work on
+ */
 void GameManager_ProcessCommand(GameManager *manager, GameCommand command);
 
 /**
- * Send a formatted string of a given ChessGame's settings to a given stream.
- * @param   game        the instance to fetch the string from
+ * Send a formatted string of a given GameManager's game settings to a given stream.
+ * Does nothing if either manager == NULL or stream == NULL.
+ * @param   manager     the instance to fetch the string from
  * @param   stream      the stream to send the string to
- * return   CHESS_INVALID_ARGUMENT if game == NULL || stream == NULL
- *          CHESS_SUCCESS otherwise
  */
 void GameManager_SettingsToStream(const GameManager *manager, FILE *stream);
 
 /**
- * Send a formatted string of a given ChessGame's board to a given stream.
- * @param   game        the instance to fetch the string from
+ * Send a formatted string of a given GameManager's game board to a given stream.
+ * Does nothing if either manager == NULL or stream == NULL.
+ * @param   manager     the instance to fetch the string from
  * @param   stream      the stream to send the string to
- * return   CHESS_INVALID_ARGUMENT if game == NULL || stream == NULL
- *          CHESS_SUCCESS otherwise
  */
 void GameManager_BoardToStream(const GameManager *manager, FILE *stream);
 
@@ -142,5 +161,6 @@ static const struct ChessColorToString {
     { CHESS_PLAYER_COLOR_WHITE, "white" },
     { CHESS_PLAYER_COLOR_NONE, "none" },
 };
+
 
 #endif
