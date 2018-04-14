@@ -60,6 +60,42 @@ struct GUIEngine {
     Board *board;
 };
 
+int checkMateMessage(bool isBlackPlayerWin) {
+    SDL_MessageBoxButtonData buttons[] = {
+        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "ok" },
+    };
+    SDL_MessageBoxData messageboxdata = {
+        SDL_MESSAGEBOX_INFORMATION,
+        NULL,
+        "Check-Mate!",
+        isBlackPlayerWin ? "black player win\nPlay another Game!" : "white player win\nPlay another Game!",
+        SDL_arraysize(buttons),
+        buttons,
+        NULL,
+    };
+    int buttonid;
+    SDL_ShowMessageBox(&messageboxdata, &buttonid);
+    return buttonid;
+}
+
+int drawMessage() {
+    SDL_MessageBoxButtonData buttons[] = {
+        { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "ok" },
+    };
+    SDL_MessageBoxData messageboxdata = {
+        SDL_MESSAGEBOX_INFORMATION,
+        NULL,
+        "Draw!",
+        "Play another Game!",
+        SDL_arraysize(buttons),
+        buttons,
+        NULL,
+    };
+    int buttonid;
+    SDL_ShowMessageBox(&messageboxdata, &buttonid);
+    return buttonid;
+}
+
 void onClickNewGameButton(void *args) {
     GameCommand *command = (GameCommand*)args;
     command->type = GAME_COMMAND_SET_PANE;
@@ -581,4 +617,6 @@ void GUIEngine_Render(GUIEngine *engine,
     Pane_Render(engine->pane, manager);
     Board_Render(engine->board, manager, command.type);
     SDL_RenderPresent(engine->renderer);
+    if (manager->status == GAME_STATUS_CHECKMATE) checkMateMessage(manager->game->turn);   
+    else if (manager->status == GAME_STATUS_DRAW) drawMessage();
 }

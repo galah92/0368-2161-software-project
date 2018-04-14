@@ -235,6 +235,9 @@ void handleUndoMove(GameManager *manager) {
         ArrayStack_Push(manager->moves, &secondUndoneMove);
         }
     ArrayStack_Push(manager->moves, &firstUndoneMove);
+    ChessStatus status;
+    ChessGame_GetGameStatus(manager->game, &status);
+    manager->status = (GameStatus) status;
 }
 
 void processRunningCommand(GameManager *manager, GameCommand command) {
