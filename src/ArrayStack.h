@@ -14,7 +14,7 @@ typedef struct ArrayStack ArrayStack;
  * @return  NULL if malloc failed
  *          ArrayStack* instance otherwise
  */
-ArrayStack* ArrayStack_Create(unsigned int capacity, size_t dataSize);
+ArrayStack* ArrayStack_Create(unsigned int capacity, size_t elementSize);
 
 /**
  * Create a copy of a given ArrayStack instance.
@@ -27,6 +27,7 @@ ArrayStack* ArrayStack_Copy(const ArrayStack *stack);
 /**
  * Free all resources for a given ArrayStack instance.
  * @param   stack       the instance to destroy
+ * @return  NULL
  */
 ArrayStack* ArrayStack_Destroy(ArrayStack* stack);
 
@@ -62,13 +63,13 @@ bool ArrayStack_IsEmpty(const ArrayStack* stack);
 
 /**
  * Push a given element to a given ArrayStack instance.
- * Make a copy of the given element - no transfer of ownership.
+ * Copy the given element - no transfer of ownership.
  * Override bottom-most element if the stack is full.
  * Does nothing if stack == NULL.
  * @param   stack       ArrayStack instance
- * @params  data        the data to be pushed, of size elementSize
+ * @param   element     the element to be pushed, of size elementSize
  */
-void ArrayStack_Push(ArrayStack* stack, void *data);
+void ArrayStack_Push(ArrayStack* stack, void *element);
 
 /**
  * Pop the top-most element of the given ArrayStack instance.
