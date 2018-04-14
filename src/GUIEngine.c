@@ -475,14 +475,6 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
                        6);
 }
 
-void pseudoRender(GUIEngine *engine, const GameManager *manager, GameCommand command) {
-    SDL_RenderClear(engine->renderer);
-    SDL_RenderCopy(engine->renderer, engine->bgTexture, NULL, NULL);
-    Pane_Render(engine->pane, manager);
-    Board_Render(engine->board, manager, command.type);
-    SDL_RenderPresent(engine->renderer);
-}
-
 GUIEngine* GUIEngine_Create() {
     GUIEngine *engine = malloc(sizeof(GUIEngine));
     if (!engine) return NULL;
@@ -504,7 +496,7 @@ GUIEngine* GUIEngine_Create() {
     SDL_FreeSurface(boardSurface);
     engine->pane = MainPane_Create(engine->renderer);
     engine->board = Board_Create(engine->renderer, onClickBoardEvent);
-    pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
+    // pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
     return engine;
 }
 

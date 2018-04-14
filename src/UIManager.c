@@ -3,11 +3,6 @@
 #include "UIManager.h"
 
 
-typedef enum UIType {
-    UI_TYPE_CLI,
-    UI_TYPE_GUI,
-} UIType;
-
 struct UIManager {
     UIType type;
     CLIEngine *cliEngine;
@@ -37,6 +32,11 @@ UIManager* UIManager_Destroy(UIManager *uiManager) {
     GUIEngine_Destroy(uiManager->guiEngine);
     free(uiManager);
     return NULL;
+}
+
+UIType UIManager_GetUIType(UIManager *uiManager) {
+    if (!uiManager) return UI_TYPE_NONE;
+    return uiManager->type;
 }
 
 GameCommand UIManager_ProcessInput(UIManager *uiManager) {

@@ -182,11 +182,7 @@ void handleMove(GameManager *manager, GameCommand command) {
             manager->isSaved = false;
             ChessStatus status;
             ChessGame_GetGameStatus(manager->game, &status);
-            manager->status = (GameStatus) status;
-            if (manager->status == GAME_STATUS_CHECKMATE ||
-                manager->status == GAME_STATUS_DRAW) {
-                manager->phase = GAME_PHASE_QUIT;
-            }
+            manager->status = (GameStatus)status;
         default:
             break;
     }
