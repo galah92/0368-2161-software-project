@@ -11,12 +11,8 @@ struct UIManager {
 
 UIManager* UIManager_Create(int argc, const char *argv[]) {
     UIManager *uiManager = malloc(sizeof(UIManager));
-    if (!uiManager) return NULL;
-    // DEBUG ONLY //
-    (void) argc;
-    (void) argv;
-    
-    if (1) {
+    if (!uiManager) return NULL;    
+    if (argc > 1 && strcmp(argv[1], "-g") == 0) {
         uiManager->type = UI_TYPE_GUI;
         uiManager->guiEngine = GUIEngine_Create();
         if (!uiManager->guiEngine) return UIManager_Destroy(uiManager);
