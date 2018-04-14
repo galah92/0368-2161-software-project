@@ -414,7 +414,8 @@ void processGUICommand(GameManager *manager, GameCommand command) {
         manager->lastPaneType = manager->paneType;
         manager->paneType = command.args[0];
         if (manager->paneType == GAME_PANE_TYPE_MAIN) {
-            manager->phase = GAME_PHASE_SETTINGS;            
+            manager->phase = GAME_PHASE_SETTINGS;   
+            ChessGame_ResetGame(manager->game);         
         }
     } else if (command.type == GAME_COMMAND_BACK_PANE) {
         manager->paneType = manager->lastPaneType;
