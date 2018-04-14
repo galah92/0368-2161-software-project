@@ -3,7 +3,7 @@
 #include "GameManager.h"
 
 
-bool shouldQuit(GameManager *gameManager, UIManager *uiManager, GameCommand command) {
+bool toQuit(GameManager *gameManager, UIManager *uiManager, GameCommand command) {
     if (!gameManager || !uiManager) return true;
     if (UIManager_GetUIType(uiManager) == UI_TYPE_CLI &&
         (gameManager->status == GAME_STATUS_CHECKMATE ||
@@ -31,7 +31,7 @@ int main(int argc, const char *argv[]) {
     GameCommand command = { .type = GAME_COMMAND_INVALID };
     while (true) {
         UIManager_Render(uiManager, gameManager, command);
-        if (shouldQuit(gameManager, uiManager, command)) break;
+        if (toQuit(gameManager, uiManager, command)) break;
         command = getNextCommand(gameManager, uiManager);
         GameManager_ProcessCommand(gameManager, command);
     }
