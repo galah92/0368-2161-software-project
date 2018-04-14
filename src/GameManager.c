@@ -80,12 +80,14 @@ void handleLoadGame(GameManager *manager, const char *path) {
     fgets(line, LINE_MAX_LENGTH, fp);
     strtok(line, " \n"); // GAME_MODE
     manager->game->mode = modeStrToChessMode(strtok(NULL, " \n"));
-    fgets(line, LINE_MAX_LENGTH, fp);
-    strtok(line, " \n"); // DIFFICULTY
-    manager->game->difficulty = difficultyStrToChessDifficulty(strtok(NULL, " \n"));
-    fgets(line, LINE_MAX_LENGTH, fp);
-    strtok(line, " \n"); // USER_COLOR
-    manager->game->userColor = colorStrToChessColor(strtok(NULL, " \n"));
+    if (manager->game->mode == CHESS_MODE_1_PLAYER) {
+        fgets(line, LINE_MAX_LENGTH, fp);
+        strtok(line, " \n"); // DIFFICULTY
+        manager->game->difficulty = difficultyStrToChessDifficulty(strtok(NULL, " \n"));
+        fgets(line, LINE_MAX_LENGTH, fp);
+        strtok(line, " \n"); // USER_COLOR
+        manager->game->userColor = colorStrToChessColor(strtok(NULL, " \n"));
+    }
     for (int i = CHESS_GRID - 1; i >= 0; i--) {
         fgets(line, LINE_MAX_LENGTH, fp);
         strtok(line, " \n");
@@ -416,7 +418,8 @@ void processGUICommand(GameManager *manager, GameCommand command) {
         manager->lastPaneType = manager->paneType;
         manager->paneType = command.args[0];
         if (manager->paneType == GAME_PANE_TYPE_MAIN) {
-            manager->phase = GAME_PHASE_SETTINGS;   
+            manager->phase = GAME_PHASE_SETTINGS;
+            manager->status = GAME_STATUS_RUNNING;
             ChessGame_ResetGame(manager->game);         
         }
     } else if (command.type == GAME_COMMAND_BACK_PANE) {
