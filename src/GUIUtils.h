@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include <SDL.h>
 #include <SDL_video.h>
+#include "GameManager.h"
+
+#define GUI_BOARD_MOVE_ARGS   4
 
 
 // Button widget
@@ -17,6 +20,8 @@ Button* Button_Create(SDL_Renderer *renderer,
                       void (*OnClick)(void*));
 
 Button* Button_Destroy(Button* button);
+
+void Button_SetImage(Button *button, const char *image);
 
 void Button_SetEnabled(Button* button, bool isEnabled);
 
@@ -40,5 +45,22 @@ Pane* Pane_Destroy(Pane* pane);
 void Pane_Render(Pane *pane, const void *args);
 
 void Pane_HandleEvent(Pane *pane, SDL_Event *event, void *args);
+
+// Board widget
+
+typedef struct BoardEventArgs {
+    int move[GUI_BOARD_MOVE_ARGS];
+    bool isRightClick;
+} BoardEventArgs;
+
+typedef struct Board Board;
+
+Board* Board_Create(SDL_Renderer *renderer, void (*action)(BoardEventArgs*, void*));
+
+Board* Board_Destroy(Board* board);
+
+void Board_Render(Board *board, const GameManager *manager, GameCommandType commType);
+
+void* Board_HandleEvent(Board *board, SDL_Event *event, void *args);
 
 #endif

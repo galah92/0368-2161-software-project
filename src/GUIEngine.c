@@ -5,7 +5,6 @@
 #include <SDL_video.h>
 #include "GUIEngine.h"
 #include "GUIUtils.h"
-#include "GUIBoard.h"
 #include "ArrayStack.h"
 
 
