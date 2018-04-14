@@ -15,7 +15,10 @@ typedef enum UIType {
 typedef struct UIManager UIManager;
 
 /**
- * Create new UIEngine instance.
+ * Create new UIEngine instance, using CLIEngine or GUIEngine based on
+ * the command-line arguments.
+ * @param   argc        number of command-line arguments
+ * @param   argv        the command-line arguments
  * @return  NULL if malloc failed
  *          UIEngine* instance otherwise
  */
