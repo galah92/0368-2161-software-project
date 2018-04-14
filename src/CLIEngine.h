@@ -40,7 +40,7 @@ void CLIEngine_RenderError(const GameManager *manager, bool toRenderEnterMove);
  * @param   engine      the instance to use
  * @param   gameState   the gameState to output
  */
-void CLIEngine_Render(const GameManager *manager, GameCommand command);
+void CLIEngine_Render(const GameManager *manager, const GameCommand command);
 
 
 #endif

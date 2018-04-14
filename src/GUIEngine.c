@@ -563,7 +563,9 @@ GameCommand GUIEngine_ProcessInput(GUIEngine *engine) {
     return command;
 }
 
-void GUIEngine_Render(GUIEngine *engine, const GameManager *manager, GameCommand command) {
+void GUIEngine_Render(GUIEngine *engine,
+                      const GameManager *manager,
+                      const GameCommand command) {
     if (!manager || manager->error != GAME_ERROR_NONE) return;
     switch (command.type) {
         case GAME_COMMAND_LOAD_AND_START:

@@ -22,7 +22,9 @@ UIType UIManager_GetUIType(const UIManager *uiManager);
 
 GameCommand UIManager_ProcessInput(UIManager *uiManager);
 
-void UIManager_Render(UIManager *uiManager, const GameManager *manager, GameCommand command);
+void UIManager_Render(UIManager *uiManager,
+                      const GameManager *manager,
+                      const GameCommand command);
 
 
 #endif

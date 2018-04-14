@@ -207,7 +207,7 @@ void CLIEngine_RenderError(const GameManager *manager, bool toRenderEnterMove) {
     }
 }
 
-void CLIEngine_Render(const GameManager *manager, GameCommand command) {
+void CLIEngine_Render(const GameManager *manager, const GameCommand command) {
     if (!manager || manager->error != GAME_ERROR_NONE) return;
     switch(manager->status){
         case GAME_STATUS_CHECKMATE:

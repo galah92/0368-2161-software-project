@@ -19,7 +19,7 @@ UIManager* UIManager_Create(int argc, const char *argv[]) {
         uiManager->cliEngine = NULL;
     } else {
         uiManager->type = UI_TYPE_CLI;
-        uiManager->cliEngine = CLIEngine_Create();  // we need CLI anyway
+        uiManager->cliEngine = CLIEngine_Create();
         if (!uiManager->cliEngine) return UIManager_Destroy(uiManager);
         uiManager->guiEngine = NULL;
     }
@@ -51,7 +51,9 @@ GameCommand UIManager_ProcessInput(UIManager *uiManager) {
     }
 }
 
-void UIManager_Render(UIManager *uiManager, const GameManager *manager, GameCommand command) {
+void UIManager_Render(UIManager *uiManager,
+                      const GameManager *manager,
+                      const GameCommand command) {
     if (!uiManager) return;
     CLIEngine_RenderError(manager, uiManager->type == UI_TYPE_CLI);
     if (uiManager->type == UI_TYPE_GUI) {
