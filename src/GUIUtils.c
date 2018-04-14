@@ -219,16 +219,16 @@ void Board_Render(Board *board, const GameManager *manager, GameCommandType comm
             rect.y = BOARD_Y + 2 + (CHESS_GRID - 1 - pos->y) * TILE_S;
             switch (pos->type) {
                 case CHESS_POS_STANDARD:
-                    SDL_SetRenderDrawColor(board->renderer, 255, 255, 255, 128);
+                    SDL_SetRenderDrawColor(board->renderer, 0, 160, 160, 100);
                     break;
                 case CHESS_POS_THREATENED:
-                    SDL_SetRenderDrawColor(board->renderer, 128, 0, 0, 128);
+                    SDL_SetRenderDrawColor(board->renderer, 160, 0, 0, 100);
                     break;
                 case CHESS_POS_CAPTURE:
-                    SDL_SetRenderDrawColor(board->renderer, 0, 128, 0, 128);
+                    SDL_SetRenderDrawColor(board->renderer, 0, 160, 0, 100);
                     break;
                 case CHESS_POS_BOTH:
-                    SDL_SetRenderDrawColor(board->renderer, 0, 0, 128, 128);
+                    SDL_SetRenderDrawColor(board->renderer, 0, 0, 160, 100);
                     break;
                 default:
                     break;
