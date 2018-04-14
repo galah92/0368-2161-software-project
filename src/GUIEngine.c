@@ -491,7 +491,7 @@ Pane* GamePane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_UNDO,
                       (SDL_Rect){ .x = 25, .y = 250, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderUndoButton,
                       onClickUndoButton),
         Button_Create(renderer,
                       SRC_BUTTON_MAIN_MENU,
