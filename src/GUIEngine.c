@@ -496,7 +496,6 @@ GUIEngine* GUIEngine_Create() {
     SDL_FreeSurface(boardSurface);
     engine->pane = MainPane_Create(engine->renderer);
     engine->board = Board_Create(engine->renderer, onClickBoardEvent);
-    // pseudoRender(engine, NULL, (GameCommand){ .type = GAME_COMMAND_INVALID });
     return engine;
 }
 

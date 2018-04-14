@@ -18,7 +18,7 @@ UIManager* UIManager_Create(int argc, const char *argv[]);
 
 UIManager* UIManager_Destroy(UIManager *uiManager);
 
-UIType UIManager_GetUIType(UIManager *uiManager);
+UIType UIManager_GetUIType(const UIManager *uiManager);
 
 GameCommand UIManager_ProcessInput(UIManager *uiManager);
 

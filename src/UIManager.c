@@ -34,7 +34,7 @@ UIManager* UIManager_Destroy(UIManager *uiManager) {
     return NULL;
 }
 
-UIType UIManager_GetUIType(UIManager *uiManager) {
+UIType UIManager_GetUIType(const UIManager *uiManager) {
     if (!uiManager) return UI_TYPE_NONE;
     return uiManager->type;
 }

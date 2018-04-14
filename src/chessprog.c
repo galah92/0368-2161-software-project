@@ -4,6 +4,7 @@
 
 
 bool shouldQuit(GameManager *gameManager, UIManager *uiManager, GameCommand command) {
+    if (!gameManager || !uiManager) return true;
     if (UIManager_GetUIType(uiManager) == UI_TYPE_CLI &&
         (gameManager->status == GAME_STATUS_CHECKMATE ||
          gameManager->status == GAME_STATUS_DRAW)) return true;
@@ -20,20 +21,16 @@ GameCommand getNextCommand(GameManager *gameManager, UIManager *uiManager) {
             case GAME_PLAYER_TYPE_AI:
                 return GameManager_GetAIMove(gameManager);
         }
-    }    
+    }
 }
 
 int main(int argc, const char *argv[]) {
-    bool toQuit = false;
     GameManager *gameManager = GameManager_Create();
-    if (!gameManager) toQuit = true;
     UIManager *uiManager = UIManager_Create(argc, argv);
-    if (!uiManager) toQuit = true;
     GameCommand command = { .type = GAME_COMMAND_INVALID };
     while (true) {
         UIManager_Render(uiManager, gameManager, command);
-        toQuit = shouldQuit(gameManager, uiManager, command);
-        if (toQuit) break;
+        if (shouldQuit(gameManager, uiManager, command)) break;
         command = getNextCommand(gameManager, uiManager);
         GameManager_ProcessCommand(gameManager, command);
     }
