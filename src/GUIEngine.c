@@ -223,22 +223,27 @@ void onClickGameMode2Button(void *args) {
 
 void onPreRenderDifficulty1Button(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
+    Button_SetEnabled(button, manager->game->mode == CHESS_MODE_1_PLAYER);
     Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_AMATEUR);
 }
 void onPreRenderDifficulty2Button(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
+    Button_SetEnabled(button, manager->game->mode == CHESS_MODE_1_PLAYER);
     Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_EASY);
 }
 void onPreRenderDifficulty3Button(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
+    Button_SetEnabled(button, manager->game->mode == CHESS_MODE_1_PLAYER);
     Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_MODERATE);
 }
 void onPreRenderDifficulty4Button(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
+    Button_SetEnabled(button, manager->game->mode == CHESS_MODE_1_PLAYER);
     Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_HARD);
 }
 void onPreRenderDifficulty5Button(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
+    Button_SetEnabled(button, manager->game->mode == CHESS_MODE_1_PLAYER);
     Button_SetToggled(button, manager->game->difficulty == CHESS_DIFFICULTY_EXPERT);
 }
 
@@ -270,11 +275,13 @@ void onClickDifficulty5Button(void *args) {
 
 void onPreRenderUserColorWhiteButton(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
+    Button_SetEnabled(button, manager->game->mode == CHESS_MODE_1_PLAYER);
     Button_SetToggled(button, manager->game->userColor == CHESS_PLAYER_COLOR_WHITE);
 }
 
 void onPreRenderUserColorBlackButton(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
+    Button_SetEnabled(button, manager->game->mode == CHESS_MODE_1_PLAYER);
     Button_SetToggled(button, manager->game->userColor == CHESS_PLAYER_COLOR_BLACK);
 }
 
