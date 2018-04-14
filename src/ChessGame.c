@@ -3,39 +3,15 @@
 #include <string.h>
 #include "ChessGame.h"
 
-#define CHESS_HISTORY_SIZE 6
-#define CHESS_MAX_POSSIBLE_MOVES 27 // 7 * 3 + 6 for a queen piece
+#define CHESS_HISTORY_SIZE          6
+#define CHESS_MAX_POSSIBLE_MOVES    27 // 7 * 3 + 6 for a queen piece
 
-/**
- * Init a given ChessGame's board according to chess rules.
- * White is at the "bottom" of the board - lower indexes.
- * @param   game        the instance init board to
- */
-void initChessBoard(ChessGame *game) {
-    game->board[0][0] = game->board[7][0] = CHESS_PIECE_WHITE_ROOK;
-    game->board[1][0] = game->board[6][0] = CHESS_PIECE_WHITE_KNIGHT;
-    game->board[2][0] = game->board[5][0] = CHESS_PIECE_WHITE_BISHOP;
-    game->board[3][0] = CHESS_PIECE_WHITE_QUEEN;
-    game->board[4][0] = CHESS_PIECE_WHITE_KING;
-    game->board[0][7] = game->board[7][7] = CHESS_PIECE_BLACK_ROOK;
-    game->board[1][7] = game->board[6][7] = CHESS_PIECE_BLACK_KNIGHT;
-    game->board[2][7] = game->board[5][7] = CHESS_PIECE_BLACK_BISHOP;
-    game->board[3][7] = CHESS_PIECE_BLACK_QUEEN;
-    game->board[4][7] = CHESS_PIECE_BLACK_KING;
-    for (int j = 0; j < CHESS_GRID; j++) {
-        game->board[j][1] = CHESS_PIECE_WHITE_PAWN;
-        game->board[j][6] = CHESS_PIECE_BLACK_PAWN;
-    }
-    for (int i = 2; i < CHESS_GRID - 2; i++) {
-        for (int j = 0; j < CHESS_GRID; j++) {
-            game->board[j][i] = CHESS_PIECE_NONE;
-        }
-    }
-}
 
 /**
  * Check whether a given ChessPos's location is on board.
  * @param   pos         the pos to check
+ * @return  true        if pos is on board
+ *          false       otherwise
  */
 bool isValidPositionOnBoard(ChessPos pos) {
     return pos.x >= 0 && pos.x < CHESS_GRID && pos.y >= 0 && pos.y < CHESS_GRID;
@@ -44,11 +20,18 @@ bool isValidPositionOnBoard(ChessPos pos) {
 /**
  * Check whether a given ChessMove's locations is on board.
  * @param   move        the move to check
+ * @return  true        if both move.from && move.to are on board
+ *          false       otherwise
  */
 bool isValidPositionsOnBoard(ChessMove move) {
     return isValidPositionOnBoard(move.from) && isValidPositionOnBoard(move.to);
 }
 
+/**
+ * Retrieve a ChessColor for a given ChessPiece
+ * @param   piece       the ChessPiece to retrieve the color for
+ * @return  color       the piece color
+ */
 ChessColor getPieceColor(ChessPiece piece) {
     switch (piece) {
         case CHESS_PIECE_WHITE_PAWN:
@@ -141,16 +124,9 @@ bool isValidBishopMove(ChessGame *game, ChessMove move) {
     int horAbs = abs(move.from.x - move.to.x);
     int verAbs = abs(move.from.y - move.to.y);
     if (horAbs != verAbs || !horAbs) return false;
-    if (horAbs == 1 && getPieceColor(game->board[move.to.x][move.to.y]) != game->turn) return true;
-    // int startX = move.from.x < move.to.x ? move.from.x : move.to.x;
-    // int endX   = move.from.x < move.to.x ? move.to.x : move.from.x;
-    // int startY = move.from.y < move.to.y ? move.from.y : move.to.y;
-    // int endY   = move.from.y < move.to.y ? move.to.y : move.from.y;
-    // for (int i = startX, j = startY ; i <= endX ;){
-    //     if (game->board[i][j] != CHESS_PIECE_NONE) return false;
-    //     i += move.from.x < move.to.x ? 1 : -1;
-    //     j += move.from.y < move.to.y ? 1 : -1; 
-    // }
+    if (horAbs == 1 && getPieceColor(game->board[move.to.x][move.to.y]) != game->turn) {
+        return true;
+    }
     bool rightup   = (move.from.x < move.to.x) && (move.from.y < move.to.y);
     bool leftup    = (move.from.x > move.to.x) && (move.from.y < move.to.y);
     bool rightdown = (move.from.x < move.to.x) && (move.from.y > move.to.y);
@@ -331,10 +307,9 @@ ChessResult isValidMove(ChessGame *game, ChessMove move) {
 
 ChessGame* ChessGame_Create() {
     ChessGame *game = malloc(sizeof(ChessGame));
-    if (!game) return NULL;
+    if (!game) return ChessGame_Destroy(game);
     game->turn = CHESS_PLAYER_COLOR_WHITE;
     ChessGame_SetDefaultSettings(game);
-    // initChessBoard(game);
     game->history = ArrayStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
     if (!game->history) ChessGame_Destroy(game);
     return game;
@@ -359,7 +334,7 @@ ChessGame* ChessGame_Destroy(ChessGame *game) {
 ChessResult ChessGame_ResetGame(ChessGame *game) {
     if (!game) return CHESS_INVALID_ARGUMENT;
     game->turn = CHESS_PLAYER_COLOR_WHITE;
-    initChessBoard(game);
+    ChessGame_InitBoard(game);
     ArrayStack_Destroy(game->history);
     game->history = ArrayStack_Create(CHESS_HISTORY_SIZE, sizeof(ChessMove));
     return CHESS_SUCCESS;
@@ -394,6 +369,30 @@ ChessResult ChessGame_SetUserColor(ChessGame *game, ChessColor userColor) {
     if (userColor < CHESS_PLAYER_COLOR_BLACK) return CHESS_INVALID_ARGUMENT;
     if (userColor > CHESS_PLAYER_COLOR_WHITE) return CHESS_INVALID_ARGUMENT;
     game->userColor = userColor;
+    return CHESS_SUCCESS;
+}
+
+ChessResult ChessGame_InitBoard(ChessGame *game) {
+    if (!game) return CHESS_INVALID_ARGUMENT;
+    game->board[0][0] = game->board[7][0] = CHESS_PIECE_WHITE_ROOK;
+    game->board[1][0] = game->board[6][0] = CHESS_PIECE_WHITE_KNIGHT;
+    game->board[2][0] = game->board[5][0] = CHESS_PIECE_WHITE_BISHOP;
+    game->board[3][0] = CHESS_PIECE_WHITE_QUEEN;
+    game->board[4][0] = CHESS_PIECE_WHITE_KING;
+    game->board[0][7] = game->board[7][7] = CHESS_PIECE_BLACK_ROOK;
+    game->board[1][7] = game->board[6][7] = CHESS_PIECE_BLACK_KNIGHT;
+    game->board[2][7] = game->board[5][7] = CHESS_PIECE_BLACK_BISHOP;
+    game->board[3][7] = CHESS_PIECE_BLACK_QUEEN;
+    game->board[4][7] = CHESS_PIECE_BLACK_KING;
+    for (int j = 0; j < CHESS_GRID; j++) {
+        game->board[j][1] = CHESS_PIECE_WHITE_PAWN;
+        game->board[j][6] = CHESS_PIECE_BLACK_PAWN;
+    }
+    for (int i = 2; i < CHESS_GRID - 2; i++) {
+        for (int j = 0; j < CHESS_GRID; j++) {
+            game->board[j][i] = CHESS_PIECE_NONE;
+        }
+    }
     return CHESS_SUCCESS;
 }
 
