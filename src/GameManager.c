@@ -126,12 +126,6 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
         case GAME_COMMAND_LOAD_GAME:
             handleLoadGame(manager, command.path);
             break;
-        case GAME_COMMAND_LOAD_AND_START:
-            handleLoadGame(manager, command.path);
-            if (manager->error != GAME_ERROR_INVALID_FILE) {
-                manager->phase = GAME_PHASE_RUNNING;
-            }
-            break;
         case GAME_COMMAND_DEFAULT_SETTINGS:
             ChessGame_SetDefaultSettings(manager->game);
             break;
@@ -152,7 +146,16 @@ void processSettingsCommand(GameManager *manager, GameCommand command) {
     }
 }
 
+bool isGameEnded(GameManager *manager) {
+    return manager->status == GAME_STATUS_CHECKMATE ||
+           manager->status == GAME_STATUS_DRAW;
+}
+
 void handleMove(GameManager *manager, GameCommand command) {
+    if (isGameEnded(manager)) {
+        manager->error = GAME_ERROR_INVALID_COMMAND;
+        return;
+    }
     ChessMove move;
     move.from = (ChessPos){ .x = command.args[1] - 'A', .y = command.args[0] - 1 };
     move.to = (ChessPos){ .x = command.args[3] - 'A', .y = command.args[2] - 1 };
@@ -177,6 +180,13 @@ void handleMove(GameManager *manager, GameCommand command) {
             break;
         case CHESS_SUCCESS:
             manager->isSaved = false;
+            ChessStatus status;
+            ChessGame_GetGameStatus(manager->game, &status);
+            manager->status = (GameStatus) status;
+            if (manager->status == GAME_STATUS_CHECKMATE ||
+                manager->status == GAME_STATUS_DRAW) {
+                manager->phase = GAME_PHASE_QUIT;
+            }
         default:
             break;
     }
@@ -235,14 +245,6 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
     switch (command.type) {
         case GAME_COMMAND_MOVE:
             handleMove(manager, command);
-            // check mate 
-            ChessStatus status;
-            ChessGame_GetGameStatus(manager->game, &status);
-            manager->status = (GameStatus) status;
-            if (manager->status == GAME_STATUS_CHECKMATE ||
-                manager->status == GAME_STATUS_DRAW) {
-                manager->phase = GAME_PHASE_QUIT;
-            }
             break;
         case GAME_COMMAND_GET_MOVES:
             handleGetMoves(manager, command);
@@ -259,12 +261,6 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             break;
         case GAME_COMMAND_RESTART:
             ChessGame_ResetGame(manager->game);
-            break;
-        case GAME_COMMAND_LOAD_AND_START:
-            handleLoadGame(manager, command.path);
-            if (manager->error != GAME_ERROR_INVALID_FILE) {
-                manager->phase = GAME_PHASE_RUNNING;
-            }
             break;
         case GAME_COMMAND_QUIT:
             manager->phase = GAME_PHASE_QUIT;
