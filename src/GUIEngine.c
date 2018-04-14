@@ -8,43 +8,43 @@
 #include "ArrayStack.h"
 
 
-#define WINDOW_W                1024
-#define WINDOW_H                768
-#define BUTTON_W                200
-#define BUTTON_H                50
+#define WINDOW_W                        1024
+#define WINDOW_H                        768
+#define BUTTON_W                        200
+#define BUTTON_H                        50
 
-#define SDL_ERROR_STRING        "SDL Error: %s\n"
-#define SRC_BACKGROUND          "./gui/chessboard.bmp"
+#define SDL_ERROR_STRING                "SDL Error: %s\n"
+#define SRC_BACKGROUND                  "./gui/chessboard.bmp"
 
-#define SRC_BUTTON_NEW_GAME     "./gui/colors/newgame.bmp"
-#define SRC_BUTTON_LOAD         "./gui/colors/load.bmp"
-#define SRC_BUTTON_QUIT         "./gui/colors/quit.bmp"
+#define SRC_BUTTON_NEW_GAME             "./gui/colors/newgame.bmp"
+#define SRC_BUTTON_LOAD                 "./gui/colors/load.bmp"
+#define SRC_BUTTON_QUIT                 "./gui/colors/quit.bmp"
 
-#define SRC_BUTTON_BACK         "./gui/colors/back.bmp"
-#define SRC_BUTTON_GAME_MODE    "./gui/colors/gamemode.bmp"
-#define SRC_BUTTON_DIFFICULTY   "./gui/colors/difficulty.bmp"
-#define SRC_BUTTON_USER_COLOR   "./gui/colors/usercolor.bmp"
-#define SRC_BUTTON_START        "./gui/colors/start.bmp"
+#define SRC_BUTTON_BACK                 "./gui/colors/back.bmp"
+#define SRC_BUTTON_GAME_MODE            "./gui/colors/gamemode.bmp"
+#define SRC_BUTTON_DIFFICULTY           "./gui/colors/difficulty.bmp"
+#define SRC_BUTTON_USER_COLOR           "./gui/colors/usercolor.bmp"
+#define SRC_BUTTON_START                "./gui/colors/start.bmp"
 
-#define SRC_BUTTON_RESTART      "./gui/colors/restart.bmp"
-#define SRC_BUTTON_SAVE         "./gui/colors/save.bmp"
-#define SRC_BUTTON_UNDO         "./gui/colors/undo.bmp"
-#define SRC_BUTTON_MAIN_MENU    "./gui/colors/mainmenu.bmp"
+#define SRC_BUTTON_RESTART              "./gui/colors/restart.bmp"
+#define SRC_BUTTON_SAVE                 "./gui/colors/save.bmp"
+#define SRC_BUTTON_UNDO                 "./gui/colors/undo.bmp"
+#define SRC_BUTTON_MAIN_MENU            "./gui/colors/mainmenu.bmp"
 
-#define SRC_BUTTON_SLOT1        "./gui/colors/slot01.bmp"
-#define SRC_BUTTON_SLOT2        "./gui/colors/slot02.bmp"
-#define SRC_BUTTON_SLOT3        "./gui/colors/slot03.bmp"
-#define SRC_BUTTON_SLOT4        "./gui/colors/slot04.bmp"
-#define SRC_BUTTON_SLOT5        "./gui/colors/slot05.bmp"
+#define SRC_BUTTON_SLOT1                "./gui/colors/slot01.bmp"
+#define SRC_BUTTON_SLOT2                "./gui/colors/slot02.bmp"
+#define SRC_BUTTON_SLOT3                "./gui/colors/slot03.bmp"
+#define SRC_BUTTON_SLOT4                "./gui/colors/slot04.bmp"
+#define SRC_BUTTON_SLOT5                "./gui/colors/slot05.bmp"
 
-#define SRC_BUTTON_AMATEUR      "./gui/colors/amateur.bmp"
-#define SRC_BUTTON_EASY         "./gui/colors/easy.bmp"
-#define SRC_BUTTON_MODERATE     "./gui/colors/moderate.bmp"
-#define SRC_BUTTON_HARD         "./gui/colors/hard.bmp"
-#define SRC_BUTTON_EXPERT       "./gui/colors/expert.bmp"
+#define SRC_BUTTON_AMATEUR              "./gui/colors/amateur.bmp"
+#define SRC_BUTTON_EASY                 "./gui/colors/easy.bmp"
+#define SRC_BUTTON_MODERATE             "./gui/colors/moderate.bmp"
+#define SRC_BUTTON_HARD                 "./gui/colors/hard.bmp"
+#define SRC_BUTTON_EXPERT               "./gui/colors/expert.bmp"
 
-#define SRC_BUTTON_1_PLAYER     "./gui/colors/1playermode.bmp"
-#define SRC_BUTTON_2_PLAYER     "./gui/colors/2playermode.bmp"
+#define SRC_BUTTON_1_PLAYER             "./gui/colors/1playermode.bmp"
+#define SRC_BUTTON_2_PLAYER             "./gui/colors/2playermode.bmp"
 
 #define SRC_BUTTON_USER_COLOR_WHITE     "./gui/colors/white.bmp"
 #define SRC_BUTTON_USER_COLOR_BLACK     "./gui/colors/black.bmp"
@@ -68,7 +68,9 @@ int checkMateMessage(bool isBlackPlayerWin) {
         SDL_MESSAGEBOX_INFORMATION,
         NULL,
         "Check-Mate!",
-        isBlackPlayerWin ? "black player win\nPlay another Game!" : "white player win\nPlay another Game!",
+        isBlackPlayerWin
+            ? "black player win\nPlay another Game!"
+            : "white player win\nPlay another Game!",
         SDL_arraysize(buttons),
         buttons,
         NULL,
@@ -617,6 +619,9 @@ void GUIEngine_Render(GUIEngine *engine,
     Pane_Render(engine->pane, manager);
     Board_Render(engine->board, manager, command.type);
     SDL_RenderPresent(engine->renderer);
-    if (manager->status == GAME_STATUS_CHECKMATE) checkMateMessage(manager->game->turn);   
-    else if (manager->status == GAME_STATUS_DRAW) drawMessage();
+    if (manager->status == GAME_STATUS_CHECKMATE) {
+        checkMateMessage(manager->game->turn);
+    } else if (manager->status == GAME_STATUS_DRAW) {
+        drawMessage();
+    }
 }
