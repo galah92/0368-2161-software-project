@@ -52,13 +52,13 @@ GameCommand UIManager_ProcessInput(UIManager *uiManager) {
 }
 
 void UIManager_Render(UIManager *uiManager,
-                      const GameManager *manager,
+                      const GameManager *gameManager,
                       const GameCommand command) {
     if (!uiManager) return;
-    CLIEngine_RenderError(manager, uiManager->type == UI_TYPE_CLI);
+    CLIEngine_RenderError(gameManager, uiManager->type == UI_TYPE_CLI);
     if (uiManager->type == UI_TYPE_GUI) {
-        GUIEngine_Render(uiManager->guiEngine, manager, command);
+        GUIEngine_Render(uiManager->guiEngine, gameManager, command);
     } else {
-        CLIEngine_Render(manager, command);
+        CLIEngine_Render(gameManager, command);
     }
 }
