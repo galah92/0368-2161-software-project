@@ -22,6 +22,7 @@ GameCommand getNextCommand(GameManager *gameManager, UIManager *uiManager) {
                 return GameManager_GetAIMove(gameManager);
         }
     }
+    return (GameCommand){ .type = GAME_COMMAND_INVALID };
 }
 
 int main(int argc, const char *argv[]) {
