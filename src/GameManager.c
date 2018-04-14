@@ -260,6 +260,7 @@ void processRunningCommand(GameManager *manager, GameCommand command) {
             break;
         case GAME_COMMAND_RESTART:
             ChessGame_ResetGame(manager->game);
+            manager->status = GAME_STATUS_RUNNING;
             break;
         case GAME_COMMAND_QUIT:
             manager->phase = GAME_PHASE_QUIT;
@@ -410,6 +411,7 @@ char* slotToPath(unsigned int slot) {
 }
 
 void processGUICommand(GameManager *manager, GameCommand command) {
+    // if (command.type == GAME_COMMAND_QUIT && )
     if (command.type == GAME_COMMAND_SET_PANE) {
         manager->lastPaneType = manager->paneType;
         manager->paneType = command.args[0];
