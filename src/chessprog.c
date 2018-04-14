@@ -6,7 +6,7 @@
 bool shouldQuit(GameManager *gameManager, UIManager *uiManager, GameCommand command) {
     if (UIManager_GetUIType(uiManager) == UI_TYPE_CLI) {
         return gameManager->status == GAME_STATUS_CHECKMATE ||
-               gameManager->status == GAME_STATUS_DRAW;
+               gameManager->status == GAME_STATUS_DRAW || command.type == GAME_COMMAND_QUIT;
     }
     return command.type == GAME_COMMAND_QUIT;
 }
