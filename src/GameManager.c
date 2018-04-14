@@ -73,6 +73,7 @@ void handleLoadGame(GameManager *manager, const char *path) {
         manager->error = GAME_ERROR_INVALID_FILE;
         return;
     }
+    ChessGame_ResetGame(manager->game);
     char line[LINE_MAX_LENGTH];
     fgets(line, LINE_MAX_LENGTH, fp); // turn
     manager->game->turn = colorStrToChessColor(strtok(line, " \n"));
@@ -96,6 +97,7 @@ void handleLoadGame(GameManager *manager, const char *path) {
         }
     }
     fclose(fp);
+
 }
 
 void processSettingsCommand(GameManager *manager, GameCommand command) {
