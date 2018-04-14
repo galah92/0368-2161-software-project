@@ -39,7 +39,7 @@ void CLIEngine_RenderError(const GameManager *manager, bool toRenderEnterMove);
 /**
  * Output to CLI the current game state.
  * @param   engine      the instance to use
- * @param   gameManager the game state to render
+ * @param   gameManager the game state to output
  * @param   command     the last command processed
  */
 void CLIEngine_Render(const GameManager *manager, const GameCommand command);

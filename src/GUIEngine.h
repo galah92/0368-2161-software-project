@@ -16,21 +16,22 @@ GUIEngine* GUIEngine_Create();
 /**
  * Free all resources for a given GUIEngine instance.
  * @param   engine      the instance to destroy
+ * @return  NULL
  */
 GUIEngine* GUIEngine_Destroy(GUIEngine *engine);
 
 /**
- * Get and parse user input from stdin.
+ * Get and parse user input from given GUIEngine instance.
  * @param   engine      the instance to use
- * @return  command     type is GAME_COMMAND_INVALID if engine is null
- *                      a command and args as parsed from CLI otherwise
+ * @return  command     a command and args
  */
 GameCommand GUIEngine_ProcessInput(GUIEngine *engine);
 
 /**
  * Output to CLI the current game state.
  * @param   engine      the instance to use
- * @param   gameState   the gameState to output
+ * @param   gameManager the game state to render
+ * @param   command     the last command processed
  */
 void GUIEngine_Render(GUIEngine *engine,
                       const GameManager *manager,
