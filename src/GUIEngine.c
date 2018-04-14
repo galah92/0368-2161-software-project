@@ -146,6 +146,11 @@ void onClickSaveButton(void *args) {
     command->type = GAME_COMMAND_SAVE_FROM_SLOT;
 }
 
+void onPreRenderSaveButton(Button *button, const void *args) {
+    GameManager *manager = (GameManager*)args;
+    Button_SetEnabled(button, manager->lastPaneType != GAME_PANE_TYPE_MAIN);
+}
+
 void onPreRenderSlot1Button(Button *button, const void *args) {
     GameManager *manager = (GameManager*)args;
     Button_SetToggled(button, manager->slot == 1);
@@ -464,7 +469,7 @@ Pane* LoadPane_Create(SDL_Renderer *renderer) {
         Button_Create(renderer,
                       SRC_BUTTON_SAVE,
                       (SDL_Rect){ .x = 25, .y = 330, .w = BUTTON_W, .h = BUTTON_H },
-                      NULL,
+                      onPreRenderSaveButton,
                       onClickSaveButton),
     };
     return Pane_Create(renderer,
