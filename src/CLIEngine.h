@@ -17,8 +17,9 @@ CLIEngine* CLIEngine_Create();
 /**
  * Free all resources for a given CLIEngine instance.
  * @param   engine      the instance to destroy
+ * @return  NULL
  */
-void CLIEngine_Destroy(CLIEngine *engine);
+CLIEngine* CLIEngine_Destroy(CLIEngine *engine);
 
 /**
  * Get and parse user input from stdin.
@@ -31,14 +32,15 @@ GameCommand CLIEngine_ProcessInput(CLIEngine *engine);
 /**
  * Output to CLI an error if one exists.
  * @param   engine      the instance to use
- * @param   gameState   the gameState to output
+ * @param   gameManager the game state's error to output
  */
 void CLIEngine_RenderError(const GameManager *manager, bool toRenderEnterMove);
 
 /**
  * Output to CLI the current game state.
  * @param   engine      the instance to use
- * @param   gameState   the gameState to output
+ * @param   gameManager the game state to render
+ * @param   command     the last command processed
  */
 void CLIEngine_Render(const GameManager *manager, const GameCommand command);
 
