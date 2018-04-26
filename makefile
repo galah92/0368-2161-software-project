@@ -30,7 +30,7 @@ else
 	SDLLIB = $(SDLLIB_NOVA)
 endif
 
-.PHONY: build clean test
+.PHONY: build clean
 
 default : all
 
@@ -44,13 +44,3 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)
-
-test:
-	@./$(BINDIR)/$(EXEC) < tst/1.input > tst/1.output
-	@diff -q tst/1.correct tst/1.output > /dev/null || echo "1 failed"
-	@./$(BINDIR)/$(EXEC) < tst/2.input > tst/2.output
-	@diff -q tst/2.correct tst/2.output > /dev/null || echo "2 failed"
-	@./$(BINDIR)/$(EXEC) < tst/3.input > tst/3.output
-	@diff -q tst/3.correct tst/3.output > /dev/null || echo "3 failed"
-	@./$(BINDIR)/$(EXEC) < tst/4.input > tst/4.output
-	@diff -q tst/4.correct tst/4.output > /dev/null || echo "4 failed"
