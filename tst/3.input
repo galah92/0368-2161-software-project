@@ -1,7 +1,0 @@
-game_mode 2
-user color 0
-print_settings
-start
-move <2,A> to <3,A>
-move <7,G> to <5,G>
-quit
